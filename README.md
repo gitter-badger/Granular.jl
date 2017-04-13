@@ -1,2 +1,2 @@
 # seaice
-Toy model for sea-ice dynamics
+Toy model for sea-ice thermodynamics and granular mechanics
