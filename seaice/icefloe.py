@@ -36,7 +36,6 @@ class IceFloe:
     :param fixed: The floe is free to move linearly and/or rotationally
     :type fixed: bool
     '''
-
     def init(self,
              lin_pos,
              thickness,
@@ -169,10 +168,10 @@ class IceFloe:
         d_lin_acc_dt = (self.lin_acc - lin_acc0)/dt
         d_ang_acc_dt = (self.ang_acc - ang_acc0)/dt
 
-        self.lin_pos += self.lin_vel*dt + 0.5*self.lin_acc*dt**2. + \
-            1./6.*d_lin_acc_dt*dt**3.
-        self.ang_pos += self.ang_vel*dt + 0.5*self.ang_acc*dt**2. + \
-            1./6.*d_ang_acc_dt*dt**3.
+        self.lin_pos += self.lin_vel*dt + 0.5*self.lin_acc*dt**2. \
+            + 1./6.*d_lin_acc_dt*dt**3.
+        self.ang_pos += self.ang_vel*dt + 0.5*self.ang_acc*dt**2. \
+            + 1./6.*d_ang_acc_dt*dt**3.
 
         self.lin_vel += self.lin_acc*dt + 0.5*d_lin_acc_dt*dt**2.
         self.ang_vel += self.ang_acc*dt + 0.5*d_ang_acc_dt*dt**2.
