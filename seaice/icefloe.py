@@ -2,7 +2,7 @@
 import numpy
 
 
-class IceFloe:
+class IceFloeCylindrical:
     '''
     Cylindrical ice floe object.
 
@@ -36,7 +36,7 @@ class IceFloe:
     :param fixed: The floe is free to move linearly and/or rotationally
     :type fixed: bool
     '''
-    def init(self,
+    def __init__(self,
              lin_pos,
              thickness,
              contact_radius,
