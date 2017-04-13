@@ -1,7 +1,9 @@
 REPONAME=seaice
 
-.PHONY: doc
-doc:
+all: seaice.pdf gh-pages
+
+.PHONY: gh-pages
+gh-pages:
 	-mkdir -p ../$(REPONAME)-doc && cd ../$(REPONAME)-doc && pwd && git clone -b gh-pages git@github.com:anders-dc/$(REPONAME) html
 	make html -C doc/ && cd ../$(REPONAME)-doc/html && \
 		pwd && \
@@ -19,5 +21,5 @@ doctest:
 	@make coverage -C doc/ >/dev/null && \
 		cat ../$(REPONAME)-doc/coverage/{python,c}.txt
 
-manual.pdf:
-	make latexpdf -C doc/
+seaice.pdf:
+	make latexpdf -C doc/ && cp ../$(REPONAME)-doc/latex/seaice.pdf .
