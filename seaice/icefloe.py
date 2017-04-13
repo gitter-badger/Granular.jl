@@ -3,6 +3,40 @@ import numpy
 
 
 class IceFloe:
+    '''
+    Cylindrical ice floe object.
+
+    :param lin_pos: Floe linear position [m]
+    :type lin_pos: list or numpy.array
+    :param thickness: Floe thickness [m]
+    :type thickness: float
+    :param contact_radius: Floe radius during interactions [m]
+    :type contact_radius: float
+    :param areal_radius: Floe areal radius on the sea surface [m].  If not
+    set, this parameter will equal the `contact_radius` value.
+    :type areal_radius: float
+    :param lin_vel: Floe linear velocity [m/s]
+    :type lin_vel: list or numpy.array
+    :param lin_acc: Floe linear acceleration [m/s^2]
+    :type lin_acc: list or numpy.array
+    :param force: Sum of forces [N]
+    :type force: list or numpy.array
+    :param ang_pos: Floe angular position [rad]
+    :type ang_pos: float
+    :param ang_vel: Floe angular velocity [rad/s]
+    :type ang_vel: float
+    :param ang_acc: Floe angular acceleration [rad/s^2]
+    :type ang_acc: float
+    :param torque: Sum of forces [N]
+    :type torque: float
+    :param density: Floe density [kg/m^3]
+    :type density: float
+    :param rotating: The floe is free to rotate
+    :type rotating: bool
+    :param fixed: The floe is free to move linearly and/or rotationally
+    :type fixed: bool
+    '''
+
     def init(self,
              lin_pos,
              thickness,
@@ -18,39 +52,6 @@ class IceFloe:
              density=934.,
              rotating=True,
              fixed=False):
-        '''
-        Initializing function for a cylindrical ice floe object.
-
-        :param lin_pos: Floe linear position [m]
-        :type lin_pos: list or numpy.array
-        :param thickness: Floe thickness [m]
-        :type thickness: float
-        :param contact_radius: Floe radius during interactions [m]
-        :type contact_radius: float
-        :param areal_radius: Floe areal radius on the sea surface [m].  If not
-            set, this parameter will equal the `contact_radius` value.
-        :type areal_radius: float
-        :param lin_vel: Floe linear velocity [m/s]
-        :type lin_vel: list or numpy.array
-        :param lin_acc: Floe linear acceleration [m/s^2]
-        :type lin_acc: list or numpy.array
-        :param force: Sum of forces [N]
-        :type force: list or numpy.array
-        :param ang_pos: Floe angular position [rad]
-        :type ang_pos: float
-        :param ang_vel: Floe angular velocity [rad/s]
-        :type ang_vel: float
-        :param ang_acc: Floe angular acceleration [rad/s^2]
-        :type ang_acc: float
-        :param torque: Sum of forces [N]
-        :type torque: float
-        :param density: Floe density [kg/m^3]
-        :type density: float
-        :param rotating: The floe is free to rotate
-        :type rotating: bool
-        :param fixed: The floe is free to move linearly and/or rotationally
-        :type fixed: bool
-        '''
 
         self.lin_pos = numpy.array(lin_pos)
         self.thickness = thickness
@@ -111,7 +112,7 @@ class IceFloe:
         Determine current linear and angular accelerations based on the current
         sum of forces.
         '''
-        if self.fixed == False:
+        if self.fixed is False:
             self.lin_acc = self.force/self.mass()
             if self.rotating:
                 self.ang_acc = self.torque/self.moment_of_inertia_vertical()
