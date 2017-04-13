@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>seaice documentation &#8212; seaice 0.1b documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1b',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="seaice-documentation">
+<h1>seaice documentation<a class="headerlink" href="#seaice-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-seaice">
+<span id="the-seaice-module"></span><h2>The <code class="docutils literal"><span class="pre">seaice</span></code> module<a class="headerlink" href="#module-seaice" title="Permalink to this headline">¶</a></h2>
+<p>SeaIce</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Package name:</th><td class="field-body">seaice</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Release date:</th><td class="field-body">2017-04-13</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Authors:</th><td class="field-body">Anders Damsgaard:</td>
+</tr>
+<tr class="field-even field"><th class="field-name">URL:</th><td class="field-body"><a class="reference external" href="https://github.com/anders-dc/seaice">https://github.com/anders-dc/seaice</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">License:</th><td class="field-body">GPLv3</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="seaice.IceFloeCylindrical">
+<em class="property">class </em><code class="descclassname">seaice.</code><code class="descname">IceFloeCylindrical</code><span class="sig-paren">(</span><em>lin_pos, thickness, contact_radius, areal_radius=None, lin_vel=[0.0, 0.0], lin_acc=[0.0, 0.0], force=[0.0, 0.0], ang_pos=0.0, ang_vel=0.0, ang_acc=0.0, torque=0.0, density=934.0, rotating=True, fixed=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cylindrical ice floe object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lin_pos</strong> (<em>list</em><em> or </em><em>numpy.array</em>) &#8211; Floe linear position [m]</li>
+<li><strong>thickness</strong> (<em>float</em>) &#8211; Floe thickness [m]</li>
+<li><strong>contact_radius</strong> (<em>float</em>) &#8211; Floe radius during interactions [m]</li>
+<li><strong>areal_radius</strong> (<em>float</em>) &#8211; Floe areal radius on the sea surface [m].  If not
+set, this parameter will equal the <cite>contact_radius</cite> value</li>
+<li><strong>lin_vel</strong> (<em>list</em><em> or </em><em>numpy.array</em>) &#8211; Floe linear velocity [m/s]</li>
+<li><strong>lin_acc</strong> (<em>list</em><em> or </em><em>numpy.array</em>) &#8211; Floe linear acceleration [m/s^2]</li>
+<li><strong>force</strong> (<em>list</em><em> or </em><em>numpy.array</em>) &#8211; Sum of forces [N]</li>
+<li><strong>ang_pos</strong> (<em>float</em>) &#8211; Floe angular position [rad]</li>
+<li><strong>ang_vel</strong> (<em>float</em>) &#8211; Floe angular velocity [rad/s]</li>
+<li><strong>ang_acc</strong> (<em>float</em>) &#8211; Floe angular acceleration [rad/s^2]</li>
+<li><strong>torque</strong> (<em>float</em>) &#8211; Sum of forces [N]</li>
+<li><strong>density</strong> (<em>float</em>) &#8211; Floe density [kg/m^3]</li>
+<li><strong>rotating</strong> (<em>bool</em>) &#8211; The floe is free to rotate</li>
+<li><strong>fixed</strong> (<em>bool</em>) &#8211; The floe is free to move linearly and/or rotationally</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="seaice.IceFloeCylindrical.find_accelerations">
+<code class="descname">find_accelerations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical.find_accelerations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical.find_accelerations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine current linear and angular accelerations based on the current
+sum of forces.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="seaice.IceFloeCylindrical.mass">
+<code class="descname">mass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical.mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical.mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the current floe mass.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The floe mass based on its areal radius, thickness, and
+density.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="seaice.IceFloeCylindrical.moment_of_inertia_vertical">
+<code class="descname">moment_of_inertia_vertical</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical.moment_of_inertia_vertical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical.moment_of_inertia_vertical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the rotational moment of inertia for rotation around the
+floe center with a vertical rotation axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The vertical rotational moment of inertia</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="seaice.IceFloeCylindrical.surface_area">
+<code class="descname">surface_area</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical.surface_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical.surface_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the current floe surface area.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The floe mass based on its areal radius.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="seaice.IceFloeCylindrical.update_position">
+<code class="descname">update_position</code><span class="sig-paren">(</span><em>dt</em>, <em>method='TY3'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical.update_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical.update_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the kinematics through explicit temporal integration using a
+third-order Taylor expansion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dt</strong> (<em>float</em>) &#8211; The time step length</li>
+<li><strong>method</strong> &#8211; The integration method to choose (&#8216;TY2&#8217; or &#8216;TY3&#8217;
+(default))</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="seaice.IceFloeCylindrical.update_position_TY2">
+<code class="descname">update_position_TY2</code><span class="sig-paren">(</span><em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical.update_position_TY2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical.update_position_TY2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the kinematics through explicit temporal integration of Newton&#8217;s
+second law using a second-order Taylor expansion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dt</strong> (<em>float</em>) &#8211; The time step length</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="seaice.IceFloeCylindrical.update_position_TY3">
+<code class="descname">update_position_TY3</code><span class="sig-paren">(</span><em>dt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical.update_position_TY3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical.update_position_TY3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the kinematics through explicit temporal integration of Newton&#8217;s
+second law using a third-order Taylor expansion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dt</strong> (<em>float</em>) &#8211; The time step length</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="seaice.IceFloeCylindrical.volume">
+<code class="descname">volume</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/seaice/icefloe.html#IceFloeCylindrical.volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#seaice.IceFloeCylindrical.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the current floe volume.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The floe mass based on its areal radius, thickness.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">seaice documentation</a><ul>
+<li><a class="reference internal" href="#module-seaice">The <code class="docutils literal"><span class="pre">seaice</span></code> module</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Anders Damsgaard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
