@@ -13,7 +13,7 @@ class IceFloeCylindrical:
     :param contact_radius: Floe radius during interactions [m]
     :type contact_radius: float
     :param areal_radius: Floe areal radius on the sea surface [m].  If not
-    set, this parameter will equal the `contact_radius` value.
+        set, this parameter will equal the `contact_radius` value
     :type areal_radius: float
     :param lin_vel: Floe linear velocity [m/s]
     :type lin_vel: list or numpy.array
@@ -91,7 +91,7 @@ class IceFloeCylindrical:
         Determine the current floe mass.
 
         :returns: The floe mass based on its areal radius, thickness, and
-        density.
+            density.
         :return type: float
         '''
         return self.density*self.volume()
