@@ -19,7 +19,8 @@ class IceFloe:
              rotating=True,
              fixed=False):
         '''
-        Initializing function with modifiable default values
+        Initializing function for a cylindrical ice floe object.
+
         :param lin_pos: Floe linear position [m]
         :type lin_pos: list or numpy.array
         :param thickness: Floe thickness [m]
@@ -66,7 +67,6 @@ class IceFloe:
         self.density = density
         self.rotating = rotating
         self.fixed = fixed
-
 
     def surface_area(self):
         '''
