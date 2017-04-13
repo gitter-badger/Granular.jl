@@ -123,6 +123,9 @@ class IceFloe:
 
         :param dt: The time step length
         :type dt: float
+        :param method: The integration method to choose ('TY2' or 'TY3'
+            (default))
+        :type str: str
         '''
         if method == 'TY2':
             self.update_position_TY2(dt)
