@@ -14,8 +14,8 @@ class SquareGrid:
     :type ny: int
     '''
     def __init__(self, nx, ny, dx=None, dy=None, Lx=None, Ly=None):
-        self.nx = nx
-        self.ny = ny
+        self.nx = int(nx)
+        self.ny = int(ny)
         self.floes = []
 
     def setSize(self, origo=[0., 0.], dx=None, dy=None, Lx=None, Ly=None):
@@ -45,17 +45,17 @@ class SquareGrid:
                             spacing or grid length along y.''')
 
         if dx:
-            self.dx = dx
-            self.Lx = dx * self.nx
+            self.dx = float(dx)
+            self.Lx = float(dx) * self.nx
         else:
-            self.Lx = Lx
-            self.dx = Lx/float(self.nx)
+            self.Lx = float(Lx)
+            self.dx = float(Lx)/float(self.nx)
         if dy:
-            self.dy = dy
-            self.Ly = dy * self.ny
+            self.dy = float(dy)
+            self.Ly = float(dy) * self.ny
         else:
-            self.Ly = Ly
-            self.dy = Ly/float(self.ny)
+            self.Ly = float(Ly)
+            self.dy = float(Ly)/float(self.ny)
 
         self.origo = numpy.array(origo)
 

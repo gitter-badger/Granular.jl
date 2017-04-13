@@ -53,10 +53,10 @@ class IceFloeCylindrical:
              fixed=False):
 
         self.lin_pos = numpy.array(lin_pos)
-        self.thickness = thickness
-        self.contact_radius = contact_radius
+        self.thickness = float(thickness)
+        self.contact_radius = float(contact_radius)
         if areal_radius is None:
-            self.areal_radius = contact_radius
+            self.areal_radius = float(contact_radius)
         self.lin_vel = numpy.array(lin_vel)
         self.lin_acc = numpy.array(lin_acc)
         self.force = numpy.array(force)
@@ -64,9 +64,9 @@ class IceFloeCylindrical:
         self.ang_vel = numpy.array(ang_vel)
         self.ang_acc = numpy.array(ang_acc)
         self.force = numpy.array(force)
-        self.density = density
-        self.rotating = rotating
-        self.fixed = fixed
+        self.density = float(density)
+        self.rotating = float(rotating)
+        self.fixed = float(fixed)
 
     def surface_area(self):
         '''
@@ -128,10 +128,10 @@ class IceFloeCylindrical:
         :type str: str
         '''
         if method == 'TY2':
-            self.update_position_TY2(dt)
+            self.update_position_TY2(float(dt))
 
         elif method == 'TY3':
-            self.update_position_TY3(dt)
+            self.update_position_TY3(float(dt))
 
         else:
             raise Exception('Error: Intergration method not understood.')
