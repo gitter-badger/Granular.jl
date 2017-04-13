@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import numpy
+import seaice
 
 
 class SquareGrid:
@@ -15,6 +16,7 @@ class SquareGrid:
     def __init__(self, nx, ny, dx=None, dy=None, Lx=None, Ly=None):
         self.nx = nx
         self.ny = ny
+        self.floes = []
 
     def setSize(self, origo=[0., 0.], dx=None, dy=None, Lx=None, Ly=None):
         '''
@@ -270,3 +272,15 @@ class SquareGrid:
         return numpy.array([
             (i + 1)*self.dx,
             (j + 1)*self.dy]) + self.origo
+
+    def addFloe(self, icefloe):
+        '''
+        Add an IceFloe object to the grid.
+
+        :param icefloe: The icefloe object to add to the grid.
+        :type icefloe: seaice.IceFloeCylindrical
+        '''
+        if isinstance(icefloe, seaice.IceFloeCylindrical):
+            self.floes.append(icefloe)
+        else:
+            raise Exception('Error: Incompatible icefloe data type')
