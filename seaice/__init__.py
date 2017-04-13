@@ -11,9 +11,10 @@ SeaIce
 from __future__ import absolute_import
 
 from .icefloe import IceFloeCylindrical
+from .grid import SquareGrid
 # from packing import *
 
 __version__ = '0.1b'
 __author__ = 'Anders Damsgaard <anders.damsgaard@noaa.gov>'
 
-__all__ = ['IceFloeCylindrical']
+__all__ = ['IceFloeCylindrical', 'SquareGrid']

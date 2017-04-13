@@ -55,6 +55,8 @@ class SquareGrid:
             self.Ly = Ly
             self.dy = Ly/float(self.ny)
 
+        self.origo = numpy.array(origo)
+
     def getCenterCoordinate(self, i, j):
         '''
         Returns the center coordinate for the center of the cell with index `i`
@@ -66,10 +68,17 @@ class SquareGrid:
         :type j: int
         :returns: The Cartesian coordinate for the cell center.
         :return type: numpy.array
+
+        See also: :func:`getSouthFaceCoordinate()`,
+        :func:`getNorthFaceCoordinate()`, :func:`getEastFaceCoordinate()`,
+        :func:`getWestFaceCoordinate()`, :func:`getSouthWestCornerCoordinate()`,
+        :func:`getSouthEastCornerCoordinate()`,
+        :func:`getNorthWestCornerCoordinate()`, and
+        :func:`getNorthEastCornerCoordinate()`.
         '''
         return numpy.array([
             0.5*self.dx + i*self.dx,
-            0.5*self.dy + j*self.dy])
+            0.5*self.dy + j*self.dy]) + self.origo
 
     def getWestFaceCoordinate(self, i, j):
         '''
@@ -83,10 +92,16 @@ class SquareGrid:
         :returns: The Cartesian coordinate for the center of the western cell
             face.
         :return type: numpy.array
+
+        See also: :func:`getCenterCoordinate()`,
+        :func:`getSouthFaceCoordinate()`, :func:`getNorthFaceCoordinate()`,
+        :func:`getEastFaceCoordinate()`, :func:`getSouthEastCornerCoordinate()`,
+        :func:`getNorthWestCornerCoordinate()`, and
+        :func:`getNorthEastCornerCoordinate()`.
         '''
         return numpy.array([
             i*self.dx,
-            0.5*self.dy + j*self.dy])
+            0.5*self.dy + j*self.dy]) + self.origo
 
     def getEastFaceCoordinate(self, i, j):
         '''
@@ -100,10 +115,17 @@ class SquareGrid:
         :returns: The Cartesian coordinate for the center of the eastern cell
             face.
         :return type: numpy.array
+
+        See also: :func:`getCenterCoordinate()`,
+        :func:`getSouthFaceCoordinate()`, :func:`getNorthFaceCoordinate()`,
+        :func:`getWestFaceCoordinate()`, :func:`getSouthWestCornerCoordinate()`,
+        :func:`getSouthEastCornerCoordinate()`,
+        :func:`getNorthWestCornerCoordinate()`, and
+        :func:`getNorthEastCornerCoordinate()`.
         '''
         return numpy.array([
             (i + 1)*self.dx,
-            0.5*self.dy + j*self.dy])
+            0.5*self.dy + j*self.dy]) + self.origo
 
     def getSouthFaceCoordinate(self, i, j):
         '''
@@ -117,10 +139,17 @@ class SquareGrid:
         :returns: The Cartesian coordinate for the center of the southern cell
             face.
         :return type: numpy.array
+
+        See also: :func:`getCenterCoordinate()`,
+        :func:`getNorthFaceCoordinate()`, :func:`getEastFaceCoordinate()`,
+        :func:`getWestFaceCoordinate()`, :func:`getSouthWestCornerCoordinate()`,
+        :func:`getSouthEastCornerCoordinate()`,
+        :func:`getNorthWestCornerCoordinate()`, and
+        :func:`getNorthEastCornerCoordinate()`.
         '''
         return numpy.array([
             0.5*self.dx + (i + 1)*self.dx,
-            j*self.dy])
+            j*self.dy]) + self.origo
 
     def getNorthFaceCoordinate(self, i, j):
         '''
@@ -136,16 +165,15 @@ class SquareGrid:
         :return type: numpy.array
 
         See also: :func:`getCenterCoordinate()`,
-        :func:`getSouthFaceCoordinate()`, :func:`getNorthFaceCoordinate()`,
-        :func:`getWestFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
-        :func:`getSouthWestCornerCoordinate()`,
+        :func:`getSouthFaceCoordinate()`, :func:`getEastFaceCoordinate()`,
+        :func:`getWestFaceCoordinate()`, :func:`getSouthWestCornerCoordinate()`,
         :func:`getSouthEastCornerCoordinate()`,
-        :func:`getNorthWestCornerCoordinate()`,
-        :func:`getNorthEastCornerCoordinate()`
+        :func:`getNorthWestCornerCoordinate()`, and
+        :func:`getNorthEastCornerCoordinate()`.
         '''
         return numpy.array([
             0.5*self.dx + (i + 1)*self.dx,
-            (j + 1)*self.dy])
+            (j + 1)*self.dy]) + self.origo
 
     def getSouthWestCornerCoordinate(self, i, j):
         '''
@@ -162,15 +190,14 @@ class SquareGrid:
 
         See also: :func:`getCenterCoordinate()`,
         :func:`getSouthFaceCoordinate()`, :func:`getNorthFaceCoordinate()`,
-        :func:`getWestFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
-        :func:`getSouthWestCornerCoordinate()`,
+        :func:`getEastFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
         :func:`getSouthEastCornerCoordinate()`,
-        :func:`getNorthWestCornerCoordinate()`,
-        :func:`getNorthEastCornerCoordinate()`
+        :func:`getNorthWestCornerCoordinate()`, and
+        :func:`getNorthEastCornerCoordinate()`.
         '''
         return numpy.array([
             i*self.dx,
-            j*self.dy])
+            j*self.dy]) + self.origo
 
     def getNorthWestCornerCoordinate(self, i, j):
         '''
@@ -187,15 +214,14 @@ class SquareGrid:
 
         See also: :func:`getCenterCoordinate()`,
         :func:`getSouthFaceCoordinate()`, :func:`getNorthFaceCoordinate()`,
-        :func:`getWestFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
+        :func:`getEastFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
         :func:`getSouthWestCornerCoordinate()`,
-        :func:`getSouthEastCornerCoordinate()`,
-        :func:`getNorthWestCornerCoordinate()`,
-        :func:`getNorthEastCornerCoordinate()`
+        :func:`getSouthEastCornerCoordinate()`, and
+        :func:`getNorthEastCornerCoordinate()`.
         '''
         return numpy.array([
             i*self.dx,
-            (j + 1)*self.dy])
+            (j + 1)*self.dy]) + self.origo
 
     def getSouthEastCornerCoordinate(self, i, j):
         '''
@@ -212,15 +238,14 @@ class SquareGrid:
 
         See also: :func:`getCenterCoordinate()`,
         :func:`getSouthFaceCoordinate()`, :func:`getNorthFaceCoordinate()`,
-        :func:`getWestFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
+        :func:`getEastFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
         :func:`getSouthWestCornerCoordinate()`,
-        :func:`getSouthEastCornerCoordinate()`,
-        :func:`getNorthWestCornerCoordinate()`,
-        :func:`getNorthEastCornerCoordinate()`
+        :func:`getNorthWestCornerCoordinate()`, and
+        :func:`getNorthEastCornerCoordinate()`.
         '''
         return numpy.array([
             (i + 1)*self.dx,
-            self.dy])
+            self.dy]) + self.origo
 
     def getNorthEastCornerCoordinate(self, i, j):
         '''
@@ -237,12 +262,11 @@ class SquareGrid:
 
         See also: :func:`getCenterCoordinate()`,
         :func:`getSouthFaceCoordinate()`, :func:`getNorthFaceCoordinate()`,
-        :func:`getWestFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
+        :func:`getEastFaceCoordinate()`, :func:`getWestFaceCoordinate()`,
         :func:`getSouthWestCornerCoordinate()`,
-        :func:`getSouthEastCornerCoordinate()`,
-        :func:`getNorthWestCornerCoordinate()`,
-        :func:`getNorthEastCornerCoordinate()`
+        :func:`getSouthEastCornerCoordinate()`, and
+        :func:`getNorthWestCornerCoordinate()`.
         '''
         return numpy.array([
             (i + 1)*self.dx,
-            (j + 1)*self.dy])
+            (j + 1)*self.dy]) + self.origo
