@@ -1,6 +1,6 @@
 ## IO functions
 
-function writeVTK(folder::String = ".", verbose::Bool = true)
+function writeVTK(;folder::String=".", verbose::Bool=true)
 
     global g_file_number += 1
     filename = "$(folder)/$(g_simulation_id).$(g_file_number).t=$(g_time)s.vtu"

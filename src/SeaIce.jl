@@ -33,5 +33,6 @@ include("interaction.jl")
 include("temporal.jl")
 include("temporal_integration.jl")
 include("io.jl")
+include("simulation.jl")
 
 end # module end
