@@ -1,9 +1,11 @@
 ## IO functions
 
-function writeVTK(;folder::String=".", verbose::Bool=true)
+function writeVTK(simulation::simulation;
+                  folder::String=".",
+                  verbose::Bool=true)
 
-    global g_file_number += 1
-    filename = "$(folder)/$(g_simulation_id).$(g_file_number).t=$(g_time)s.vtu"
+    simulation.file_number += 1
+    filename = folder, "/", simulation.id, ".", simulation.file_number, ".vtu"
 
     if verbose
         println("Output file: $filename")
@@ -24,14 +26,13 @@ function writeVTK(;folder::String=".", verbose::Bool=true)
         "NumberOfComponents=\"3\" format=\"ascii\">\n" *
         "          ")
 
-    for i=1:length(g_radius)
+    for i=1:length(simulation.icefloes)
         #=write(f, "%f %f %f " %
             g_position[i][1]::float,
             g_position[i][2]::float,
             g_position[i][3]::float)=#
-        write(f, "$(g_position[i][1]::float)
-            $(g_position[i][2]::float)
-            $(g_position[i][3]::float) ")
+            write(f, simulation.icefloes[i].lin_pos[1], "\n",
+                  simulation.icefloes[i].lin_pos[2], "\n")
     end
 
     write(f, "\n" *
@@ -46,9 +47,9 @@ function writeVTK(;folder::String=".", verbose::Bool=true)
     write(f, "        <DataArray type=\"Float32\" Name=\"Diameter\" " *
         "format=\"ascii\">\n" *
         "          ")
-    for i=1:length(g_radius)
+    for i=1:length(simulation.icefloes)
         #write(f, "%f " % g_radius[i]::float*2.0)
-        write(f, "$(g_radius[i]::float*2.0) ")
+        write(f, "$(simulation.icefloes[i].radius*2.0) ")
     end
     write(f, "\n" *
         "        </DataArray>\n")

@@ -1,9 +1,9 @@
 """
-Update the grain kinematic parameters using a temporal integration scheme,
+Update the ice floe kinematic parameters using a temporal integration scheme,
 the current force and torque balance, and gravitational acceleration.
 """
 function updateIceFloeKinematics(i::Integer;
-    method::String = "Three-term Taylor")
+                                 method::String = "Three-term Taylor")
 
     if method == "Two-term Taylor"
         updateIceFloeKinematicsTwoTermTaylor(i)

@@ -28,8 +28,8 @@ immutable IceFloeCylindrical
     torque::float
 
     # Kinematic constraint flags
-    fixed::bool
-    rotating::bool
+    fixed::Bool
+    rotating::Bool
 
     # Rheological parameters
     contact_stiffness_normal::float
@@ -50,7 +50,7 @@ function addIceFloeCylindrical(
     lin_pos::vector,
     contact_radius::float,
     thickness::float;
-    areal_radius = false;
+    areal_radius = false,
     lin_vel::vector = [0., 0.],
     lin_acc::vector = [0., 0.],
     force::vector = [0., 0.],

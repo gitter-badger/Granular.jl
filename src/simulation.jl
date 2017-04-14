@@ -1,34 +1,66 @@
-## General simulation functions
+## General simulation types and functions
 
-function id(identifier::String)
-    g_simulation_id = identifier
+# Simulation-scope data
+type simulation
+
+    time_iteration::Int
+    time::Float64
+    time_total::Float64
+    time_step::Float64
+    file_time_step::Float64   # 0.0: no output files
+    file_number::Int
+
+    gravitational_acceleration::vector
+
+    id::String
+
+    ice_floes::Array{IceFloeCylindrical, 1}
+    contact_pairs::Array{Integer, 1}
+    wall_contacts::Array{Integer, 1}
+
+    # default values
+    simulation(time_iteration=0.0,
+              time=0.0,
+              origo=[0., 0.],
+              file_number=0,
+              ice_floes=Array{IceFloeCylindrical, 1}[],
+              contact_pairs=Array{Integer, 1}[],
+              wall_contacts=Array{Integer, 1}[]) = new(simulation)
 end
 
-function id()
-    return g_simulation_id
+function id(simulation::simulation, identifier::String)
+    simulation.id = identifier
+end
+
+function id(simulation)
+    return simulation.id
 end
 
 
-function run(verbose::Bool = true,
-    status_interval = 100.,
-    show_file_output = true)
+function run(simulation::simulation,
+             verbose::Bool = true,
+             status_interval = 100.,
+             show_file_output = true)
 
-    checkTimeParameters()
-    if g_file_time_step > 0.0
-        writeVTK(verbose = show_file_output)
+    checkTimeParameters(simulation)
+    if simulation.file_time_step > 0.0
+        writeVTK(simulation, verbose = show_file_output)
     end
 
     time_since_output_file = 0.0
 
-    while g_time <= g_time_total
+    while simulation.time <= simulation.time_total
 
-        if g_file_time_step > 0.0 && time_since_output_file >= g_file_time_step
-            writeVTK(verbose = show_file_output)
+        if simulation.file_time_step > 0.0 &&
+            simulation.time_since_output_file >= simulation.file_time_step
+
+            writeVTK(simulation=simulation, verbose=show_file_output)
             time_since_output_file = 0.0
         end
 
-        if verbose && g_time_iteration % status_interval == 0
-            print("\r  t = $g_time/$g_time_total s            ")
+        if verbose && simulation.time_iteration % status_interval == 0
+            print("\r  t = ", simulation.time, '/', simulation.time_total,
+                  " s            ")
         end
 
         findContacts()
@@ -36,13 +68,12 @@ function run(verbose::Bool = true,
         updateKinematics()
 
         # Update time variables
-        global g_time_iteration = g_time_iteration::Integer + 1
-        incrementCurrentTime(g_time_step::float)
-        time_since_output_file = time_since_output_file + g_time_step::float
-
+        simulation.time_iteration += 1
+        simulation.time += simulation.time_step
+        time_since_output_file = time_since_output_file + simulation.time_step
     end
 
-    if g_file_time_step > 0.0
-        writeVTK(verbose = show_file_output)
+    if simulation.file_time_step > 0.0
+        writeVTK(simulation, verbose=show_file_output)
     end
 end
