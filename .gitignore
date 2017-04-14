@@ -6,3 +6,6 @@
 *.jl.*.cov
 *.jl.mem
 deps/deps.jl
+
+# simulation output files
+*.vtu
