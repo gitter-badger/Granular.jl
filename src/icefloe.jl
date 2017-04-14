@@ -1,6 +1,34 @@
 ## Manage icefloes in the model
 
-#export addSphericalGrain
+# Use immutable composite type for efficiency
+immutable IceFloe
+
+    # Material properties
+    density::float
+
+    # Geometrical parameters
+    thickness::float
+    contact_radius::float
+    areal_radius::float
+
+    # Linear kinematic degrees of freedom along horizontal plane
+    lin_pos::vector
+    lin_vel::vector
+    lin_acc::vector
+    force::vector
+
+    # Angular kinematic degrees of freedom for vertical rotation around center
+    ang_pos::float
+    ang_vel::float
+    ang_acc::float
+    torque::float
+
+    # Kinematic constraint flags
+    fixed::bool
+    rotating::bool
+end
+    
+
 """
 Adds a grain to the simulation. Example:
 
