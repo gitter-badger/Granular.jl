@@ -1,5 +1,5 @@
 # editor swap files
-.swp
+*.swp
 
 # julia-specific files
 *.jl.cov
