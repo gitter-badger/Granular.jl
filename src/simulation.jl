@@ -1,22 +1,4 @@
-## General simulation types and functions
-
-# Simulation-scope data
-type Simulation
-    id::String
-
-    time_iteration::Int
-    time::Float64
-    time_total::Float64
-    time_step::Float64
-    file_time_step::Float64   # 0.0: no output files
-    file_number::Int
-
-    gravitational_acceleration::vector
-
-    ice_floes::Array{IceFloeCylindrical, 1}
-    contact_pairs::Array{Integer, 1}
-    wall_contacts::Array{Integer, 1}
-end
+## General simulation functions
 
 function createSimulation(;id::String="unnamed",
                           time_iteration::Int=0,

@@ -1,51 +1,14 @@
 ## Manage icefloes in the model
 
-type IceFloeCylindrical
 
-    # Material properties
-    density::float
-
-    # Geometrical parameters
-    thickness::float
-    contact_radius::float
-    areal_radius::float
-    surface_area::float
-    volume::float
-    mass::float
-    moment_of_inertia::float
-
-    # Linear kinematic degrees of freedom along horizontal plane
-    lin_pos::vector
-    lin_vel::vector
-    lin_acc::vector
-    force::vector
-
-    # Angular kinematic degrees of freedom for vertical rotation around center
-    ang_pos::float
-    ang_vel::float
-    ang_acc::float
-    torque::float
-
-    # Kinematic constraint flags
-    fixed::Bool
-    rotating::Bool
-
-    # Rheological parameters
-    contact_stiffness_normal::float
-    contact_stiffness_tangential::float
-    contact_viscosity_normal::float
-    contact_viscosity_tangential::float
-    contact_dynamic_friction::float
-
-end
-    
 
 """
 Adds a grain to the simulation. Example:
 
     SeaIce.addIceFloeCylindrical([1.0, 2.0, 3.0], 1.0)
 """
-function addIceFloeCylindrical(lin_pos::vector,
+function addIceFloeCylindrical(simulation::Simulation,
+                               lin_pos::vector,
                                contact_radius::float,
                                thickness::float;
                                areal_radius = false,
@@ -117,7 +80,9 @@ function addIceFloeCylindrical(lin_pos::vector,
     icefloe.volume = iceFloeVolume(icefloe)
     icefloe.mass = iceFloeMass(icefloe)
     icefloe.moment_of_inertia = iceFloeMomentOfInertia(icefloe)
-    
+
+    # Add to simulation object
+    addIceFloe!(simulation, icefloe)
 end
 
 function iceFloeSurfaceArea(icefloe::IceFloeCylindrical)
