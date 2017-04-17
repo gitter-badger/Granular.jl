@@ -82,7 +82,7 @@ function addIceFloeCylindrical(simulation::Simulation,
     icefloe.moment_of_inertia = iceFloeMomentOfInertia(icefloe)
 
     # Add to simulation object
-    addIceFloe!(simulation, icefloe)
+    addIceFloe!(simulation, icefloe, verbose)
 end
 
 function iceFloeSurfaceArea(icefloe::IceFloeCylindrical)
@@ -98,5 +98,5 @@ function iceFloeMass(icefloe::IceFloeCylindrical)
 end
 
 function iceFloeMomentOfInertia(icefloe::IceFloeCylindrical)
-    return 0.5*iceFloeMass(icefloe)*icefloe.radius^2.
+    return 0.5*iceFloeMass(icefloe)*icefloe.areal_radius^2.
 end

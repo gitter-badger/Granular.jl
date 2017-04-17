@@ -75,7 +75,9 @@ function run!(simulation::Simulation,
     end
 end
 
-function addIceFloe!(simulation::Simulation, icefloe::IceFloeCylindrical)
+function addIceFloe!(simulation::Simulation,
+                     icefloe::IceFloeCylindrical,
+                     verbose::Bool = False)
     # Append icefloe to global icefloe array
     push!(simulation.ice_floes, icefloe)
 
