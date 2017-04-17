@@ -49,9 +49,9 @@ function run!(simulation::Simulation;
                   " s            ")
         end
 
-        findContacts()
-        interact()
-        updateKinematics()
+        findContacts!(simulation)
+        interact!(simulation)
+        updateKinematics!(simulation)
 
         # Update time variables
         simulation.time_iteration += 1
