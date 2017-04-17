@@ -2,6 +2,8 @@
 
 # Simulation-scope data
 type Simulation
+    id::String
+
     time_iteration::Int
     time::Float64
     time_total::Float64
@@ -10,8 +12,6 @@ type Simulation
     file_number::Int
 
     gravitational_acceleration::vector
-
-    id::String
 
     ice_floes::Array{IceFloeCylindrical, 1}
     contact_pairs::Array{Integer, 1}
@@ -30,17 +30,17 @@ function createSimulation(;id::String="unnamed",
                           contact_pairs=Array{Integer, 1}[],
                           wall_contacts=Array{Integer, 1}[])
 
-    return Simulation(time_iteration=time_iteration,
-                      time=time,
-                      time_total=time_total,
-                      time_step=time_step,
-                      file_time_step=file_time_step,
-                      file_number=file_number,
-                      gravitational_acceleration=gravitational_acceleration,
-                      id=id,
-                      ice_floes=ice_floes,
-                      contact_pairs=contact_pairs,
-                      wall_contacts=wall_contacts)
+    return Simulation(id,
+                      time_iteration,
+                      time,
+                      time_total,
+                      time_step,
+                      file_time_step,
+                      file_number,
+                      gravitational_acceleration,
+                      ice_floes,
+                      contact_pairs,
+                      wall_contacts)
 end
 
 function id!(simulation::Simulation, identifier::String)
