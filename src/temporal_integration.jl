@@ -17,9 +17,7 @@ end
 function updateIceFloeKinematicsTwoTermTaylor(i::Integer)
 
     # Translational components
-    g_acceleration[i] =
-        g_force[i]::vector / g_mass[i]::vector +
-        g_gravitational_acceleration::vector
+    g_acceleration[i] = g_force[i]::vector / g_mass[i]::vector
 
     velocity_new::vector =
         g_velocity[i]::vector +
@@ -68,8 +66,7 @@ function updateIceFloeKinematicsThreeTermTaylor(i::Integer)
             g_time_step::float
 
     # Translational components
-    g_acceleration[i] = g_force[i]::vector / g_mass[i]::float +
-        g_gravitational_acceleration::vector
+    g_acceleration[i] = g_force[i]::vector / g_mass[i]::float
 
     velocity_new::vector =
         g_velocity[i]::vector +

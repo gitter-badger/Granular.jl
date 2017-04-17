@@ -56,8 +56,6 @@ type Simulation
     file_time_step::Float64   # 0.0: no output files
     file_number::Int
 
-    gravitational_acceleration::vector
-
     ice_floes::Array{IceFloeCylindrical, 1}
     contact_pairs::Array{Integer, 1}
     wall_contacts::Array{Integer, 1}
