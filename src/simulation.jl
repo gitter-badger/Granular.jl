@@ -34,7 +34,7 @@ function id(simulation::Simulation)
 end
 
 
-function run!(simulation::Simulation,
+function run!(simulation::Simulation;
              verbose::Bool = true,
              status_interval = 100.,
              show_file_output = true)
