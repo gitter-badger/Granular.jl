@@ -4,8 +4,8 @@ push!(LOAD_PATH, "./src/")
 import SeaIce
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0., 0.], 0.5)
-SeaIce.addIceFloeCylindrical(sim, [1., 0., 0.], 0.5)
+SeaIce.addIceFloeCylindrical(sim, [ 0., 0., 0.], 10., 1.)
+SeaIce.addIceFloeCylindrical(sim, [20., 0., 0.], 10., 1.)
 
 findTimeStep(sim)
 setOutputFileInterval(sim, 0.1)

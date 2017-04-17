@@ -24,6 +24,8 @@ function addIceFloeCylindrical(simulation::Simulation,
                                contact_stiffness_tangential::float = 1.e6,
                                contact_viscosity_normal::float = 0.,
                                contact_viscosity_tangential::float = 0.,
+                               contact_static_friction::float = 0.4,
+                               contact_dynamic_friction::float = 0.4,
                                fixed::Bool = false,
                                rotating::Bool = true,
                                verbose::Bool = true)
@@ -43,36 +45,34 @@ function addIceFloeCylindrical(simulation::Simulation,
 
     # Create icefloe object with placeholder values for surface area, volume, 
     # mass, and moment of inertia.
-    icefloe = IceFloeCylindrical(density=density,
-                                 thickness=thickness,
-                                 contact_radius=contact_radius,
-                                 areal_radius=areal_radius,
-                                 surface_area=1.0,
-                                 volume=1.0,
-                                 mass=1.0,
-                                 moment_of_inertia=1.0,
+    icefloe = IceFloeCylindrical(density,
 
-                                 lin_pos=lin_pos,
-                                 lin_vel=lin_vel,
-                                 lin_acc=lin_acc,
-                                 force=force,
+                                 thickness,
+                                 contact_radius,
+                                 areal_radius,
+                                 1.0,  # surface_area
+                                 1.0,  # volume
+                                 1.0,  # mass
+                                 1.0,  # moment_of_inertia
+                                 lin_pos,
+                                 lin_vel,
+                                 lin_acc,
+                                 force,
 
-                                 ang_pos=ang_pos,
-                                 ang_vel=ang_vel,
-                                 ang_acc=ang_acc,
-                                 torque=torque,
+                                 ang_pos,
+                                 ang_vel,
+                                 ang_acc,
+                                 torque,
 
-                                 fixed=fixed,
-                                 rotating=rotating,
+                                 fixed,
+                                 rotating,
 
-                                 contact_stiffness_normal=
-                                     contact_stiffness_normal,
-                                 contact_stiffness_tangential=
-                                     contact_stiffness_tangential,
-                                 contact_viscosity_normal=
-                                     contact_viscosity_normal,
-                                 contact_viscosity_tangential=
-                                     contact_viscosity_tangential
+                                 contact_stiffness_normal,
+                                 contact_stiffness_tangential,
+                                 contact_viscosity_normal,
+                                 contact_viscosity_tangential,
+                                 contact_static_friction,
+                                 contact_dynamic_friction
                                 )
 
     # Overwrite previous placeholder values

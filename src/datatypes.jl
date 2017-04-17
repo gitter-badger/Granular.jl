@@ -39,8 +39,8 @@ type IceFloeCylindrical
     contact_stiffness_tangential::float
     contact_viscosity_normal::float
     contact_viscosity_tangential::float
+    contact_static_friction::float
     contact_dynamic_friction::float
-
 end
 
 ## Top-level simulation type
