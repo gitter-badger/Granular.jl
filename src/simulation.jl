@@ -1,8 +1,7 @@
 ## General simulation types and functions
 
 # Simulation-scope data
-type simulation
-
+type Simulation
     time_iteration::Int
     time::Float64
     time_total::Float64
@@ -17,27 +16,43 @@ type simulation
     ice_floes::Array{IceFloeCylindrical, 1}
     contact_pairs::Array{Integer, 1}
     wall_contacts::Array{Integer, 1}
-
-    # default values
-    simulation(time_iteration=0.0,
-              time=0.0,
-              origo=[0., 0.],
-              file_number=0,
-              ice_floes=Array{IceFloeCylindrical, 1}[],
-              contact_pairs=Array{Integer, 1}[],
-              wall_contacts=Array{Integer, 1}[]) = new(simulation)
 end
 
-function id(simulation::simulation, identifier::String)
+function createSimulation(;id::String="unnamed",
+                          time_iteration::Int=0,
+                          time::Float64=0.0,
+                          time_total::Float64=-1.,
+                          time_step::Float64=-1.,
+                          file_time_step::Float64=-1.,
+                          file_number::Int=0,
+                          gravitational_acceleration::vector=[0., 0.],
+                          ice_floes=Array{IceFloeCylindrical, 1}[],
+                          contact_pairs=Array{Integer, 1}[],
+                          wall_contacts=Array{Integer, 1}[])
+
+    return Simulation(time_iteration=time_iteration,
+                      time=time,
+                      time_total=time_total,
+                      time_step=time_step,
+                      file_time_step=file_time_step,
+                      file_number=file_number,
+                      gravitational_acceleration=gravitational_acceleration,
+                      id=id,
+                      ice_floes=ice_floes,
+                      contact_pairs=contact_pairs,
+                      wall_contacts=wall_contacts)
+end
+
+function id!(simulation::Simulation, identifier::String)
     simulation.id = identifier
 end
 
-function id(simulation)
+function id(simulation::Simulation)
     return simulation.id
 end
 
 
-function run(simulation::simulation,
+function run!(simulation::Simulation,
              verbose::Bool = true,
              status_interval = 100.,
              show_file_output = true)
@@ -77,3 +92,21 @@ function run(simulation::simulation,
         writeVTK(simulation, verbose=show_file_output)
     end
 end
+
+function addIceFloe!(simulation::Simulation, icefloe::IceFloeCylindrical)
+    # Append icefloe to global icefloe array
+    push!(simulation.ice_floes, icefloe)
+
+    if verbose
+        info("Added IceFloe $(length(g_ice_floes))")
+    end
+end
+
+function removeIceFloe!(simulation::Simulation, i::Integer)
+    if i < 1
+        error("Index must be greater than 0 (i = $i)")
+    end
+
+    delete!(simulation.ice_floes, i)
+end
+

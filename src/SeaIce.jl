@@ -24,8 +24,9 @@ If this file is changed, reimport it with:
 module SeaIce
 
 include("datatypes.jl")
-include("arrays.jl")
 include("icefloe.jl")
+include("simulation.jl")
+include("arrays.jl")
 include("grid.jl")
 include("packing.jl")
 include("contact_search.jl")
@@ -33,6 +34,5 @@ include("interaction.jl")
 include("temporal.jl")
 include("temporal_integration.jl")
 include("io.jl")
-include("simulation.jl")
 
 end # module end

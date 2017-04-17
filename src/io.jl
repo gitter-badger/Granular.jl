@@ -1,6 +1,6 @@
 ## IO functions
 
-function writeVTK(simulation::simulation;
+function writeVTK(simulation::Simulation;
                   folder::String=".",
                   verbose::Bool=true)
 

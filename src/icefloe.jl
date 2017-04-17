@@ -1,7 +1,6 @@
 ## Manage icefloes in the model
 
-# Use immutable composite type for efficiency
-immutable IceFloeCylindrical
+type IceFloeCylindrical
 
     # Material properties
     density::float
@@ -46,26 +45,25 @@ Adds a grain to the simulation. Example:
 
     SeaIce.addIceFloeCylindrical([1.0, 2.0, 3.0], 1.0)
 """
-function addIceFloeCylindrical(
-    lin_pos::vector,
-    contact_radius::float,
-    thickness::float;
-    areal_radius = false,
-    lin_vel::vector = [0., 0.],
-    lin_acc::vector = [0., 0.],
-    force::vector = [0., 0.],
-    ang_pos::float = 0.,
-    ang_vel::float = 0.,
-    ang_acc::float = 0.,
-    torque::float = 0.,
-    density::float = 934.,
-    contact_stiffness_normal::float = 1.e6,
-    contact_stiffness_tangential::float = 1.e6,
-    contact_viscosity_normal::float = 0.,
-    contact_viscosity_tangential::float = 0.,
-    fixed::Bool = false,
-    rotating::Bool = true,
-    verbose::Bool = true)
+function addIceFloeCylindrical(lin_pos::vector,
+                               contact_radius::float,
+                               thickness::float;
+                               areal_radius = false,
+                               lin_vel::vector = [0., 0.],
+                               lin_acc::vector = [0., 0.],
+                               force::vector = [0., 0.],
+                               ang_pos::float = 0.,
+                               ang_vel::float = 0.,
+                               ang_acc::float = 0.,
+                               torque::float = 0.,
+                               density::float = 934.,
+                               contact_stiffness_normal::float = 1.e6,
+                               contact_stiffness_tangential::float = 1.e6,
+                               contact_viscosity_normal::float = 0.,
+                               contact_viscosity_tangential::float = 0.,
+                               fixed::Bool = false,
+                               rotating::Bool = true,
+                               verbose::Bool = true)
 
     # Check input values
     if contact_radius <= 0.0
@@ -120,21 +118,6 @@ function addIceFloeCylindrical(
     icefloe.mass = iceFloeMass(icefloe)
     icefloe.moment_of_inertia = iceFloeMomentOfInertia(icefloe)
     
-    # Append icefloe to global icefloe array
-    push!(g_ice_floes, icefloe)
-
-    if verbose
-        info("Added IceFloe $(length(g_ice_floes))")
-    end
-
-end
-
-function removeIceFloe(i::Integer)
-    if i < 1
-        error("Index must be greater than 0 (i = $i)")
-    end
-
-    delete!(g_ice_floes, i)
 end
 
 function iceFloeSurfaceArea(icefloe::IceFloeCylindrical)
