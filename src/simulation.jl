@@ -23,15 +23,6 @@ function createSimulation(;id::String="unnamed",
                       wall_contacts)
 end
 
-function id!(simulation::Simulation, identifier::String)
-    simulation.id = identifier
-end
-
-function id(simulation::Simulation)
-    return simulation.id
-end
-
-
 function run!(simulation::Simulation;
              verbose::Bool = true,
              status_interval = 100.,
@@ -47,7 +38,7 @@ function run!(simulation::Simulation;
     while simulation.time <= simulation.time_total
 
         if simulation.file_time_step > 0.0 &&
-            simulation.time_since_output_file >= simulation.file_time_step
+            time_since_output_file >= simulation.file_time_step
 
             writeVTK(simulation=simulation, verbose=show_file_output)
             time_since_output_file = 0.0

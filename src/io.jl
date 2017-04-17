@@ -5,7 +5,8 @@ function writeVTK(simulation::Simulation;
                   verbose::Bool=true)
 
     simulation.file_number += 1
-    filename = folder, "/", simulation.id, ".", simulation.file_number, ".vtu"
+    filename = string(folder, "/", simulation.id, ".", simulation.file_number, 
+                      ".vtu")
 
     if verbose
         println("Output file: $filename")
@@ -17,7 +18,7 @@ function writeVTK(simulation::Simulation;
         "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" " *
         "byte_order=\"LittleEndian\">\n" * # VTK header
         "  <UnstructuredGrid>\n" *
-        "    <Piece NumberOfPoints=\"$(length(g_radius))\" " *
+        "    <Piece NumberOfPoints=\"$(length(simulation.ice_floes))\" " *
         "NumberOfCells=\"0\">\n")
 
     # Coordinates for each point (positions)
@@ -26,13 +27,13 @@ function writeVTK(simulation::Simulation;
         "NumberOfComponents=\"3\" format=\"ascii\">\n" *
         "          ")
 
-    for i=1:length(simulation.icefloes)
+    for i=1:length(simulation.ice_floes)
         #=write(f, "%f %f %f " %
             g_position[i][1]::float,
             g_position[i][2]::float,
             g_position[i][3]::float)=#
-            write(f, simulation.icefloes[i].lin_pos[1], "\n",
-                  simulation.icefloes[i].lin_pos[2], "\n")
+            write(f, simulation.ice_floes[i].lin_pos[1], "\n",
+                  simulation.ice_floes[i].lin_pos[2], "\n")
     end
 
     write(f, "\n" *
@@ -44,12 +45,12 @@ function writeVTK(simulation::Simulation;
         "Vectors=\"vector\">\n")
 
     # Radii
-    write(f, "        <DataArray type=\"Float32\" Name=\"Diameter\" " *
+    write(f, "        <DataArray type=\"Float32\" Name=\"Diameter (areal)\" " *
         "format=\"ascii\">\n" *
         "          ")
-    for i=1:length(simulation.icefloes)
+    for i=1:length(simulation.ice_floes)
         #write(f, "%f " % g_radius[i]::float*2.0)
-        write(f, "$(simulation.icefloes[i].radius*2.0) ")
+        write(f, "$(simulation.ice_floes[i].areal_radius*2.) ")
     end
     write(f, "\n" *
         "        </DataArray>\n")

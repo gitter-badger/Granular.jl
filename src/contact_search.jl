@@ -1,8 +1,9 @@
 ## Contact mapping
-function findContacts(method::String = "all to all")
+function findContacts!(simulation::Simulation,
+                       method::String = "all to all")
 
     if method == "all to all"
-        findContactsAllToAll()
+        findContactsAllToAll(simulation)
     else
         error("Unknown contact search method '$method'")
     end
@@ -20,12 +21,12 @@ function findOverlap(i::Integer, j::Integer, position_ij::vector)
     return norm(position_ij) - (g_radius[i]::float + g_radius[j]::float)
 end
 
-function findContactsAllToAll()
+function findContactsAllToAll(simulation::Simulation)
 
-    for i = 1:length(g_radius)
+    for i = 1:length(simulation.ice_floes)
 
         # Check contacts with other grains
-        for j = 1:length(g_radius)
+        for j = 1:length(simulation.ice_floes)
             if i < j
 
                 # Inter-grain position vector and grain overlap
