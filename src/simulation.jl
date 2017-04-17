@@ -82,7 +82,7 @@ function addIceFloe!(simulation::Simulation,
     push!(simulation.ice_floes, icefloe)
 
     if verbose
-        info("Added IceFloe $(length(g_ice_floes))")
+        info("Added IceFloe $(length(simulation.ice_floes))")
     end
 end
 
