@@ -8,8 +8,9 @@ function createSimulation(;id::String="unnamed",
                           file_time_step::Float64=-1.,
                           file_number::Int=0,
                           ice_floes=Array{IceFloeCylindrical, 1}[],
-                          contact_pairs=Array{Integer, 2}[],
-                          wall_contacts=Array{Integer, 1}[])
+                          contact_pairs=Array{Int64, 1}[],
+                          overlaps=Array{Array{Float64, 1}, 1}[],
+                          wall_contacts=Array{Int64, 1}[])
 
     return Simulation(id,
                       time_iteration,
@@ -20,6 +21,7 @@ function createSimulation(;id::String="unnamed",
                       file_number,
                       ice_floes,
                       contact_pairs,
+                      overlaps,
                       wall_contacts)
 end
 

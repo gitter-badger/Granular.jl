@@ -39,7 +39,8 @@ function findContactsAllToAll!(simulation::Simulation)
                 # Check if grains overlap (overlap when negative)
                 if overlap_ij < 0.0
                     push!(simulation.contact_pairs, [i, j])
-                    push!(simulation.overlaps, overlap_ij)
+                    push!(simulation.overlaps, 
+                          overlap_ij*position_ij/norm(position_ij))
                 end
             end
         end

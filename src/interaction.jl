@@ -10,13 +10,15 @@ function interact!(simulation::Simulation)
     # IceFloe to grain collisions
     while !isempty(simulation.contact_pairs)
         contact_pair = pop!(simulation.contact_pairs)
-        interactIceFloes!(contact_pair[1], contact_pair[2])
+        overlap_vector = pop!(simulation.overlaps)
+        interactIceFloes!(simulation, contact_pair[1], contact_pair[2],
+                          overlap_vector)
     end
 
     # IceFloe to wall collisions
     while !isempty(simulation.wall_contacts)
         contact_pair = pop!(simulation.wall_contacts)
-        interactIceFloeWall!(contact_pair[1], contact_pair[2])
+        interactIceFloeWall!(simulation, contact_pair[1], contact_pair[2])
     end
 end
 
@@ -25,16 +27,16 @@ Resolve an grain-to-grain interaction using a prescibed contact law.
 """
 function interactIceFloes!(simulation::Simulation,
                            i::Integer, j::Integer,
-                           overlap_vector::vector;
+                           overlap_vector::Array{Float64, 1};
                            contact_normal::String = "LinearElastic")
 
-    force = zeros(3)
+    force = zeros(2)
 
     if contact_normal == "None"
         # do nothing
 
     elseif contact_normal == "LinearElastic"
-        force = interactNormalLinearViscous(simulation, i, j, overlap_vector)
+        force = interactNormalLinearElastic(simulation, i, j, overlap_vector)
 
     else
         error("Unknown contact_normal interaction model '$contact_normal'")
@@ -53,5 +55,5 @@ function interactNormalLinearElastic(simulation::Simulation,
     k_n_j = simulation.ice_floes[j].contact_stiffness_normal
     k_n_harmonic_mean = 2.*k_n_i*k_n_j/(k_n_i + k_n_j)
 
-    return -k_n_harmonic_mean * overlap_vector
+    return k_n_harmonic_mean * overlap_vector
 end
