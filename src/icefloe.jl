@@ -119,3 +119,78 @@ end
 function iceFloeMomentOfInertia(icefloe::IceFloeCylindrical)
     return 0.5*iceFloeMass(icefloe)*icefloe.areal_radius^2.
 end
+
+function convertIceFloeDataToArrays(simulation::Simulation)
+
+    ifarr = IceFloeArrays(
+                          Array(Float64, length(simulation.ice_floes)),
+
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+
+                          Array(Int, length(simulation.ice_floes)),
+                          Array(Int, length(simulation.ice_floes)),
+
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)))
+
+    # fill arrays
+    for i=1:length(simulation.ice_floes)
+        ifarr.density[i] = simulation.ice_floes[i].density
+
+        ifarr.thickness[i] = simulation.ice_floes[i].thickness
+        ifarr.contact_radius[i] = simulation.ice_floes[i].contact_radius
+        ifarr.areal_radius[i] = simulation.ice_floes[i].areal_radius
+        ifarr.surface_area[i] = simulation.ice_floes[i].surface_area
+        ifarr.volume[i] = simulation.ice_floes[i].volume
+        ifarr.mass[i] = simulation.ice_floes[i].mass
+        ifarr.moment_of_inertia[i] = simulation.ice_floes[i].moment_of_inertia
+
+        ifarr.lin_pos[1:2, i] = simulation.ice_floes[i].lin_pos
+        ifarr.lin_vel[1:2, i] = simulation.ice_floes[i].lin_vel
+        ifarr.lin_acc[1:2, i] = simulation.ice_floes[i].lin_acc
+        ifarr.force[1:2, i] = simulation.ice_floes[i].force
+
+        ifarr.ang_pos[3, i] = simulation.ice_floes[i].ang_pos
+        ifarr.ang_vel[3, i] = simulation.ice_floes[i].ang_vel
+        ifarr.ang_acc[3, i] = simulation.ice_floes[i].ang_acc
+        ifarr.torque[3, i] = simulation.ice_floes[i].torque
+
+        ifarr.fixed[i] = Int(simulation.ice_floes[i].fixed)
+        ifarr.rotating[i] = Int(simulation.ice_floes[i].rotating)
+
+        ifarr.contact_stiffness_normal[i] = 
+            simulation.ice_floes[i].contact_stiffness_normal
+        ifarr.contact_stiffness_tangential[i] = 
+            simulation.ice_floes[i].contact_stiffness_tangential
+        ifarr.contact_viscosity_normal[i] = 
+            simulation.ice_floes[i].contact_viscosity_normal
+        ifarr.contact_viscosity_tangential[i] = 
+            simulation.ice_floes[i].contact_viscosity_tangential
+        ifarr.contact_static_friction[i] = 
+            simulation.ice_floes[i].contact_static_friction
+        ifarr.contact_dynamic_friction[i] = 
+            simulation.ice_floes[i].contact_dynamic_friction
+    end
+
+    return ifarr
+end

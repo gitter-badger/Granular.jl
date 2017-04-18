@@ -43,6 +43,46 @@ type IceFloeCylindrical
     contact_dynamic_friction::float
 end
 
+# Type for gathering data from ice floe objects into single arrays
+type IceFloeArrays
+
+    # Material properties
+    density
+
+    # Geometrical parameters
+    thickness
+    contact_radius
+    areal_radius
+    surface_area
+    volume
+    mass
+    moment_of_inertia
+
+    # Linear kinematic degrees of freedom along horizontal plane
+    lin_pos
+    lin_vel
+    lin_acc
+    force
+
+    # Angular kinematic degrees of freedom for vertical rotation around center
+    ang_pos
+    ang_vel
+    ang_acc
+    torque
+
+    # Kinematic constraint flags
+    fixed
+    rotating
+
+    # Rheological parameters
+    contact_stiffness_normal
+    contact_stiffness_tangential
+    contact_viscosity_normal
+    contact_viscosity_tangential
+    contact_static_friction
+    contact_dynamic_friction
+end
+
 ## Top-level simulation type
 
 # Simulation-scope data

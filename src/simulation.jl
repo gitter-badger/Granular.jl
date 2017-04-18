@@ -92,4 +92,3 @@ function removeIceFloe!(simulation::Simulation, i::Integer)
 
     delete!(simulation.ice_floes, i)
 end
-
