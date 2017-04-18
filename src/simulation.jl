@@ -28,7 +28,12 @@ end
 function run!(simulation::Simulation;
               verbose::Bool = true,
               status_interval = 100.,
-              show_file_output = true)
+              show_file_output = true,
+              single_step=false)
+
+    if single_step && simulation.time >= simulation.time_total
+        simulation.time_total += simulation.time_step
+    end
 
     checkTimeParameters(simulation)
     if simulation.file_time_step > 0.0
@@ -59,10 +64,13 @@ function run!(simulation::Simulation;
         simulation.time_iteration += 1
         simulation.time += simulation.time_step
         time_since_output_file = time_since_output_file + simulation.time_step
-    end
 
-    if simulation.file_time_step > 0.0
-        writeVTK(simulation, verbose=show_file_output)
+        if single_step
+            if verbose
+                println("Current time: ", simulation.time)
+            end
+            return
+        end
     end
 end
 
