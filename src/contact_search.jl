@@ -11,8 +11,7 @@ end
 
 function interIceFloePositionVector(simulation::Simulation,
                                     i::Integer, j::Integer)
-    return simulation.ice_floes[j].lin_pos
-    - simulation.ice_floes[i].lin_pos
+    return simulation.ice_floes[j].lin_pos - simulation.ice_floes[i].lin_pos
 end
 
 """
@@ -40,12 +39,11 @@ function findContactsAllToAll!(simulation::Simulation)
                 # Check if grains overlap (overlap when negative)
                 if overlap_ij < 0.0
                     push!(simulation.contact_pairs, [i, j])
-                    #push!(g_positions, position_ij)
                     push!(simulation.overlaps, overlap_ij)
                 end
             end
         end
-    end # `i` grain loop end
+    end
 end
 
 """
