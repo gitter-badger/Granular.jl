@@ -24,16 +24,15 @@ function writeVTK(simulation::Simulation;
     # Coordinates for each point (positions)
     write(f, "      <Points>\n" *
         "        <DataArray name=\"Position [m]\" type=\"Float32\" " *
-        "NumberOfComponents=\"3\" format=\"ascii\">\n" *
+        "NumberOfComponents=\"2\" format=\"ascii\">\n" *
         "          ")
 
     for i=1:length(simulation.ice_floes)
-        #=write(f, "%f %f %f " %
-            g_position[i][1]::float,
-            g_position[i][2]::float,
-            g_position[i][3]::float)=#
-            write(f, simulation.ice_floes[i].lin_pos[1], "\n",
-                  simulation.ice_floes[i].lin_pos[2], "\n")
+            #write(f, "%f %f " %
+                  #simulation.ice_floes[i].lin_pos[1],
+                  #simulation.ice_floes[i].lin_pos[2])
+                  write(f, "$(simulation.ice_floes[i].lin_pos[1]) " * 
+                        "$(simulation.ice_floes[i].lin_pos[2]) ")
     end
 
     write(f, "\n" *
@@ -49,7 +48,6 @@ function writeVTK(simulation::Simulation;
         "format=\"ascii\">\n" *
         "          ")
     for i=1:length(simulation.ice_floes)
-        #write(f, "%f " % g_radius[i]::float*2.0)
         write(f, "$(simulation.ice_floes[i].areal_radius*2.) ")
     end
     write(f, "\n" *
