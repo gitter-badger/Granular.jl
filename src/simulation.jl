@@ -30,7 +30,7 @@ function run!(simulation::Simulation;
 
     checkTimeParameters(simulation)
     if simulation.file_time_step > 0.0
-        writeVTK(simulation, verbose = show_file_output)
+        writeVTK(simulation, verbose=show_file_output)
     end
 
     time_since_output_file = 0.0
@@ -40,7 +40,7 @@ function run!(simulation::Simulation;
         if simulation.file_time_step > 0.0 &&
             time_since_output_file >= simulation.file_time_step
 
-            writeVTK(simulation=simulation, verbose=show_file_output)
+            writeVTK(simulation, verbose=show_file_output)
             time_since_output_file = 0.0
         end
 
