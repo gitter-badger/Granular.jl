@@ -2,97 +2,68 @@
 Update the ice floe kinematic parameters using a temporal integration scheme,
 the current force and torque balance, and gravitational acceleration.
 """
-function updateIceFloeKinematics(i::Integer;
-                                 method::String = "Three-term Taylor")
+function updateIceFloeKinematics!(simulation::Simulation;
+                                  method::String = "Three-term Taylor")
 
     if method == "Two-term Taylor"
-        updateIceFloeKinematicsTwoTermTaylor(i)
+        for ice_floe in simulation.ice_floes
+            updateIceFloeKinematicsTwoTermTaylor(ice_floe, simulation)
+        end
     elseif method == "Three-term Taylor"
-        updateIceFloeKinematicsThreeTermTaylor(i)
+        for ice_floe in simulation.ice_floes
+            updateIceFloeKinematicsThreeTermTaylor(ice_floe, simulation)
+        end
     else
         error("Unknown integration method '$method'")
     end
 end
 
-function updateIceFloeKinematicsTwoTermTaylor(i::Integer)
+function updateIceFloeKinematicsTwoTermTaylor(icefloe::IceFloeCylindrical,
+                                              simulation::Simulation)
+    icefloe.lin_acc = icefloe.force/icefloe.mass
+    icefloe.ang_acc = icefloe.torque/icefloe.moment_of_inertia
 
-    # Translational components
-    g_acceleration[i] = g_force[i]::vector / g_mass[i]::vector
+    icefloe.lin_pos +=
+        icefloe.lin_vel * simulation.time_step +
+        0.5*icefloe.lin_acc * simulation.time_step^2.0
+    icefloe.ang_pos +=
+        icefloe.ang_vel * simulation.time_step +
+        0.5*icefloe.ang_acc * simulation.time_step^2.0
 
-    velocity_new::vector =
-        g_velocity[i]::vector +
-        g_acceleration[i]::vector * g_time_step::float
-
-    g_position[i] = g_position[i]::vector +
-        g_velocity[i]::vector * g_time_step::float +
-        0.5 * g_acceleration[i]::vector * g_time_step::float^2.0
-
-    g_velocity[i] = velocity_new
-
-    # Rotational components
-    g_rotational_acceleration[i] =
-        g_torque[i]::vector / g_rotational_inertia[i]::vector
-
-    rotational_velocity_new::vector =
-        g_rotational_velocity[i]::vector +
-        g_rotational_acceleration[i]::vector * g_time_step::float
-
-    g_rotational_position[i] = g_rotational_position[i]::vector +
-        g_rotational_velocity[i]::vector * g_time_step::float +
-        0.5 * g_rotational_acceleration[i]::Array{float, 1} *
-        g_time_step::float^2.0
-
-    g_rotational_velocity[i] = rotational_velocity_new
+    icefloe.lin_vel += icefloe.lin_acc * simulation.time_step
+    icefloe.ang_vel += icefloe.ang_acc * simulation.time_step
 end
 
-function updateIceFloeKinematicsThreeTermTaylor(i::Integer)
+function updateIceFloeKinematicsThreeTermTaylor(icefloe::IceFloeCylindrical,
+                                                simulation::Simulation)
     
-    if g_time_iteration == 0
-        acceleration_0 = zeros(3)
-        rotational_acceleration_0 = zeros(3)
+    if simulation.time_iteration == 0
+        lin_acc_0 = zeros(3)
+        ang_acc_0 = zeros(3)
     else
-        acceleration_0 = g_acceleration[i]::vector
-        rotational_acceleration_0 = g_rotational_acceleration[i]::vector
+        lin_acc_0 = icefloe.lin_acc
+        ang_acc_0 = icefloe.ang_acc
     end
 
+    icefloe.lin_acc = icefloe.force/icefloe.mass
+    icefloe.ang_acc = icefloe.torque/icefloe.moment_of_inertia
+
     # Temporal gradient in acceleration using backwards differences
-    dacceleration_dt::vector =
-            (g_acceleration[i]::vector - acceleration_0::vector) /
-            g_time_step::float
+    d_lin_acc_dt::vector = (icefloe.lin_acc - lin_acc_0)/simulation.time_step
+    d_ang_acc_dt::vector = (icefloe.ang_acc - ang_acc_0)/simulation.time_step
 
-    drotational_acceleration_dt::vector =
-            (g_rotational_acceleration[i]::vector -
-            rotational_acceleration_0::vector) /
-            g_time_step::float
+    icefloe.lin_pos +=
+        icefloe.lin_vel * simulation.time_step +
+        0.5*icefloe.lin_acc * simulation.time_step^2. +
+        1./6. * d_lin_acc_dt * simulation.time_step^3.
+    icefloe.ang_pos +=
+        icefloe.ang_vel * simulation.time_step +
+        0.5 * icefloe.ang_acc * simulation.time_step^2. +
+        1./6. * d_ang_acc_dt * simulation.time_step^3.
 
-    # Translational components
-    g_acceleration[i] = g_force[i]::vector / g_mass[i]::float
-
-    velocity_new::vector =
-        g_velocity[i]::vector +
-        g_acceleration[i]::vector * g_time_step::float +
-        0.5 * dacceleration_dt::vector * g_time_step::float^2.0
-
-    g_position[i] = g_position[i]::vector +
-        g_velocity[i]::vector * g_time_step::float +
-        0.5 * g_acceleration[i]::vector * g_time_step::float^2.0 +
-        1.0 / 6.0 * dacceleration_dt * g_time_step::float^3.0
-
-    g_velocity[i] = velocity_new
-
-    # Rotational components
-    g_rotational_acceleration[i] =
-        g_torque[i]::vector / g_rotational_inertia[i]::float
-
-    rotational_velocity_new::vector = g_rotational_velocity[i] +
-        g_rotational_acceleration[i] * g_time_step::float +
-        0.5 * drotational_acceleration_dt * g_time_step::float^2.0
-
-    g_rotational_position[i] = g_rotational_position[i]::vector +
-        g_rotational_velocity[i] * g_time_step::float +
-        0.5 * g_rotational_acceleration[i] * g_time_step::float^2.0 +
-        1.0 / 6.0 * drotational_acceleration_dt * g_time_step::float^3.0
-
-    g_rotational_velocity[i] = rotational_velocity_new
+    icefloe.lin_vel += icefloe.lin_acc * simulation.time_step +
+        0.5 * d_lin_acc_dt * simulation.time_step^2.
+    icefloe.ang_vel += icefloe.ang_acc * simulation.time_step +
+        0.5 * d_ang_acc_dt * simulation.time_step^2.
 end
 

@@ -24,9 +24,9 @@ function createSimulation(;id::String="unnamed",
 end
 
 function run!(simulation::Simulation;
-             verbose::Bool = true,
-             status_interval = 100.,
-             show_file_output = true)
+              verbose::Bool = true,
+              status_interval = 100.,
+              show_file_output = true)
 
     checkTimeParameters(simulation)
     if simulation.file_time_step > 0.0
@@ -51,7 +51,7 @@ function run!(simulation::Simulation;
 
         findContacts!(simulation)
         interact!(simulation)
-        updateKinematics!(simulation)
+        updateIceFloeKinematics!(simulation)
 
         # Update time variables
         simulation.time_iteration += 1
