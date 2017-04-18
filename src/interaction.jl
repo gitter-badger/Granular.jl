@@ -3,50 +3,55 @@
 """
 Resolve mechanical interaction between all grain pairs and walls.
 """
-function interact()
+function interact!(simulation::Simulation)
     contact_pair = Array{Integer, 1}
     #overlap_ij = float
 
     # IceFloe to grain collisions
-    while !isempty(g_contact_pairs)
-        contact_pair = pop!(g_contact_pairs)
-        interactIceFloes(contact_pair[1], contact_pair[2])
+    while !isempty(simulation.contact_pairs)
+        contact_pair = pop!(simulation.contact_pairs)
+        interactIceFloes!(contact_pair[1], contact_pair[2])
     end
 
     # IceFloe to wall collisions
-    while !isempty(g_wall_contacts)
-        contact_pair = pop!(g_wall_contacts)
-        interactIceFloeWall(contact_pair[1], contact_pair[2])
+    while !isempty(simulation.wall_contacts)
+        contact_pair = pop!(simulation.wall_contacts)
+        interactIceFloeWall!(contact_pair[1], contact_pair[2])
     end
-
-    #for k=1:length(g_contact_pairs)
-    #end
 end
 
 """
 Resolve an grain-to-grain interaction using a prescibed contact law.
 """
-function interactIceFloes(i::Integer, j::Integer,
-    overlap_vector::vector;
-    contact_normal::String = "LinearElastic")
+function interactIceFloes!(simulation::Simulation,
+                           i::Integer, j::Integer,
+                           overlap_vector::vector;
+                           contact_normal::String = "LinearElastic")
+
+    force = zeros(3)
 
     if contact_normal == "None"
         # do nothing
 
     elseif contact_normal == "LinearElastic"
-        interactNormalLinearViscous(i, j, overlap_vector)
+        force = interactNormalLinearViscous(simulation, i, j, overlap_vector)
 
     else
         error("Unknown contact_normal interaction model '$contact_normal'")
     end
 
+    simulation.ice_floes[i].force += force;
+    simulation.ice_floes[j].force -= force;
+
 end
 
-function interactNormalLinearElastic(i::Integer, j::Integer,
-    overlap_vector::vector)
+function interactNormalLinearElastic(simulation::Simulation,
+                                     i::Integer, j::Integer,
+                                     overlap_vector::vector)
 
-    force = -g_contact_stiffness_normal * overlap_vector
+    k_n_i = simulation.ice_floes[i].contact_stiffness_normal
+    k_n_j = simulation.ice_floes[j].contact_stiffness_normal
+    k_n_harmonic_mean = 2.*k_n_i*k_n_j/(k_n_i + k_n_j)
 
-    g_force[i] = g_force[i]::vector + force;
-    g_force[j] = g_force[j]::vector - force;
+    return -k_n_harmonic_mean * overlap_vector
 end

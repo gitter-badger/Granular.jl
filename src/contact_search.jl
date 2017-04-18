@@ -3,25 +3,29 @@ function findContacts!(simulation::Simulation,
                        method::String = "all to all")
 
     if method == "all to all"
-        findContactsAllToAll(simulation)
+        findContactsAllToAll!(simulation)
     else
         error("Unknown contact search method '$method'")
     end
 end
 
-function interIceFloePositionVector(i::Integer, j::Integer)
-    return g_position[j]::vector - g_position[i]::vector
+function interIceFloePositionVector(simulation::Simulation,
+                                    i::Integer, j::Integer)
+    return simulation.ice_floes[j].lin_pos
+    - simulation.ice_floes[i].lin_pos
 end
 
 """
 position_ij is the inter-grain position vector, and can be found with
 interIceFloePositionVector().
 """
-function findOverlap(i::Integer, j::Integer, position_ij::vector)
-    return norm(position_ij) - (g_radius[i]::float + g_radius[j]::float)
+function findOverlap(simulation::Simulation, i::Integer, j::Integer, 
+                     position_ij::vector)
+    return norm(position_ij) - (simulation.ice_floes[i].contact_radius + 
+                                simulation.ice_floes[j].contact_radius)
 end
 
-function findContactsAllToAll(simulation::Simulation)
+function findContactsAllToAll!(simulation::Simulation)
 
     for i = 1:length(simulation.ice_floes)
 
@@ -30,14 +34,14 @@ function findContactsAllToAll(simulation::Simulation)
             if i < j
 
                 # Inter-grain position vector and grain overlap
-                position_ij = interIceFloePositionVector(i, j)
-                overlap_ij = findOverlap(i, j, position_ij)
+                position_ij = interIceFloePositionVector(simulation, i, j)
+                overlap_ij = findOverlap(simulation, i, j, position_ij)
 
                 # Check if grains overlap (overlap when negative)
                 if overlap_ij < 0.0
-                    push!(g_contact_pairs, [i, j])
+                    push!(simulation.contact_pairs, [i, j])
                     #push!(g_positions, position_ij)
-                    push!(g_overlaps, overlap_ij)
+                    push!(simulation.overlaps, overlap_ij)
                 end
             end
         end
@@ -51,35 +55,31 @@ wall number. The walls are orthorectangular. The wall at negative x is called
 -1, and 1 at positive x. For negative y it is called -2, and 2 at positive y.
 For negative z it is called -3, and 3 at positive z.
 """
-function findIceFloeWallContacts()
+function findIceFloeWallContacts(simulation::Simulation)
 
     for i = 1:length(g_radius)
 
         # Overlap with origo
-        if g_position[i][1]::float - g_radius[i]::float - g_origo[1] < 0.0
-            push!(g_wall_contacts, [i, -1])
+        if (simulation.ice_floes[i].lin_pos[1] -
+            simulation.ice_floes[i].contact_radius - simulation.origo[1]
+            < 0.0)
+            push!(simulation.wall_contacts, [i, -1])
         end
 
-        if g_position[i][2]::float - g_radius[i]::float - g_origo[2] < 0.0
-            push!(g_wall_contacts, [i, -2])
-        end
-
-        if g_position[i][3]::float - g_radius[i]::float - g_origo[3] < 0.0
-            push!(g_wall_contacts, [i, -3])
+        if (simulation.ice_floes[i].lin_pos[2] - 
+            simulation.ice_floes[i].contact_radius - simulation.origo[2] < 0.0)
+            push!(simulation.ice_floes[i].wall_contacts, [i, -2])
         end
 
         # Overlap with world_size
-        if g_world_size[1] - g_position[i][1]::float - g_radius[i]::float < 0.0
-            push!(g_wall_contacts, [i, 1])
+        if (simulation.world_size[1] - simulation.ice_floes[i].lin_pos[1] - 
+            simulation.ice_floes[i].contact_radius < 0.0)
+            push!(simulation.ice_floes[i].wall_contacts, [i, 1])
         end
 
-        if g_world_size[2] - g_position[i][2]::float - g_radius[i]::float < 0.0
-            push!(g_wall_contacts, [i, 2])
+        if (simulation.world_size[2] - simulation.ice_floes[i].lin_pos[2] - 
+            simulation.ice_floes[i].contact_radius < 0.0)
+            push!(simulation.ice_floes[i].wall_contacts, [i, 2])
         end
-
-        if g_world_size[3] - g_position[i][3]::float - g_radius[i]::float < 0.0
-            push!(g_wall_contacts, [i, 3])
-        end
-
     end
 end
