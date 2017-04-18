@@ -1,7 +1,5 @@
 ## Manage icefloes in the model
 
-
-
 """
 Adds a grain to the simulation. Example:
 
@@ -31,11 +29,32 @@ function addIceFloeCylindrical(simulation::Simulation,
                                verbose::Bool = true)
 
     # Check input values
+    if length(lin_pos) != 2
+        error("Linear position must be a two-element array (lin_pos = ",
+              "$lin_pos)")
+    end
+    if length(lin_vel) != 2
+        error("Linear velocity must be a two-element array (lin_vel = ",
+              "$lin_vel)")
+    end
+    if length(lin_acc) != 2
+        error("Linear acceleration must be a two-element array (lin_acc = ",
+              "$lin_acc)")
+    end
+    if length(ang_pos) != 1
+        error("Angular position must be a scalar (ang_pos = $ang_pos)")
+    end
+    if length(ang_vel) != 1
+        error("Angular velocity must be a scalar (ang_vel = $ang_vel)")
+    end
+    if length(ang_acc) != 1
+        error("Angular acceleration must be a scalar (ang_acc = $ang_acc)")
+    end
     if contact_radius <= 0.0
         error("Radius must be greater than 0.0 (radius = $contact_radius m)")
-    elseif density <= 0.0
-        error("Density must be greater than 0.0 (density = $density
-            kg/m^3)")
+    end
+    if density <= 0.0
+        error("Density must be greater than 0.0 (density = $density kg/m^3)")
     end
 
     if !areal_radius
