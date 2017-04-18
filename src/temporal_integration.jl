@@ -39,7 +39,7 @@ function updateIceFloeKinematicsThreeTermTaylor(icefloe::IceFloeCylindrical,
     
     if simulation.time_iteration == 0
         lin_acc_0 = zeros(2)
-        ang_acc_0 = zeros(2)
+        ang_acc_0 = 0.
     else
         lin_acc_0 = icefloe.lin_acc
         ang_acc_0 = icefloe.ang_acc
