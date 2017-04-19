@@ -7,7 +7,12 @@ julia:
   - 0.5
   - nightly
 notifications:
-  email: false
+  email:
+      recipients:
+          - andersd@riseup.net
+      on_success: never # default: change
+      on_failure: always # default: always
+
 # uncomment the following lines to override the default test script
 #script:
 #  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
