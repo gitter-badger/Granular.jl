@@ -2,11 +2,12 @@
 
 [![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) [![Coverage Status](https://coveralls.io/repos/anders-dc/SeaIce.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/anders-dc/SeaIce.jl?branch=master) [![codecov.io](http://codecov.io/github/anders-dc/SeaIce.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/SeaIce.jl?branch=master)
 
-Toy model for sea-ice thermodynamics and granular mechanics.
+A [Julia](https://julialang.org) package for sea-ice thermodynamics and granular 
+mechanics.
 
 ## Installation
-SeaIce.jl is in heavy development and not yet ready for third-party use.  If you 
-know better, install it by:
+[SeaIce.jl](https://github.com/anders-dc/SeaIce.jl) is in heavy development and 
+not yet ready for third-party use.  If you know better install it by:
 
     Pkg.clone("git://github.com/anders-dc/SeaIce.jl.git")
 
@@ -15,5 +16,5 @@ Import package contents with:
     import SeaIce
 
 ## Author
-[Anders Damsgaard](mailto:andersd@riseup.net) 
+[Anders Damsgaard](mailto:andersd@riseup.net),
 [www.adamsgaard.dk](https://adamsgaard.dk)
