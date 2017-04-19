@@ -1,6 +1,7 @@
 #!/usr/bin/env julia
 
-# Normal collision between two ice cylindrical ice floes 
+# Check for conservation of kinetic energy (=momentum) during a normal collision 
+# between two ice cylindrical ice floes 
 
 push!(LOAD_PATH, "../src/")
 
