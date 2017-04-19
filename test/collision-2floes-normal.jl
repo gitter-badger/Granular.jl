@@ -3,10 +3,10 @@
 # Check for conservation of kinetic energy (=momentum) during a normal collision 
 # between two ice cylindrical ice floes 
 
-push!(LOAD_PATH, "../src/")
-
 import Base.Test
 import SeaIce
+
+info("#### $(basename(@__FILE__)) ####")
 
 sim = SeaIce.createSimulation(id="test")
 SeaIce.addIceFloeCylindrical(sim, [ 0., 0.], 10., 1.)
