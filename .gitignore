@@ -1,3 +1,11 @@
+# julia-specific files
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
+deps/deps.jl
+
+# editor swap files
+*.swp
+
+# simulation output files
+*.vtu
