@@ -4,8 +4,8 @@
 Toy model for sea-ice thermodynamics and granular mechanics.
 
 ## Installation
-Clone the SeaIce.jl repository and add the source folder to your julia path, for 
-example by:
+Clone the [SeaIce.jl](https://github.com/anders-dc/SeaIce.jl) repository and add 
+the source folder to your julia path, for example by:
 
     push!(LOAD_PATH, "/home/user/src/SeaIce.jl/src/")
 
