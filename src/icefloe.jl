@@ -194,3 +194,27 @@ function convertIceFloeDataToArrays(simulation::Simulation)
 
     return ifarr
 end
+
+function iceFloeKineticTranslationalEnergy(icefloe::IceFloeCylindrical)
+    return 0.5*icefloe.mass*norm(icefloe.lin_vel)^2.
+end
+
+function totalIceFloeKineticTranslationalEnergy(simulation::Simulation)
+    E_sum = 0
+    for icefloe in simulation.ice_floes
+        E_sum += iceFloeKineticTranslationalEnergy(icefloe)
+    end
+    return E_sum
+end
+
+function iceFloeKineticRotationalEnergy(icefloe::IceFloeCylindrical)
+    return 0.5*icefloe.moment_of_inertia*norm(icefloe.ang_vel)^2.
+end
+
+function totalIceFloeKineticRotationalEnergy(simulation::Simulation)
+    E_sum = 0
+    for icefloe in simulation.ice_floes
+        E_sum += iceFloeKineticRotationalEnergy(icefloe)
+    end
+    return E_sum
+end

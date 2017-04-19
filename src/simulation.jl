@@ -72,6 +72,9 @@ function run!(simulation::Simulation;
             return
         end
     end
+    if verbose
+        println()
+    end
 end
 
 function addIceFloe!(simulation::Simulation,
