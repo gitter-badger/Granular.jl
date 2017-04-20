@@ -13,5 +13,5 @@ notifications:
       on_success: never # default: change
       on_failure: always # default: always
 after_success:
-# push coverage results to Coveralls
+# push coverage results to Codecov
   - julia -e 'Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
