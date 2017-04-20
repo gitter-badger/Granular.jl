@@ -13,4 +13,4 @@ notifications:
       on_failure: always # default: always
 after_success:
 # push coverage results to Codecov
-  - julia -e 'Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia -e 'cd(Pkg.dir("SeaIce")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
