@@ -37,6 +37,8 @@ Base.Test.@test 1 == length(sim.contact_pairs)
 Base.Test.@test_approx_eq [1, 2] sim.contact_pairs[1]
 Base.Test.@test_approx_eq [-2., 0.] sim.overlaps[1]
 
+Base.Test.@test_throws ErrorException SeaIce.findContacts!(sim, method="")
+
 
 info("Testing if interact(...) removes contacts correctly")
 sim = deepcopy(sim_copy)
