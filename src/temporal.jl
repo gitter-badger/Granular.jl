@@ -121,12 +121,3 @@ function setTimeStep!(simulation::Simulation;
         info("Time step length t=",  simulation.time_step, " s")
     end
 end
-
-"""
-Perform temporal integration for all grains.
-"""
-function updateKinematics!(simulation::Simulation)
-    for i = 1:length(simulation.ice_floes)
-        updateIceFloeKinematics(simulation.ice_floes[i])
-    end
-end
