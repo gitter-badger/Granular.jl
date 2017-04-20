@@ -4,8 +4,6 @@
 Resolve mechanical interaction between all grain pairs and walls.
 """
 function interact!(simulation::Simulation)
-    contact_pair = Array{Integer, 1}
-    #overlap_ij = float
 
     # IceFloe to grain collisions
     while !isempty(simulation.contact_pairs)

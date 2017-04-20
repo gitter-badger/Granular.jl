@@ -29,7 +29,8 @@ function run!(simulation::Simulation;
               verbose::Bool = true,
               status_interval = 100.,
               show_file_output = true,
-              single_step=false)
+              single_step=false,
+              temporal_integration_method="Three-term Taylor")
 
     if single_step && simulation.time >= simulation.time_total
         simulation.time_total += simulation.time_step
@@ -56,9 +57,10 @@ function run!(simulation::Simulation;
                   " s            ")
         end
 
+        zeroForcesAndTorques!(simulation)
         findContacts!(simulation)
         interact!(simulation)
-        updateIceFloeKinematics!(simulation)
+        updateIceFloeKinematics!(simulation, method=temporal_integration_method)
 
         # Update time variables
         simulation.time_iteration += 1
@@ -94,4 +96,11 @@ function removeIceFloe!(simulation::Simulation, i::Integer)
     end
 
     delete!(simulation.ice_floes, i)
+end
+
+function zeroForcesAndTorques!(simulation::Simulation)
+    for icefloe in simulation.ice_floes
+        icefloe.force = zeros(2)
+        icefloe.torque = 0.
+    end
 end

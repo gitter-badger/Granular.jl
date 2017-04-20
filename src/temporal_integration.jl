@@ -23,6 +23,13 @@ function updateIceFloeKinematicsTwoTermTaylor(icefloe::IceFloeCylindrical,
     icefloe.lin_acc = icefloe.force/icefloe.mass
     icefloe.ang_acc = icefloe.torque/icefloe.moment_of_inertia
 
+    if icefloe.fixed
+        icefloe.lin_acc = zeros(2)
+        icefloe.ang_acc = 0.
+    elseif !icefloe.rotating
+        icefloe.ang_acc = 0.
+    end
+
     icefloe.lin_pos +=
         icefloe.lin_vel * simulation.time_step +
         0.5*icefloe.lin_acc * simulation.time_step^2.0
@@ -47,6 +54,13 @@ function updateIceFloeKinematicsThreeTermTaylor(icefloe::IceFloeCylindrical,
 
     icefloe.lin_acc = icefloe.force/icefloe.mass
     icefloe.ang_acc = icefloe.torque/icefloe.moment_of_inertia
+
+    if icefloe.fixed
+        icefloe.lin_acc = zeros(2)
+        icefloe.ang_acc = 0.
+    elseif !icefloe.rotating
+        icefloe.ang_acc = 0.
+    end
 
     # Temporal gradient in acceleration using backwards differences
     d_lin_acc_dt = (icefloe.lin_acc - lin_acc_0)/simulation.time_step
