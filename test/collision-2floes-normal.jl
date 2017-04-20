@@ -9,8 +9,8 @@ import SeaIce
 info("#### $(basename(@__FILE__)) ####")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [ 0., 0.], 10., 1.)
-SeaIce.addIceFloeCylindrical(sim, [20., 0.], 10., 1.)
+SeaIce.addIceFloeCylindrical(sim, [ 0., 0.], 10., 1., verbose=false)
+SeaIce.addIceFloeCylindrical(sim, [20., 0.], 10., 1., verbose=false)
 sim.ice_floes[1].lin_vel[1] = 1.
 
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
