@@ -1,7 +1,7 @@
 ## Interaction functions
 
 """
-Resolve mechanical interaction between all grain pairs and walls.
+Resolve mechanical interaction between all particle pairs.
 """
 function interact!(simulation::Simulation)
 
@@ -11,12 +11,6 @@ function interact!(simulation::Simulation)
         overlap_vector = pop!(simulation.overlaps)
         interactIceFloes!(simulation, contact_pair[1], contact_pair[2],
                           overlap_vector)
-    end
-
-    # IceFloe to wall collisions
-    while !isempty(simulation.wall_contacts)
-        contact_pair = pop!(simulation.wall_contacts)
-        interactIceFloeWall!(simulation, contact_pair[1], contact_pair[2])
     end
 end
 

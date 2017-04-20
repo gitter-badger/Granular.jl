@@ -53,39 +53,3 @@ function findContactsAllToAll!(simulation::Simulation)
         end
     end
 end
-
-"""
-Check contacts with world boundaries (walls). Contacts are stored in
-g_wall_contacts with the format [i, w], where i is the grain number and w is the
-wall number. The walls are orthorectangular. The wall at negative x is called
--1, and 1 at positive x. For negative y it is called -2, and 2 at positive y.
-For negative z it is called -3, and 3 at positive z.
-"""
-function findIceFloeWallContacts(simulation::Simulation)
-
-    for i = 1:length(g_radius)
-
-        # Overlap with origo
-        if (simulation.ice_floes[i].lin_pos[1] -
-            simulation.ice_floes[i].contact_radius - simulation.origo[1]
-            < 0.0)
-            push!(simulation.wall_contacts, [i, -1])
-        end
-
-        if (simulation.ice_floes[i].lin_pos[2] - 
-            simulation.ice_floes[i].contact_radius - simulation.origo[2] < 0.0)
-            push!(simulation.ice_floes[i].wall_contacts, [i, -2])
-        end
-
-        # Overlap with world_size
-        if (simulation.world_size[1] - simulation.ice_floes[i].lin_pos[1] - 
-            simulation.ice_floes[i].contact_radius < 0.0)
-            push!(simulation.ice_floes[i].wall_contacts, [i, 1])
-        end
-
-        if (simulation.world_size[2] - simulation.ice_floes[i].lin_pos[2] - 
-            simulation.ice_floes[i].contact_radius < 0.0)
-            push!(simulation.ice_floes[i].wall_contacts, [i, 2])
-        end
-    end
-end

@@ -98,6 +98,5 @@ type Simulation
     ice_floes::Array{IceFloeCylindrical, 1}
     contact_pairs::Array{Array{Int, 1}, 1}
     overlaps::Array{Array{Float64, 1}, 1}
-    wall_contacts::Array{Array{Int, 1}, 1}
 end
 

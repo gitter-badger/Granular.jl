@@ -11,7 +11,6 @@
                       ice_floes=Array{IceFloeCylindrical, 1}[],
                       contact_pairs=Array{Int64, 1}[],
                       overlaps=Array{Array{Float64, 1}, 1}[],
-                      wall_contacts=Array{Int64, 1}[]])
 
 Create a simulation object containing all relevant variables such as temporal 
 parameters, and lists of ice floes and contacts.
@@ -28,8 +27,7 @@ function createSimulation(;id::String="unnamed",
                           file_number::Int=0,
                           ice_floes=Array{IceFloeCylindrical, 1}[],
                           contact_pairs=Array{Int64, 1}[],
-                          overlaps=Array{Array{Float64, 1}, 1}[],
-                          wall_contacts=Array{Int64, 1}[])
+                          overlaps=Array{Array{Float64, 1}, 1}[])
 
     return Simulation(id,
                       time_iteration,
@@ -40,8 +38,7 @@ function createSimulation(;id::String="unnamed",
                       file_number,
                       ice_floes,
                       contact_pairs,
-                      overlaps,
-                      wall_contacts)
+                      overlaps)
 end
 
 """
