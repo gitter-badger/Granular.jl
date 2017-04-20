@@ -53,8 +53,7 @@ function run!(simulation::Simulation;
         end
 
         if verbose && simulation.time_iteration % status_interval == 0
-            print("\r  t = ", simulation.time, '/', simulation.time_total,
-                  " s            ")
+            reportSimulationTimeToStdout(simulation)
         end
 
         zeroForcesAndTorques!(simulation)
@@ -75,6 +74,7 @@ function run!(simulation::Simulation;
         end
     end
     if verbose
+        reportSimulationTimeToStdout(simulation)
         println()
     end
 end
@@ -103,4 +103,9 @@ function zeroForcesAndTorques!(simulation::Simulation)
         icefloe.force = zeros(2)
         icefloe.torque = 0.
     end
+end
+
+function reportSimulationTimeToStdout(simulation::Simulation)
+    print("\r  t = ", simulation.time, '/', simulation.time_total,
+          " s            ")
 end
