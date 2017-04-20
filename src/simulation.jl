@@ -77,7 +77,7 @@ to disk.
 """
 function run!(simulation::Simulation;
               verbose::Bool=true,
-              status_interval::Int=100.,
+              status_interval::Int=100,
               show_file_output::Bool=true,
               single_step::Bool=false,
               temporal_integration_method::String="Three-term Taylor")
@@ -113,7 +113,7 @@ function run!(simulation::Simulation;
 
         # Update time variables
         simulation.time_iteration += 1
-        incrementCurrentTime(simulation, simulation.time_step)
+        incrementCurrentTime!(simulation, simulation.time_step)
         time_since_output_file = time_since_output_file + simulation.time_step
 
         if single_step
