@@ -2,6 +2,11 @@ import WriteVTK  # Install with Pkg.add("WriteVTK")
 
 ## IO functions
 
+"""
+Write a VTK file to disk containing all ice floes in the `simulation` in an 
+unstructured mesh (file type `.vtu`).  These files can be read by ParaView and 
+can be visualized by applying a *Glyph* filter.
+"""
 function writeVTK(simulation::Simulation;
                      folder::String=".",
                      verbose::Bool=false)

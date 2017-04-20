@@ -1,4 +1,11 @@
 ## Contact mapping
+"""
+Top-level function to perform an inter-ice floe contact search, based on ice 
+floe linear positions and contact radii.
+
+The simplest contact search algorithm (`method="all to all"`) is the most 
+computationally expensive (O(n^2)).
+"""
 function findContacts!(simulation::Simulation,
                        method::String = "all to all")
 

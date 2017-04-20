@@ -3,7 +3,6 @@ const float = Float64
 const vector = Array{Float64, 1}
 
 ## Particle composite types
-
 type IceFloeCylindrical
 
     # Material properties

@@ -45,6 +45,10 @@ function interactIceFloes!(simulation::Simulation,
 
 end
 
+"""
+Resolves linear-elastic interaction between two ice floes in the contact-normal 
+direction.
+"""
 function interactNormalLinearElastic(simulation::Simulation,
                                      i::Integer, j::Integer,
                                      overlap_vector::vector)

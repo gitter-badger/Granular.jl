@@ -1,6 +1,19 @@
 """
+    updateIceFloeKinematics!(simulation::Simulation[,
+                             method::String = "Three-term Taylor"])
+
 Update the ice floe kinematic parameters using a temporal integration scheme,
 the current force and torque balance, and gravitational acceleration.
+
+# Arguments
+* `simulation::Simulation`: update the ice floe positions in this object 
+    according to temporal integration of length `simulation.time_step`.
+* `method::String = "Three-term Taylor"`: the integration method to use.  
+    Available methods are "Two-term Taylor" and "Three-term Taylor".  The 
+    three-term Taylor expansion is slightly more computationally expensive than 
+    the two-term Taylor expansion, but offers an order-of-magnitude increase in 
+    precision of ice floe positions.  The two-term expansion can obtain similar 
+    precision if the time step is 1/10 the length.
 """
 function updateIceFloeKinematics!(simulation::Simulation;
                                   method::String = "Three-term Taylor")
@@ -18,6 +31,8 @@ function updateIceFloeKinematics!(simulation::Simulation;
     end
 end
 
+"Use a two-term Taylor expansion for integrating the kinematic degrees of 
+freedom for an `icefloe`."
 function updateIceFloeKinematicsTwoTermTaylor(icefloe::IceFloeCylindrical,
                                               simulation::Simulation)
     icefloe.lin_acc = icefloe.force/icefloe.mass
@@ -41,6 +56,8 @@ function updateIceFloeKinematicsTwoTermTaylor(icefloe::IceFloeCylindrical,
     icefloe.ang_vel += icefloe.ang_acc * simulation.time_step
 end
 
+"Use a three-term Taylor expansion for integrating the kinematic degrees of 
+freedom for an `icefloe`."
 function updateIceFloeKinematicsThreeTermTaylor(icefloe::IceFloeCylindrical,
                                                 simulation::Simulation)
     
@@ -80,4 +97,3 @@ function updateIceFloeKinematicsThreeTermTaylor(icefloe::IceFloeCylindrical,
     icefloe.ang_vel += icefloe.ang_acc * simulation.time_step +
         0.5 * d_ang_acc_dt * simulation.time_step^2.
 end
-

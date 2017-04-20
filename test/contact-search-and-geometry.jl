@@ -14,8 +14,8 @@ SeaIce.addIceFloeCylindrical(sim, [18., 0.], 10., 1., verbose=false)
 position_ij = SeaIce.interIceFloePositionVector(sim, 1, 2)
 overlap_ij = SeaIce.findOverlap(sim, 1, 2, position_ij)
 
-Base.Test.@test_approx_eq [18., 0.] position_ij
-Base.Test.@test_approx_eq -2. overlap_ij
+Base.Test.@test [18., 0.] \approx position_ij
+Base.Test.@test -2. \approx overlap_ij
 
 
 info("Testing findContactsAllToAll(...)")
