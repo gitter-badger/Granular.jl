@@ -100,3 +100,66 @@ type Simulation
     overlaps::Array{Array{Float64, 1}, 1}
 end
 
+#=
+Type containing all relevant data from MOM6 NetCDF file.  The ocean grid is a 
+staggered of Arakawa-C type, with north-east convention centered on the 
+h-points.
+
+    q(i-1,  j) --- v(  i,  j) --- q(  i,  j)
+         |                             |
+         |                             |
+         |                             |
+         |                             |
+    u(i-1,  j)     h(  i,  j)     u(  i,  j)
+         |                             |
+         |                             |
+         |                             |
+         |                             |
+    q(i-1,j-1) --- v(  i,j-1) --- q(  i,j-1)
+
+Source: 
+https://mom6.readthedocs.io/en/latest/api/generated/pages/Horizontal_indexing.html
+
+# Fields
+* `input_file::String`: path to input NetCDF file
+* `time::Array{Float64, 1}`: time in days
+* `xq::Array{Float64, 1}`: nominal longitude of q-points [degrees_E]
+* `yq::Array{Float64, 1}`: nominal latitude of q-points [degrees_N]
+* `xh::Array{Float64, 1}`: nominal longitude of h-points [degrees_E]
+* `yh::Array{Float64, 1}`: nominal latitude of h-points [degrees_N]
+* `zl::Array{Float64, 1}`: layer target potential density [kg m^-3]
+* `zi::Array{Float64, 1}`: interface target potential density [kg m^-3]
+* `u::Array{Float64, Int}`: zonal velocity (positive towards west) [m/s], 
+    dimensions correspond to placement in `[xq, yh, zl, time]`.
+* `v::Array{Float64, Int}`: meridional velocity (positive towards north) [m/s], 
+    dimensions correspond to placement in `[xh, yq, zl, time]`.
+* `h::Array{Float64, Int}`: layer thickness [m], dimensions correspond to 
+    placement in `[xh, yh, zl, time]`.
+* `e::Array{Float64, Int}`: interface height relative to mean sea level [m],  
+    dimensions correspond to placement in `[xh, yq, zi, time]`.
+
+
+=#
+type Ocean
+    input_file::String
+
+    time::Array{Float64, 1}
+
+    # q-point (cell corner) positions
+    xq::Array{Float64, 1}
+    yq::Array{Float64, 1}
+
+    # h-point (cell center) positions
+    xh::Array{Float64, 1}
+    yh::Array{Float64, 1}
+
+    # Vertical positions
+    zl::Array{Float64, 1}
+    zi::Array{Float64, 1}
+    
+    # Field values
+    u::Array{Float64, 4}
+    v::Array{Float64, 4}
+    h::Array{Float64, 4}
+    e::Array{Float64, 4}
+end
