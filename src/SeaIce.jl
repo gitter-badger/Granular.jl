@@ -17,5 +17,6 @@ include("interaction.jl")
 include("temporal.jl")
 include("temporal_integration.jl")
 include("io.jl")
+include("ocean.jl")
 
 end # module end

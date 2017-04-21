@@ -27,7 +27,8 @@ function createSimulation(;id::String="unnamed",
                           file_number::Int=0,
                           ice_floes=Array{IceFloeCylindrical, 1}[],
                           contact_pairs=Array{Int64, 1}[],
-                          overlaps=Array{Array{Float64, 1}, 1}[])
+                          overlaps=Array{Array{Float64, 1}, 1}[],
+                          ocean::Ocean=createEmptyOcean())
 
     return Simulation(id,
                       time_iteration,
@@ -38,7 +39,8 @@ function createSimulation(;id::String="unnamed",
                       file_number,
                       ice_floes,
                       contact_pairs,
-                      overlaps)
+                      overlaps,
+                      ocean)
 end
 
 """

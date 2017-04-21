@@ -82,24 +82,6 @@ type IceFloeArrays
     contact_dynamic_friction
 end
 
-## Top-level simulation type
-
-# Simulation-scope data
-type Simulation
-    id::String
-
-    time_iteration::Int
-    time::Float64
-    time_total::Float64
-    time_step::Float64
-    file_time_step::Float64   # 0.0: no output files
-    file_number::Int
-
-    ice_floes::Array{IceFloeCylindrical, 1}
-    contact_pairs::Array{Array{Int, 1}, 1}
-    overlaps::Array{Array{Float64, 1}, 1}
-end
-
 #=
 Type containing all relevant data from MOM6 NetCDF file.  The ocean grid is a 
 staggered of Arakawa-C type, with north-east convention centered on the 
@@ -137,8 +119,6 @@ https://mom6.readthedocs.io/en/latest/api/generated/pages/Horizontal_indexing.ht
     placement in `[xh, yh, zl, time]`.
 * `e::Array{Float64, Int}`: interface height relative to mean sea level [m],  
     dimensions correspond to placement in `[xh, yq, zi, time]`.
-
-
 =#
 type Ocean
     input_file::String
@@ -162,4 +142,22 @@ type Ocean
     v::Array{Float64, 4}
     h::Array{Float64, 4}
     e::Array{Float64, 4}
+end
+
+# Top-level simulation type
+type Simulation
+    id::String
+
+    time_iteration::Int
+    time::Float64
+    time_total::Float64
+    time_step::Float64
+    file_time_step::Float64
+    file_number::Int
+
+    ice_floes::Array{IceFloeCylindrical, 1}
+    contact_pairs::Array{Array{Int, 1}, 1}
+    overlaps::Array{Array{Float64, 1}, 1}
+
+    ocean::Ocean
 end
