@@ -2,9 +2,6 @@
 
 # Check if NetCDF files are read correctly from the disk.
 
-import Base.Test
-import SeaIce
-
 info("#### $(basename(@__FILE__)) ####")
 
 info("Testing dimensions of content read from prog__0001_006.nc")

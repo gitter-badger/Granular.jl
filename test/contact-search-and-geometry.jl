@@ -1,8 +1,6 @@
 #!/usr/bin/env julia
 
 # Check the contact search and geometry of a two-particle interaction
-import Base.Test
-import SeaIce
 
 info("#### $(basename(@__FILE__)) ####")
 
@@ -14,30 +12,30 @@ SeaIce.addIceFloeCylindrical(sim, [18., 0.], 10., 1., verbose=false)
 position_ij = SeaIce.interIceFloePositionVector(sim, 1, 2)
 overlap_ij = SeaIce.findOverlap(sim, 1, 2, position_ij)
 
-Base.Test.@test_approx_eq [18., 0.] position_ij
-Base.Test.@test_approx_eq -2. overlap_ij
+@test_approx_eq [18., 0.] position_ij
+@test_approx_eq -2. overlap_ij
 
 
 info("Testing findContactsAllToAll(...)")
 sim_copy = deepcopy(sim)
 SeaIce.findContactsAllToAll!(sim)
 
-Base.Test.@test 1 == length(sim.overlaps)
-Base.Test.@test 1 == length(sim.contact_pairs)
-Base.Test.@test_approx_eq [1, 2] sim.contact_pairs[1]
-Base.Test.@test_approx_eq [-2., 0.] sim.overlaps[1]
+@test 1 == length(sim.overlaps)
+@test 1 == length(sim.contact_pairs)
+@test_approx_eq [1, 2] sim.contact_pairs[1]
+@test_approx_eq [-2., 0.] sim.overlaps[1]
 
 
 info("Testing findContacts(...)")
 sim = deepcopy(sim_copy)
 SeaIce.findContacts!(sim)
 
-Base.Test.@test 1 == length(sim.overlaps)
-Base.Test.@test 1 == length(sim.contact_pairs)
-Base.Test.@test_approx_eq [1, 2] sim.contact_pairs[1]
-Base.Test.@test_approx_eq [-2., 0.] sim.overlaps[1]
+@test 1 == length(sim.overlaps)
+@test 1 == length(sim.contact_pairs)
+@test_approx_eq [1, 2] sim.contact_pairs[1]
+@test_approx_eq [-2., 0.] sim.overlaps[1]
 
-Base.Test.@test_throws ErrorException SeaIce.findContacts!(sim, method="")
+@test_throws ErrorException SeaIce.findContacts!(sim, method="")
 
 
 info("Testing if interact(...) removes contacts correctly")
@@ -46,7 +44,7 @@ SeaIce.findContacts!(sim)
 SeaIce.interact!(sim)
 SeaIce.findContacts!(sim)
 
-Base.Test.@test 1 == length(sim.overlaps)
-Base.Test.@test 1 == length(sim.contact_pairs)
-Base.Test.@test_approx_eq [1, 2] sim.contact_pairs[1]
-Base.Test.@test_approx_eq [-2., 0.] sim.overlaps[1]
+@test 1 == length(sim.overlaps)
+@test 1 == length(sim.contact_pairs)
+@test_approx_eq [1, 2] sim.contact_pairs[1]
+@test_approx_eq [-2., 0.] sim.overlaps[1]

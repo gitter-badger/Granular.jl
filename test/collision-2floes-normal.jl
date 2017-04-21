@@ -3,9 +3,6 @@
 # Check for conservation of kinetic energy (=momentum) during a normal collision 
 # between two ice cylindrical ice floes 
 
-import Base.Test
-import SeaIce
-
 info("#### $(basename(@__FILE__)) ####")
 
 verbose=false
@@ -34,8 +31,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-Base.Test.@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-Base.Test.@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
+@test_approx_eq E_kin_rot_init E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
@@ -47,8 +44,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-Base.Test.@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-Base.Test.@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
+@test_approx_eq E_kin_rot_init E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
@@ -61,8 +58,8 @@ SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-Base.Test.@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-Base.Test.@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
+@test_approx_eq E_kin_rot_init E_kin_rot_final
 
 
 info("# Ice floes free to move")
@@ -89,8 +86,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-Base.Test.@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-Base.Test.@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
+@test_approx_eq E_kin_rot_init E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
@@ -102,8 +99,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-Base.Test.@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-Base.Test.@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
+@test_approx_eq E_kin_rot_init E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
@@ -116,5 +113,5 @@ SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-Base.Test.@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-Base.Test.@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
+@test_approx_eq E_kin_rot_init E_kin_rot_final
