@@ -70,7 +70,9 @@ function addIceFloeCylindrical(simulation::Simulation,
                                  thickness,
                                  contact_radius,
                                  areal_radius,
-                                 1.0,  # surface_area
+                                 1.0,  # circumreference
+                                 1.0,  # horizontal_surface_area
+                                 1.0,  # side_surface_area
                                  1.0,  # volume
                                  1.0,  # mass
                                  1.0,  # moment_of_inertia
@@ -98,7 +100,9 @@ function addIceFloeCylindrical(simulation::Simulation,
                                 )
 
     # Overwrite previous placeholder values
-    icefloe.surface_area = iceFloeSurfaceArea(icefloe)
+    icefloe.circumreference = iceFloeCircumreference(icefloe)
+    icefloe.horizontal_surface_area = iceFloeHorizontalSurfaceArea(icefloe)
+    icefloe.side_surface_area = iceFloeSideSurfaceArea(icefloe)
     icefloe.volume = iceFloeVolume(icefloe)
     icefloe.mass = iceFloeMass(icefloe)
     icefloe.moment_of_inertia = iceFloeMomentOfInertia(icefloe)
@@ -107,12 +111,20 @@ function addIceFloeCylindrical(simulation::Simulation,
     addIceFloe!(simulation, icefloe, verbose)
 end
 
-function iceFloeSurfaceArea(icefloe::IceFloeCylindrical)
+function iceFloeCircumreference(icefloe::IceFloeCylindrical)
+    return pi*icefloe.areal_radius*2.
+end
+
+function iceFloeHorizontalSurfaceArea(icefloe::IceFloeCylindrical)
     return pi*icefloe.areal_radius^2.
 end
 
+function iceFloeSideSurfaceArea(icefloe::IceFloeCylindrical)
+    return iceFloeCircumreference(icefloe)*icefloe.thickness
+end
+
 function iceFloeVolume(icefloe::IceFloeCylindrical)
-    return iceFloeSurfaceArea(icefloe)*icefloe.thickness
+    return iceFloeHorizontalSurfaceArea(icefloe)*icefloe.thickness
 end
 
 function iceFloeMass(icefloe::IceFloeCylindrical)
@@ -166,7 +178,10 @@ function convertIceFloeDataToArrays(simulation::Simulation)
         ifarr.thickness[i] = simulation.ice_floes[i].thickness
         ifarr.contact_radius[i] = simulation.ice_floes[i].contact_radius
         ifarr.areal_radius[i] = simulation.ice_floes[i].areal_radius
-        ifarr.surface_area[i] = simulation.ice_floes[i].surface_area
+        ifarr.circumreference[i] = simulation.ice_floes[i].circumreference
+        ifarr.horizontal_surface_area[i] =
+            simulation.ice_floes[i].horizontal_surface_area
+        ifarr.side_surface_area[i] = simulation.ice_floes[i].side_surface_area
         ifarr.volume[i] = simulation.ice_floes[i].volume
         ifarr.mass[i] = simulation.ice_floes[i].mass
         ifarr.moment_of_inertia[i] = simulation.ice_floes[i].moment_of_inertia

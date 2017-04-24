@@ -12,7 +12,9 @@ type IceFloeCylindrical
     thickness::float
     contact_radius::float
     areal_radius::float
-    surface_area::float
+    circumreference::float
+    horizontal_surface_area::float
+    side_surface_area::float
     volume::float
     mass::float
     moment_of_inertia::float
@@ -54,7 +56,9 @@ type IceFloeArrays
     thickness
     contact_radius
     areal_radius
-    surface_area
+    circumreference
+    horizontal_surface_area
+    side_surface_area
     volume
     mass
     moment_of_inertia

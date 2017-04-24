@@ -27,7 +27,12 @@ function writeVTK(simulation::Simulation;
                             "Diameter (contact) [m]")
     WriteVTK.vtk_point_data(vtkfile, ifarr.areal_radius*2.,
                             "Diameter (areal) [m]")
-    WriteVTK.vtk_point_data(vtkfile, ifarr.surface_area, "Surface area [m^2]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.circumreference,
+                            "Circumreference  [m]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.horizontal_surface_area,
+                            "Horizontal surface area [m^2]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.side_surface_area,
+                            "Side surface area [m^2]")
     WriteVTK.vtk_point_data(vtkfile, ifarr.volume, "Volume [m^3]")
     WriteVTK.vtk_point_data(vtkfile, ifarr.mass, "Mass [kg]")
     WriteVTK.vtk_point_data(vtkfile, ifarr.moment_of_inertia,
@@ -62,7 +67,7 @@ function writeVTK(simulation::Simulation;
                             "Contact friction (dynamic) [-]")
 
     WriteVTK.vtk_point_data(vtkfile, ifarr.pressure,
-                            "Pressure [Pa]")
+                            "Contact pressure [Pa]")
 
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose

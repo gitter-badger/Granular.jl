@@ -15,7 +15,9 @@ function interact!(simulation::Simulation)
 end
 
 """
-Resolve an grain-to-grain interaction using a prescibed contact law.
+Resolve an grain-to-grain interaction using a prescibed contact law.  This 
+function adds the compressive force of the interaction to the ice floe 
+`pressure` field of mean compressive stress on the ice floe sides.
 """
 function interactIceFloes!(simulation::Simulation,
                            i::Integer, j::Integer,
@@ -37,6 +39,10 @@ function interactIceFloes!(simulation::Simulation,
     simulation.ice_floes[i].force += force;
     simulation.ice_floes[j].force -= force;
 
+    simulation.ice_floes[i].pressure += 
+        norm(force)/simulation.ice_floes[i].side_surface_area;
+    simulation.ice_floes[j].pressure += 
+        norm(force)/simulation.ice_floes[j].side_surface_area;
 end
 
 """
