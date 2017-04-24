@@ -155,6 +155,7 @@ function zeroForcesAndTorques!(simulation::Simulation)
     for icefloe in simulation.ice_floes
         icefloe.force = zeros(2)
         icefloe.torque = 0.
+        icefloe.pressure = 0.
     end
 end
 

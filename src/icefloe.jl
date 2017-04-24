@@ -24,6 +24,7 @@ function addIceFloeCylindrical(simulation::Simulation,
                                contact_viscosity_tangential::float = 0.,
                                contact_static_friction::float = 0.4,
                                contact_dynamic_friction::float = 0.4,
+                               pressure::float = 0.,
                                fixed::Bool = false,
                                rotating::Bool = true,
                                verbose::Bool = true)
@@ -91,7 +92,9 @@ function addIceFloeCylindrical(simulation::Simulation,
                                  contact_viscosity_normal,
                                  contact_viscosity_tangential,
                                  contact_static_friction,
-                                 contact_dynamic_friction
+                                 contact_dynamic_friction,
+
+                                 pressure
                                 )
 
     # Overwrite previous placeholder values
@@ -151,7 +154,10 @@ function convertIceFloeDataToArrays(simulation::Simulation)
                           Array(Float64, length(simulation.ice_floes)),
                           Array(Float64, length(simulation.ice_floes)),
                           Array(Float64, length(simulation.ice_floes)),
-                          Array(Float64, length(simulation.ice_floes)))
+                          Array(Float64, length(simulation.ice_floes)),
+
+                          Array(Float64, length(simulation.ice_floes))
+                         )
 
     # fill arrays
     for i=1:length(simulation.ice_floes)
@@ -190,6 +196,8 @@ function convertIceFloeDataToArrays(simulation::Simulation)
             simulation.ice_floes[i].contact_static_friction
         ifarr.contact_dynamic_friction[i] = 
             simulation.ice_floes[i].contact_dynamic_friction
+
+        ifarr.pressure[i] = simulation.ice_floes[i].pressure
     end
 
     return ifarr

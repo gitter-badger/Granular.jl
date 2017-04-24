@@ -40,6 +40,8 @@ type IceFloeCylindrical
     contact_viscosity_tangential::float
     contact_static_friction::float
     contact_dynamic_friction::float
+
+    pressure::float
 end
 
 # Type for gathering data from ice floe objects into single arrays
@@ -80,6 +82,8 @@ type IceFloeArrays
     contact_viscosity_tangential
     contact_static_friction
     contact_dynamic_friction
+
+    pressure
 end
 
 #=

@@ -61,6 +61,9 @@ function writeVTK(simulation::Simulation;
     WriteVTK.vtk_point_data(vtkfile, ifarr.contact_dynamic_friction,
                             "Contact friction (dynamic) [-]")
 
+    WriteVTK.vtk_point_data(vtkfile, ifarr.pressure,
+                            "Pressure [Pa]")
+
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
         println("Output file: " * outfiles[1])
