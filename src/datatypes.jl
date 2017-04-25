@@ -91,21 +91,22 @@ type IceFloeArrays
 end
 
 #=
-Type containing all relevant data from MOM6 NetCDF file.  The ocean grid is a 
+Type containing all relevant data from MOM6 NetCDF files.  The ocean grid is a 
 staggered of Arakawa-C type, with north-east convention centered on the 
-h-points.
+    h-points.  During read, the velocities are interpolated to the cell corners 
+    (q-points).
 
-    q(i-1,  j) --- v(  i,  j) --- q(  i,  j)
+    q(i-1,  j) ------------------ q(  i,  j)
          |                             |
          |                             |
          |                             |
          |                             |
-    u(i-1,  j)     h(  i,  j)     u(  i,  j)
+         |         h(  i,  j)          |
          |                             |
          |                             |
          |                             |
          |                             |
-    q(i-1,j-1) --- v(  i,j-1) --- q(  i,j-1)
+    q(i-1,j-1) ------------------ q(  i,j-1)
 
 Source: 
 https://mom6.readthedocs.io/en/latest/api/generated/pages/Horizontal_indexing.html
@@ -120,13 +121,13 @@ https://mom6.readthedocs.io/en/latest/api/generated/pages/Horizontal_indexing.ht
 * `zl::Array{Float64, 1}`: layer target potential density [kg m^-3]
 * `zi::Array{Float64, 1}`: interface target potential density [kg m^-3]
 * `u::Array{Float64, Int}`: zonal velocity (positive towards west) [m/s], 
-    dimensions correspond to placement in `[xq, yh, zl, time]`.
+    dimensions correspond to placement in `[xq, yq, zl, time]`.
 * `v::Array{Float64, Int}`: meridional velocity (positive towards north) [m/s], 
-    dimensions correspond to placement in `[xh, yq, zl, time]`.
+    dimensions correspond to placement in `[xq, yq, zl, time]`.
 * `h::Array{Float64, Int}`: layer thickness [m], dimensions correspond to 
     placement in `[xh, yh, zl, time]`.
 * `e::Array{Float64, Int}`: interface height relative to mean sea level [m],  
-    dimensions correspond to placement in `[xh, yq, zi, time]`.
+    dimensions correspond to placement in `[xh, yh, zi, time]`.
 =#
 type Ocean
     input_file::Any
@@ -134,12 +135,12 @@ type Ocean
     time::Array{Float64, 1}
 
     # q-point (cell corner) positions
-    xq::Array{Float64, 1}
-    yq::Array{Float64, 1}
+    xq::Array{Float64, 2}
+    yq::Array{Float64, 2}
 
     # h-point (cell center) positions
-    xh::Array{Float64, 1}
-    yh::Array{Float64, 1}
+    xh::Array{Float64, 2}
+    yh::Array{Float64, 2}
 
     # Vertical positions
     zl::Array{Float64, 1}
