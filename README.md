@@ -7,7 +7,8 @@ mechanics.
 
 ## Installation
 [SeaIce.jl](https://github.com/anders-dc/SeaIce.jl) is in heavy development and 
-not yet ready for third-party use.  If you know better install it by:
+not yet ready for third-party use.  If you know better install it directly from 
+the Julia shell by:
 
     Pkg.clone("git://github.com/anders-dc/SeaIce.jl.git")
 
