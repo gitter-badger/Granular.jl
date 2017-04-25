@@ -147,6 +147,8 @@ function convertIceFloeDataToArrays(simulation::Simulation)
                           Array(Float64, length(simulation.ice_floes)),
                           Array(Float64, length(simulation.ice_floes)),
                           Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
 
                           zeros(Float64, 3, length(simulation.ice_floes)),
                           zeros(Float64, 3, length(simulation.ice_floes)),
