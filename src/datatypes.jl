@@ -44,6 +44,8 @@ type IceFloeCylindrical
     contact_dynamic_friction::float
 
     pressure::float
+
+    #ocean_grid_pos::Array{Int, 2}
 end
 
 # Type for gathering data from ice floe objects into single arrays
@@ -151,6 +153,8 @@ type Ocean
     v::Array{Float64, 4}
     h::Array{Float64, 4}
     e::Array{Float64, 4}
+
+    #ice_floe_list::Array{Array{Int, 1}, 2}
 end
 
 # Top-level simulation type

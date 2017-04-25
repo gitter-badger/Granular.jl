@@ -30,3 +30,34 @@ function bilinearInterpolation(field::Array{Float64, 4},
         error("grid type not understood.")
     end
 end
+
+"""
+Find ice-floe positions in ocean grid, based on their center positions.
+"""
+function sortIceFloesInOceanGrid!(simulation::Simulation, verbose=true)
+
+    # TODO: initialize empty ice_floe_list before appending to list
+
+    for idx in 1:length(simulation.ice_floes)
+
+        for i in 1:size(simulation.ocean.xh)[1]
+            for j in 1:size(simulation.ocean.xh)[2]
+
+                if cellContainsIceFloe(simulation.ocean, i, j,
+                                       simulation.ice_floes[idx])
+
+                    # add cell to ice floe
+                    simulation.ice_floes[idx].ocean_grid_pos = [i, j]
+
+                    # add ice floe to cell
+                    push!(simulation.ice_floe_list[i, j], idx)
+                end
+            end
+        end
+    end
+end
+
+function cellContainsIceFloe(ocean::Ocean, i::Int, j::Int, 
+                             icefloe::IceFloeCylindrical)
+
+end
