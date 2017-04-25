@@ -18,8 +18,8 @@ ocean = SeaIce.readOceanNetCDF("Baltic/00010101.ocean_month.nc",
 @test size(ocean.e) == (23, 14, 64, 5)
 
 info("Testing ocean state interpolation")
-@test_throws ErrorException SeaIce.findContacts!(ocean, time=0.)
-@test_throws ErrorException SeaIce.findContacts!(ocean, time=1.e34)
+@test_throws ErrorException SeaIce.interpolateOceanState(ocean, time=0.)
+@test_throws ErrorException SeaIce.interpolateOceanState(ocean, time=1.e34)
 u1, v1, h1, e1 = SeaIce.interpolateOceanState(ocean, ocean.time[1])
 u2, v2, h2, e2 = SeaIce.interpolateOceanState(ocean, ocean.time[2])
 u1_5, v1_5, h1_5, e1_5 = SeaIce.interpolateOceanState(ocean,
