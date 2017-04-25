@@ -1,6 +1,6 @@
 "Returns empty ocean type for initialization purposes."
 function createEmptyOcean()
-    return Ocean("",
+    return Ocean(false,
                  zeros(1),
                  zeros(1),
                  zeros(1),

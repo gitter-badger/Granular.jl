@@ -129,7 +129,7 @@ https://mom6.readthedocs.io/en/latest/api/generated/pages/Horizontal_indexing.ht
     dimensions correspond to placement in `[xh, yq, zi, time]`.
 =#
 type Ocean
-    input_file::String
+    input_file::Any
 
     time::Array{Float64, 1}
 
