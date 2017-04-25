@@ -108,6 +108,9 @@ function run!(simulation::Simulation;
         zeroForcesAndTorques!(simulation)
         findContacts!(simulation)
         interact!(simulation)
+        if simulation.ocean.input_file
+            addOceanDrag!(simulation)
+        end
         updateIceFloeKinematics!(simulation, method=temporal_integration_method)
 
         # Update time variables

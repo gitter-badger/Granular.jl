@@ -71,3 +71,48 @@ function convertToColocatedOceanGrid(u_in::Array{float, 4},
     end
     return u, v
 end
+
+"""
+Ocean data is containted in `Ocean` type at discrete times (`Ocean.time`).  This 
+function performs linear interpolation between time steps to get the approximate 
+ocean state at any point in time.  If the `Ocean` data set only contains a 
+single time step, values from that time are returned.
+"""
+function interpolateOceanState(ocean::Ocean, t::float)
+    if length(ocean.time) == 1
+        return ocean.u, ocean.v, ocean.h, ocean.e
+    elseif t < ocean.time[1] || t > ocean.time[end]
+        error("selected time (t = $(t)) is outside the range of time steps in 
+              the ocean data")
+    end
+
+    i = 1
+    rel_time = 0.
+    while i < length(ocean.time)
+        if ocean.time[i+1] < t
+            i += 1
+            continue
+        end
+
+        dt = ocean.time[i+1] - ocean.time[i]
+        rel_time = (t - ocean.time[i])/dt
+        if rel_time < 0. || rel_time > 1.
+            error("time bounds error")
+        end
+        break
+    end
+
+    return ocean.u[:,:,:,i]*(1. - rel_time + ocean.u[:,:,:,i+1]*rel_time),
+        ocean.v[:,:,:,i]*(1. - rel_time + ocean.v[:,:,:,i+1]*rel_time),
+        ocean.h[:,:,:,i]*(1. - rel_time + ocean.h[:,:,:,i+1]*rel_time),
+        ocean.e[:,:,:,i]*(1. - rel_time + ocean.e[:,:,:,i+1]*rel_time)
+end
+
+"""
+Add Stokes-type drag from velocity difference between ocean and ice floe.
+"""
+function addOceanDrag!(simulation::Simulation)
+    if !simulation.ocean.id
+        error("no ocean data read")
+    end
+end
