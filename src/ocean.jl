@@ -103,9 +103,9 @@ function interpolateOceanState(ocean::Ocean, t::float)
     end
 
     return ocean.u[:,:,:,i]*(1. - rel_time + ocean.u[:,:,:,i+1]*rel_time),
-        ocean.v[:,:,:,i]*(1. - rel_time + ocean.v[:,:,:,i+1]*rel_time),
-        ocean.h[:,:,:,i]*(1. - rel_time + ocean.h[:,:,:,i+1]*rel_time),
-        ocean.e[:,:,:,i]*(1. - rel_time + ocean.e[:,:,:,i+1]*rel_time)
+        ocean.v[:,:,:,i]*(1. - rel_time) + ocean.v[:,:,:,i+1]*rel_time,
+        ocean.h[:,:,:,i]*(1. - rel_time) + ocean.h[:,:,:,i+1]*rel_time,
+        ocean.e[:,:,:,i]*(1. - rel_time) + ocean.e[:,:,:,i+1]*rel_time
 end
 
 """
@@ -115,4 +115,7 @@ function addOceanDrag!(simulation::Simulation)
     if !simulation.ocean.id
         error("no ocean data read")
     end
+
+    u, v, h, e = interpolateOceanState(simulation.ocean, simulation.time)
+
 end
