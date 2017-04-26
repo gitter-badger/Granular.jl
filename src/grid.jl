@@ -146,6 +146,10 @@ function conformalQuadrilateralCoordinates(A::Array{float, 1},
                                            C::Array{float, 1},
                                            D::Array{float, 1},
                                            p::Array{float, 1})
+
+    if !(A[1] < B[1] && B[2] < C[2] && C[1] > D[1])
+        error("corner coordinates are not passed in the correct order")
+    end
     alpha = B[1] - A[1]
     delta = B[2] - A[2]
     beta = D[1] - A[1]

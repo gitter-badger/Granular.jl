@@ -38,6 +38,12 @@ info("Testing conformal mapping methods")
                                                [5., 3.],
                                                [0., 3.],
                                                [7.5,-1.5]) ≈ [1.5,-0.5]
+@test_throws ErrorException SeaIce.conformalQuadrilateralCoordinates([0., 0.],
+                                                                     [5., 3.],
+                                                                     [0., 3.],
+                                                                     [5., 0.],
+                                                                     [7.5,-1.5])
+
 info("Checking cell content using conformal mapping methods")
 @test SeaIce.isPointInCell(ocean, 2, 2, [6.4, 53.4], method="Conformal") == true
 @test SeaIce.isPointInCell(ocean, 2, 2, [6.1, 53.5], method="Conformal") == true
