@@ -40,24 +40,82 @@ function sortIceFloesInOceanGrid!(simulation::Simulation, verbose=true)
 
     for idx in 1:length(simulation.ice_floes)
 
-        for i in 1:size(simulation.ocean.xh)[1]
-            for j in 1:size(simulation.ocean.xh)[2]
+        if cellContainsIceFloe(simulation.ocean, i, j,
+                               simulation.ice_floes[idx])
 
-                if cellContainsIceFloe(simulation.ocean, i, j,
-                                       simulation.ice_floes[idx])
+            # add cell to ice floe
+            simulation.ice_floes[idx].ocean_grid_pos = [i, j]
 
-                    # add cell to ice floe
-                    simulation.ice_floes[idx].ocean_grid_pos = [i, j]
-
-                    # add ice floe to cell
-                    push!(simulation.ice_floe_list[i, j], idx)
-                end
-            end
+            # add ice floe to cell
+            push!(simulation.ice_floe_list[i, j], idx)
         end
     end
 end
 
-function cellContainsIceFloe(ocean::Ocean, i::Int, j::Int, 
-                             icefloe::IceFloeCylindrical)
+"""
+Returns the `i`, `j` index of the ocean grid cell containing the `point`.
+"""
+function findCellContainingPoint(ocean::Ocean, i::Int, j::Int, 
+                                 point::Array{float, 2})
 
+
+
+    return i, j
 end
+
+
+"""
+Check if a 2d point is contained inside a cell from the ocean grid.  Returns 
+`true`/`false`.
+"""
+function isPointInCell(ocean::Ocean, i::Int, j::Int, point::Array{float, 1})
+
+    sw, nw, se, ne = getCellCornerCoordinates(ocean, i, j)
+
+    if areaOfQuadrilateral(sw, nw, se, ne) ≈
+        areaOfTriangle(point, sw, se) +
+        areaOfTriangle(point, se, ne) +
+        areaOfTriangle(point, ne, nw) +
+        areaOfTriangle(point, nw, sw)
+        return true
+    else
+        return false
+    end
+end
+
+"""
+Returns ocean-grid corner coordinates in the following order (south-west corner, 
+north-west corner, south-east corner, north-east corner).
+"""
+function getCellCornerCoordinates(ocean::Ocean, i::Int, j::Int)
+    sw = [ocean.xq[i-1, j-1], ocean.yq[i-1, j-1]]
+    nw = [ocean.xq[i-1,   j], ocean.yq[i-1,   j]]
+    se = [ocean.xq[  i, j-1], ocean.yq[  i, j-1]]
+    ne = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
+    return sw, nw, se, ne
+end
+
+"Returns the area of an triangle with corner coordinates `a`, `b`, and `c`."
+function areaOfTriangle(a::Array{float, 1},
+                        b::Array{float, 1},
+                        c::Array{float, 1})
+    return abs(
+               (a[1]*(b[2] - c[2]) +
+                b[1]*(c[2] - a[2]) +
+                c[1]*(a[2] - b[2]))/2.
+              )
+end
+
+"""
+Returns the area of a quadrilateral with corner coordinates `a`, `b`, `c`, and 
+`d`.  Corners `a` and `c` should be opposite of each other, the same must be 
+true for `b` and `d`.  This is true if the four corners are passed as arguments 
+in a "clockwise" or "counter-clockwise" manner.
+"""
+function areaOfQuadrilateral(a::Array{float, 1},
+                             b::Array{float, 1},
+                             c::Array{float, 1},
+                             d::Array{float, 1})
+    return areaOfTriangle(a, b, c) + areaOfTriangle(c, d, a)
+end
+
