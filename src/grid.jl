@@ -65,34 +65,50 @@ end
 
 
 """
-Check if a 2d point is contained inside a cell from the ocean grid.  Returns 
-`true`/`false`.
+Check if a 2d point is contained inside a cell from the ocean grid.
+The function uses either an area-based approach (`method = "Area"`), or a 
+conformal mapping approach (`method = "Conformal"`).  The area-based approach is 
+more robust.  This function returns `true` or `false`.
 """
-function isPointInCell(ocean::Ocean, i::Int, j::Int, point::Array{float, 1})
+function isPointInCell(ocean::Ocean, i::Int, j::Int, point::Array{float, 1};
+                      method::String="Area")
 
-    sw, nw, se, ne = getCellCornerCoordinates(ocean, i, j)
+    sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
 
-    if areaOfQuadrilateral(sw, nw, se, ne) ≈
-        areaOfTriangle(point, sw, se) +
-        areaOfTriangle(point, se, ne) +
-        areaOfTriangle(point, ne, nw) +
-        areaOfTriangle(point, nw, sw)
-        return true
+    if method == "Area"
+        if areaOfQuadrilateral(sw, se, ne, nw) ≈
+            areaOfTriangle(point, sw, se) +
+            areaOfTriangle(point, se, ne) +
+            areaOfTriangle(point, ne, nw) +
+            areaOfTriangle(point, nw, sw)
+            return true
+        else
+            return false
+        end
+
+    elseif method == "Conformal"
+        x_tilde, y_tilde = conformalQuadrilateralCoordinates(sw, se, ne, nw,
+                                                             point)
+        if x_tilde >= 0. && x_tilde <= 1. && y_tilde >= 0. && y_tilde <= 1.
+            return true
+        else
+            return false
+        end
     else
-        return false
+        error("method not understood")
     end
 end
 
 """
 Returns ocean-grid corner coordinates in the following order (south-west corner, 
-north-west corner, south-east corner, north-east corner).
+south-east corner, north-east corner, north-west corner).
 """
 function getCellCornerCoordinates(ocean::Ocean, i::Int, j::Int)
     sw = [ocean.xq[i-1, j-1], ocean.yq[i-1, j-1]]
-    nw = [ocean.xq[i-1,   j], ocean.yq[i-1,   j]]
     se = [ocean.xq[  i, j-1], ocean.yq[  i, j-1]]
     ne = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
-    return sw, nw, se, ne
+    nw = [ocean.xq[i-1,   j], ocean.yq[i-1,   j]]
+    return sw, se, ne, nw
 end
 
 "Returns the area of an triangle with corner coordinates `a`, `b`, and `c`."
@@ -119,3 +135,63 @@ function areaOfQuadrilateral(a::Array{float, 1},
     return areaOfTriangle(a, b, c) + areaOfTriangle(c, d, a)
 end
 
+"""
+Returns the non-dimensional coordinates `[x_tilde, y_tilde]` of a point `p` 
+within a quadrilateral with corner coordinates `A`, `B`, `C`, and `D`.
+Points must be ordered in counter-clockwise order, starting from south-west 
+corner.
+"""
+function conformalQuadrilateralCoordinates(A::Array{float, 1},
+                                           B::Array{float, 1},
+                                           C::Array{float, 1},
+                                           D::Array{float, 1},
+                                           p::Array{float, 1})
+    alpha = B[1] - A[1]
+    delta = B[2] - A[2]
+    beta = D[1] - A[1]
+    epsilon = D[2] - A[2]
+    gamma = C[1] - A[1] - (alpha + beta)
+    kappa = C[2] - A[2] - (delta + epsilon)
+    a = kappa*beta - gamma*epsilon
+    dx = p[1] - A[1]
+    dy = p[2] - A[2]
+    b = (delta*beta - alpha*epsilon) - (kappa*dx - gamma*dy)
+    c = alpha*dy - delta*dx
+    if abs(a) > 0.
+        d = b^2./4. - a*c
+        if d >= 0.
+            yy1 = -(b/2. + sqrt(d))/a
+            yy2 = -(b/2. - sqrt(d))/a
+            if abs(yy1 - .5) < abs(yy2 - .5)
+                y_tilde = yy1
+            else
+                y_tilde = yy2
+            end
+        else
+            error("could not perform conformal mapping\n",
+                  "A = $(A), B = $(B), C = $(C), D = $(D), point = $(p),\n",
+                  "alpha = $(alpha), beta = $(beta), gamma = $(gamma), ",
+                  "delta = $(delta), epsilon = $(epsilon), kappa = $(kappa)")
+        end
+    else
+        if !(b ≈ 0.)
+            y_tilde = -c/b
+        else
+            y_tilde = 0.
+        end
+    end
+    a = alpha + gamma*y_tilde
+    b = delta + kappa*y_tilde
+    if !(a ≈ 0.)
+        x_tilde = (dx - beta*y_tilde)/a
+    elseif !(b ≈ 0.)
+        x_tilde = (dy - epsilon*y_tilde)/b
+    else
+        error("could not determine non-dimensional position in quadrilateral ",
+              "(a = 0. and b = 0.)\n",
+              "A = $(A), B = $(B), C = $(C), D = $(D), point = $(p),\n",
+              "alpha = $(alpha), beta = $(beta), gamma = $(gamma), ",
+              "delta = $(delta), epsilon = $(epsilon), kappa = $(kappa)")
+    end
+    return [x_tilde, y_tilde]
+end
