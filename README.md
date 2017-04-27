@@ -18,9 +18,9 @@ current Julia session with:
 
     import SeaIce
 
-This will import all functions and data types in `SeaIce` namespace.  You can 
-run the package tests, which are contained in the [test/ directory](test/) with 
-the following command:
+This will import all functions and data types in the `SeaIce` namespace.  You 
+can run the package tests, which are contained in the [test/ directory](test/), 
+with the following command:
 
     Pkg.test("SeaIce")
 
