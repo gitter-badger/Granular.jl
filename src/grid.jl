@@ -1,4 +1,3 @@
-
 """
 Use bilinear interpolation to interpolate a staggered grid to an arbitrary 
 position in a cell.  Assumes north-east convention, i.e. (i,j) is located at the 
@@ -53,10 +52,20 @@ end
 """
 Returns the `i`, `j` index of the ocean grid cell containing the `point`.
 """
-function findCellContainingPoint(ocean::Ocean, i::Int, j::Int, 
-                                 point::Array{float, 2})
+function findCellContainingPoint(ocean::Ocean, point::Array{float, 1})
 
-
+    found = false
+    for i=2:(size(ocean.h)[1] + 1)
+        for j=2:(size(ocean.h)[2] + 1)
+            if isPointInCell(ocean, i, j, point)
+                return i, j
+            end
+        end
+    end
+    if !found
+        # throw an error for now, maybe remove ice floe later on
+        error("point not found in grid")
+    end
 
     return i, j
 end
