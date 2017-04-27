@@ -13,8 +13,9 @@ the Julia shell by:
     Pkg.clone("git://github.com/anders-dc/SeaIce.jl.git")
 
 This will install the contents of this repository in the folder 
-`~/.julia/v$(JULIA_VERSION)/SeaIce`.  Import the package contents into the 
-current Julia session with:
+`~/.julia/v$(JULIA_VERSION)/SeaIce`, and install the packages specified as 
+[requirements](REQUIRE).  Import the package contents into the current Julia 
+session with:
 
     import SeaIce
 
