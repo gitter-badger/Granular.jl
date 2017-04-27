@@ -1,4 +1,3 @@
-
 """
 Use bilinear interpolation to interpolate a staggered grid to an arbitrary 
 position in a cell.  Assumes north-east convention, i.e. (i,j) is located at the 
@@ -6,29 +5,27 @@ north-east corner.
 
 # Arguments
 * `field::Array{Float64, 4}`: a scalar field to interpolate from
-* `xi::float`: relative x position in cell [-], must be in `[0., 1.]`
-* `yj::float`: relative y position in cell [-], must be in `[0., 1.]`
+* `p::float`: point position
 * `i::Int`: i-index of cell containing point
-* `j::Int`: j-index of cell containing point
-* `grid_type::String="Arakawa A"`: grid system for `field`
+* `j::Int`: j-index of scalar field to interpolate from
+* `it::Int`: time step from scalar field to interpolate from
 """
 function bilinearInterpolation(field::Array{Float64, 4},
-                               xi::float,
-                               yj::float,
+                               x_tilde::Float64,
+                               y_tilde::Float64,
                                i::Int,
-                               j::Int;
-                               grid_type::String="Arakawa A")
+                               j::Int,
+                               k::Int,
+                               it::Int)
 
-    if xi < 0. || xi > 1. || yj < 0. || yj > 1.
-        error("relative coordinates outside bounds ($(xi), $(yj))")
+    if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
+        error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
     end
 
-    if grid_type == "Arakawa A"
-        return (field[i,j]*xi + field[i-1,j]*(1. - xi))*yi +
-            (field[i,j-1]*xi + field[i-1,j-1]*(1. - xi))*(1. - yi)
-    else
-        error("grid type not understood.")
-    end
+    return (field[i, j, k, it]*x_tilde +
+            field[i-1, j, k, it]*(1. - x_tilde))*y_tilde +
+           (field[i, j-1, k, it]*x_tilde +
+            field[i-1, j-1, k, it]*(1. - x_tilde))*(1. - y_tilde)
 end
 
 """
@@ -55,10 +52,20 @@ end
 """
 Returns the `i`, `j` index of the ocean grid cell containing the `point`.
 """
-function findCellContainingPoint(ocean::Ocean, i::Int, j::Int, 
-                                 point::Array{float, 2})
+function findCellContainingPoint(ocean::Ocean, point::Array{float, 1})
 
-
+    found = false
+    for i=2:(size(ocean.h)[1] + 1)
+        for j=2:(size(ocean.h)[2] + 1)
+            if isPointInCell(ocean, i, j, point)
+                return i, j
+            end
+        end
+    end
+    if !found
+        # throw an error for now, maybe remove ice floe later on
+        error("point not found in grid")
+    end
 
     return i, j
 end

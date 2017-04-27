@@ -56,3 +56,19 @@ info("Checking cell content using conformal mapping methods")
                            method="Conformal") == false
 @test SeaIce.isPointInCell(ocean, 2, 2, [0.0, 53.5],
                            method="Conformal") == false
+
+info("Testing bilinear interpolation scheme on conformal mapping")
+ocean.u[1, 1, 1, 1] = 1.0
+ocean.u[2, 1, 1, 1] = 1.0
+ocean.u[2, 2, 1, 1] = 0.0
+ocean.u[1, 2, 1, 1] = 0.0
+@test SeaIce.bilinearInterpolation(ocean.u, .5, .5, 2, 2, 1, 1) ≈ .5
+@test SeaIce.bilinearInterpolation(ocean.u, 1., 1., 2, 2, 1, 1) ≈ .0
+@test SeaIce.bilinearInterpolation(ocean.u, 0., 0., 2, 2, 1, 1) ≈ 1.
+@test SeaIce.bilinearInterpolation(ocean.u, .25, .25, 2, 2, 1, 1) ≈ .75
+@test SeaIce.bilinearInterpolation(ocean.u, .75, .75, 2, 2, 1, 1) ≈ .25
+
+info("Testing cell binning")
+@test SeaIce.findCellContainingPoint(ocean, [6.2, 53.4]) == (2, 2)
+@test SeaIce.findCellContainingPoint(ocean, [7.2, 53.4]) == (3, 2)
+@test_throws ErrorException SeaIce.findCellContainingPoint(ocean, [0.2, 53.4])
