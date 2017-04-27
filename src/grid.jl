@@ -28,6 +28,7 @@ function bilinearInterpolation(field::Array{Float64, 4},
             field[i-1, j-1, k, it]*(1. - x_tilde))*(1. - y_tilde)
 end
 
+export sortIceFloesInOceanGrid
 """
 Find ice-floe positions in ocean grid, based on their center positions.
 """
@@ -49,6 +50,7 @@ function sortIceFloesInOceanGrid!(simulation::Simulation, verbose=true)
     end
 end
 
+export findCellContainingPoint
 """
 Returns the `i`, `j` index of the ocean grid cell containing the `point`.
 """
@@ -71,6 +73,7 @@ function findCellContainingPoint(ocean::Ocean, point::Array{float, 1})
 end
 
 
+export isPointInCell
 """
 Check if a 2d point is contained inside a cell from the ocean grid.
 The function uses either an area-based approach (`method = "Area"`), or a 
@@ -106,6 +109,7 @@ function isPointInCell(ocean::Ocean, i::Int, j::Int, point::Array{float, 1};
     end
 end
 
+export getCellCornerCoordinates
 """
 Returns ocean-grid corner coordinates in the following order (south-west corner, 
 south-east corner, north-east corner, north-west corner).
@@ -118,6 +122,7 @@ function getCellCornerCoordinates(ocean::Ocean, i::Int, j::Int)
     return sw, se, ne, nw
 end
 
+export areaOfTriangle
 "Returns the area of an triangle with corner coordinates `a`, `b`, and `c`."
 function areaOfTriangle(a::Array{float, 1},
                         b::Array{float, 1},
@@ -129,6 +134,7 @@ function areaOfTriangle(a::Array{float, 1},
               )
 end
 
+export areaOfQuadrilateral
 """
 Returns the area of a quadrilateral with corner coordinates `a`, `b`, `c`, and 
 `d`.  Corners `a` and `c` should be opposite of each other, the same must be 
@@ -142,6 +148,7 @@ function areaOfQuadrilateral(a::Array{float, 1},
     return areaOfTriangle(a, b, c) + areaOfTriangle(c, d, a)
 end
 
+export conformalQuadrilateralCoordinates
 """
 Returns the non-dimensional coordinates `[x_tilde, y_tilde]` of a point `p` 
 within a quadrilateral with corner coordinates `A`, `B`, `C`, and `D`.

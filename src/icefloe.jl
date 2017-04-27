@@ -1,5 +1,6 @@
 ## Manage icefloes in the model
 
+export addIceFloeCylindrical
 """
 Adds a grain to the simulation. Example:
 
@@ -111,30 +112,47 @@ function addIceFloeCylindrical(simulation::Simulation,
     addIceFloe!(simulation, icefloe, verbose)
 end
 
+export iceFloeCircumreference
+"Returns the circumreference of the ice floe"
 function iceFloeCircumreference(icefloe::IceFloeCylindrical)
     return pi*icefloe.areal_radius*2.
 end
 
+export iceFloeHorizontalSurfaceArea
+"Returns the top or bottom (horizontal) surface area of the ice floe"
 function iceFloeHorizontalSurfaceArea(icefloe::IceFloeCylindrical)
     return pi*icefloe.areal_radius^2.
 end
 
+export iceFloeSideSurfaceArea
+"Returns the surface area of the ice-floe sides"
 function iceFloeSideSurfaceArea(icefloe::IceFloeCylindrical)
     return iceFloeCircumreference(icefloe)*icefloe.thickness
 end
 
+export iceFloeVolume
+"Returns the volume of the ice floe"
 function iceFloeVolume(icefloe::IceFloeCylindrical)
     return iceFloeHorizontalSurfaceArea(icefloe)*icefloe.thickness
 end
 
+export iceFloeMass
+"Returns the mass of the ice floe"
 function iceFloeMass(icefloe::IceFloeCylindrical)
     return iceFloeVolume(icefloe)*icefloe.density
 end
 
+export iceFloeMomentOfInertia
+"Returns the moment of inertia of the ice floe"
 function iceFloeMomentOfInertia(icefloe::IceFloeCylindrical)
     return 0.5*iceFloeMass(icefloe)*icefloe.areal_radius^2.
 end
 
+export convertIceFloeDataToArrays
+"""
+Gathers all ice-floe parameters from the `IceFloeCylindrical` type in continuous 
+arrays in an `IceFloeArrays` structure.
+"""
 function convertIceFloeDataToArrays(simulation::Simulation)
 
     ifarr = IceFloeArrays(
@@ -220,24 +238,37 @@ function convertIceFloeDataToArrays(simulation::Simulation)
     return ifarr
 end
 
+export iceFloeKineticTranslationalEnergy
+"Returns the translational kinetic energy of the ice floe"
 function iceFloeKineticTranslationalEnergy(icefloe::IceFloeCylindrical)
     return 0.5*icefloe.mass*norm(icefloe.lin_vel)^2.
 end
 
+export totalIceFloeKineticTranslationalEnergy
+"""
+Returns the sum of translational kinetic energies of all ice floes in a 
+simulation
+"""
 function totalIceFloeKineticTranslationalEnergy(simulation::Simulation)
-    E_sum = 0
+    E_sum = 0.
     for icefloe in simulation.ice_floes
         E_sum += iceFloeKineticTranslationalEnergy(icefloe)
     end
     return E_sum
 end
 
+export iceFloeKineticRotationalEnergy
+"Returns the rotational kinetic energy of the ice floe"
 function iceFloeKineticRotationalEnergy(icefloe::IceFloeCylindrical)
     return 0.5*icefloe.moment_of_inertia*norm(icefloe.ang_vel)^2.
 end
 
+export totalIceFloeKineticRotationalEnergy
+"""
+Returns the sum of rotational kinetic energies of all ice floes in a simulation
+"""
 function totalIceFloeKineticRotationalEnergy(simulation::Simulation)
-    E_sum = 0
+    E_sum = 0.
     for icefloe in simulation.ice_floes
         E_sum += iceFloeKineticRotationalEnergy(icefloe)
     end

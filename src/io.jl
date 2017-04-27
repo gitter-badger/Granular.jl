@@ -3,6 +3,7 @@ import NetCDF
 
 ## IO functions
 
+export writeVTK
 """
 Write a VTK file to disk containing all ice floes in the `simulation` in an 
 unstructured mesh (file type `.vtu`).  These files can be read by ParaView and 

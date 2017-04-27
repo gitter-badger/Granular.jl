@@ -1,5 +1,6 @@
 ## General simulation functions
 
+export createSimulation
 """
     createSimulation([id::String="unnamed",
                       time_iteration::Int=0,
@@ -43,6 +44,7 @@ function createSimulation(;id::String="unnamed",
                       ocean)
 end
 
+export run
 """
     run!(simulation[,
          verbose::Bool = true,
@@ -131,6 +133,7 @@ function run!(simulation::Simulation;
     end
 end
 
+export addIceFloe
 "Add an `icefloe` to the `simulation` object.  If `verbose` is true, a short 
 confirmation message will be printed to stdout`."
 function addIceFloe!(simulation::Simulation,
@@ -144,6 +147,7 @@ function addIceFloe!(simulation::Simulation,
     end
 end
 
+export removeIceFloe
 "Remove ice floe with index `i` from the `simulation` object."
 function removeIceFloe!(simulation::Simulation, i::Integer)
     if i < 1
@@ -153,6 +157,7 @@ function removeIceFloe!(simulation::Simulation, i::Integer)
     delete!(simulation.ice_floes, i)
 end
 
+export zeroForcesAndTorques
 "Sets the `force` and `torque` values of all ice floes to zero."
 function zeroForcesAndTorques!(simulation::Simulation)
     for icefloe in simulation.ice_floes
@@ -162,6 +167,7 @@ function zeroForcesAndTorques!(simulation::Simulation)
     end
 end
 
+export reportSimulationTimeToStdout
 "Prints the current simulation time and total time to standard out"
 function reportSimulationTimeToStdout(simulation::Simulation)
     print("\r  t = ", simulation.time, '/', simulation.time_total,

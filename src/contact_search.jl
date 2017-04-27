@@ -1,4 +1,5 @@
 ## Contact mapping
+export findContacts
 """
 Top-level function to perform an inter-ice floe contact search, based on ice 
 floe linear positions and contact radii.
@@ -16,6 +17,7 @@ function findContacts!(simulation::Simulation,
     end
 end
 
+export interIceFloePositionVector
 function interIceFloePositionVector(simulation::Simulation,
                                     i::Integer, j::Integer)
     return simulation.ice_floes[j].lin_pos - simulation.ice_floes[i].lin_pos
@@ -31,6 +33,11 @@ function findOverlap(simulation::Simulation, i::Integer, j::Integer,
                                 simulation.ice_floes[j].contact_radius)
 end
 
+export findContactsAllToAll
+"""
+Perform an O(n^2) all-to-all contact search between all ice floes in the 
+`simulation` object.
+"""
 function findContactsAllToAll!(simulation::Simulation)
 
     for i = 1:length(simulation.ice_floes)

@@ -1,3 +1,4 @@
+export updateIceFloeKinematics
 """
     updateIceFloeKinematics!(simulation::Simulation[,
                              method::String = "Three-term Taylor"])
@@ -31,8 +32,11 @@ function updateIceFloeKinematics!(simulation::Simulation;
     end
 end
 
-"Use a two-term Taylor expansion for integrating the kinematic degrees of 
-freedom for an `icefloe`."
+export updateIceFloeKinematicsTwoTermTaylor
+"""
+Use a two-term Taylor expansion for integrating the kinematic degrees of freedom 
+for an `icefloe`.
+"""
 function updateIceFloeKinematicsTwoTermTaylor(icefloe::IceFloeCylindrical,
                                               simulation::Simulation)
     icefloe.lin_acc = icefloe.force/icefloe.mass
@@ -56,8 +60,11 @@ function updateIceFloeKinematicsTwoTermTaylor(icefloe::IceFloeCylindrical,
     icefloe.ang_vel += icefloe.ang_acc * simulation.time_step
 end
 
-"Use a three-term Taylor expansion for integrating the kinematic degrees of 
-freedom for an `icefloe`."
+export updateIceFloeKinematicsThreeTermTaylor
+"""
+Use a three-term Taylor expansion for integrating the kinematic degrees of 
+freedom for an `icefloe`.
+"""
 function updateIceFloeKinematicsThreeTermTaylor(icefloe::IceFloeCylindrical,
                                                 simulation::Simulation)
     

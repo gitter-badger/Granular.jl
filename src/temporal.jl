@@ -1,3 +1,4 @@
+export setTotalTime
 """
     setTotalTime!(simulation::Simulation, t::float)
 
@@ -11,6 +12,7 @@ function setTotalTime!(simulation::Simulation, t::float)
     simulation.time_total = t
 end
 
+export setCurrentTime
 """
     setCurrentTime!(simulation::Simulation, t::float)
 
@@ -24,6 +26,7 @@ function setCurrentTime!(simulation::Simulation, t::float)
     simulation.time = t
 end
 
+export incrementCurrentTime
 """
     incrementCurrentTime!(simulation::Simulation, t::float)
 
@@ -37,19 +40,28 @@ function incrementCurrentTime!(simulation::Simulation, t::float)
     simulation.time += t
 end
 
-function setOutputFileInterval!(simulation::Simulation, t::float)
-    if t <= 0.0
-        info("The output file interval should be a positive value (t = $t s)")
+export setOutputFileInterval
+"""
+   setOutputFileInterval!(simulation::Simulation, t::float)
+
+Sets the simulation-time interval between output files are written to disk.  If 
+this value is zero or negative, no output files will be written.
+"""
+function setOutputFileInterval!(simulation::Simulation, t::float; verbose=true)
+    if t <= 0.0 && verbose
+        info("No output files will be written")
     end
     simulation.file_time_step = t
 end
 
+export disableOutputFiles
 "Disables the write of output files to disk during a simulation."
 function disableOutputFiles!(simulation::Simulation)
     simulation.file_time_step = 0.0
 end
 
-"Checks if simulation parameters are of reasonable values."
+export checkTimeParameters
+"Checks if simulation temporal parameters are of reasonable values."
 function checkTimeParameters(simulation::Simulation)
     if simulation.time_total <= 0.0 || simulation.time_total <= simulation.time
         error("Total time should be positive and larger than current time.\n",
@@ -61,6 +73,7 @@ function checkTimeParameters(simulation::Simulation)
     end
 end
 
+export findSmallestIceFloeMass
 "Finds the smallest mass of all ice floes in a simulation.  Used to determine 
 the optimal time step length."
 function findSmallestIceFloeMass(simulation::Simulation)
@@ -76,6 +89,7 @@ function findSmallestIceFloeMass(simulation::Simulation)
     return m_min, i_min
 end
 
+export findLargestIceFloeStiffness
 "Finds the largest elastic stiffness of all ice floes in a simulation.  Used to 
 determine the optimal time step length."
 function findLargestIceFloeStiffness(simulation::Simulation)
@@ -97,6 +111,7 @@ function findLargestIceFloeStiffness(simulation::Simulation)
     return k_n_max, k_t_max, i_n_max, i_t_max
 end
 
+export setTimeStep
 """
 Find the computational time step length suitable given the grain radii, contact
 stiffnesses, and grain density. Uses the scheme by Radjaii et al. 2011.
