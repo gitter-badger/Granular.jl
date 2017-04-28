@@ -229,7 +229,7 @@ function createRegularOceanGrid(n::Array{Int, 1},
     h = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
     e = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
 
-    return Ocean("unnamed",
+    return Ocean(name,
                  time,
                  xq, yq,
                  xh, yh,
