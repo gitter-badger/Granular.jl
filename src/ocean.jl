@@ -206,7 +206,8 @@ Initialize and return a regular, Cartesian `Ocean` grid with `n[1]` by `n[2]`
 cells in the horizontal dimension, and `n[3]` vertical cells.  The cell corner 
 and center coordinates will be set according to the grid spatial dimensions 
 `L[1]`, `L[2]`, and `L[3]`.  The grid `u`, `v`, `h`, and `e` fields will contain 
-one 4-th dimension matrix per `time` step.
+one 4-th dimension matrix per `time` step.  Sea surface will be at `z=0.` with 
+the ocean spanning `z<0.`.
 """
 function createRegularOceanGrid(n::Array{Int, 1},
                                 L::Array{float, 1};
