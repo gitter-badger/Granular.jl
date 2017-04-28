@@ -210,7 +210,7 @@ one 4-th dimension matrix per `time` step.
 """
 function createRegularOceanGrid(n::Array{Int, 1},
                                 L::Array{float, 1};
-                                origo::Array{float, 1} = zeros(3),
+                                origo::Array{float, 1} = zeros(2),
                                 time::Array{float, 1} = zeros(1),
                                 name::String = "unnamed")
 
@@ -221,8 +221,8 @@ function createRegularOceanGrid(n::Array{Int, 1},
     xh = repmat(linspace(origo[1] + .5*dx[1], L[1] - .5*dx[1], n[1]), 1, n[2])
     yh = repmat(linspace(origo[2] + .5*dx[2], L[2] - .5*dx[2], n[2])', n[1], 1)
 
-    zl = linspace(origo[3] + .5*dx[3], L[3] - .5*dx[3], n[3])
-    zi = linspace(origo[3], L[3], n[3] + 1)
+    zl = linspace(-L[3] + .5*dx[3], -.5*dx[3], n[3])
+    zi = linspace(-L[3], 0., n[3] + 1)
 
     u = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
     v = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
