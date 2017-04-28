@@ -36,7 +36,7 @@ end
 export findContactsAllToAll
 """
 Perform an O(n^2) all-to-all contact search between all ice floes in the 
-`simulation` object.
+`simulation` object.  Contacts between fixed ice floes are ignored.
 """
 function findContactsAllToAll!(simulation::Simulation)
 
@@ -45,6 +45,11 @@ function findContactsAllToAll!(simulation::Simulation)
         # Check contacts with other grains
         for j = 1:length(simulation.ice_floes)
             if i < j
+
+                if simulation.ice_floes[i].fixed &&
+                    simulation.ice_floes[j].fixed
+                    continue
+                end
 
                 # Inter-grain position vector and grain overlap
                 position_ij = interIceFloePositionVector(simulation, i, j)

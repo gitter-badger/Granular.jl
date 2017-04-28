@@ -37,6 +37,13 @@ SeaIce.findContacts!(sim)
 
 @test_throws ErrorException SeaIce.findContacts!(sim, method="")
 
+sim = deepcopy(sim_copy)
+sim.ice_floes[1].fixed = true
+sim.ice_floes[2].fixed = true
+SeaIce.findContacts!(sim)
+@test 0 == length(sim.overlaps)
+@test 0 == length(sim.contact_pairs)
+
 
 info("Testing if interact(...) removes contacts correctly")
 sim = deepcopy(sim_copy)
