@@ -8,14 +8,18 @@ info("Writing simple simulation to VTK file")
 sim = SeaIce.createSimulation(id="test")
 SeaIce.addIceFloeCylindrical(sim, [ 0., 0.], 10., 1., verbose=false)
 SeaIce.addIceFloeCylindrical(sim, [18., 0.], 10., 1., verbose=false)
+sim.ocean = SeaIce.createRegularOceanGrid([10, 20, 5], [10., 25., 2.])  
 SeaIce.writeVTK(sim)
 
 if Base.is_linux()
-    checksum = readstring(`sha256sum test.icefloes.1.vtu`)
+    cmd = "sha256sum"
 elseif Base.is_apple()
-    checksum = readstring(`shasum -a 256 test.icefloes.1.vtu`)
+    cmd = "shasum -a 256"
 else
-    warn("checksum verification of VTK file not supported on this platform")
+    error("checksum verification of VTK file not supported on this platform")
 end
+@test readstring(`$(cmd) test.icefloes.1.vtu`) == "1c0c2bdd265abdda22ef3727e7cac829e2321462d494be2e23364653f9529c87  test.icefloes.1.vtu\n"
+@test readstring(`$(cmd) test.ocean.1.vts`) == "f0117e414c4e71a0c55980f63865eb03b6c597fa2546983258b8a57eb4ff2a25  test.ocean.1.vts\n"
+
 rm("test.icefloes.1.vtu")
-@test checksum == "1c0c2bdd265abdda22ef3727e7cac829e2321462d494be2e23364653f9529c87  test.icefloes.1.vtu\n"
+rm("test.ocean.1.vts")
