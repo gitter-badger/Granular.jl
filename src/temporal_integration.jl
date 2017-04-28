@@ -1,4 +1,4 @@
-export updateIceFloeKinematics
+export updateIceFloeKinematics!
 """
     updateIceFloeKinematics!(simulation::Simulation[,
                              method::String = "Three-term Taylor"])
@@ -21,24 +21,24 @@ function updateIceFloeKinematics!(simulation::Simulation;
 
     if method == "Two-term Taylor"
         for ice_floe in simulation.ice_floes
-            updateIceFloeKinematicsTwoTermTaylor(ice_floe, simulation)
+            updateIceFloeKinematicsTwoTermTaylor!(ice_floe, simulation)
         end
     elseif method == "Three-term Taylor"
         for ice_floe in simulation.ice_floes
-            updateIceFloeKinematicsThreeTermTaylor(ice_floe, simulation)
+            updateIceFloeKinematicsThreeTermTaylor!(ice_floe, simulation)
         end
     else
         error("Unknown integration method '$method'")
     end
 end
 
-export updateIceFloeKinematicsTwoTermTaylor
+export updateIceFloeKinematicsTwoTermTaylor!
 """
 Use a two-term Taylor expansion for integrating the kinematic degrees of freedom 
 for an `icefloe`.
 """
-function updateIceFloeKinematicsTwoTermTaylor(icefloe::IceFloeCylindrical,
-                                              simulation::Simulation)
+function updateIceFloeKinematicsTwoTermTaylor!(icefloe::IceFloeCylindrical,
+                                               simulation::Simulation)
     icefloe.lin_acc = icefloe.force/icefloe.mass
     icefloe.ang_acc = icefloe.torque/icefloe.moment_of_inertia
 
@@ -60,13 +60,13 @@ function updateIceFloeKinematicsTwoTermTaylor(icefloe::IceFloeCylindrical,
     icefloe.ang_vel += icefloe.ang_acc * simulation.time_step
 end
 
-export updateIceFloeKinematicsThreeTermTaylor
+export updateIceFloeKinematicsThreeTermTaylor!
 """
 Use a three-term Taylor expansion for integrating the kinematic degrees of 
 freedom for an `icefloe`.
 """
-function updateIceFloeKinematicsThreeTermTaylor(icefloe::IceFloeCylindrical,
-                                                simulation::Simulation)
+function updateIceFloeKinematicsThreeTermTaylor!(icefloe::IceFloeCylindrical,
+                                                 simulation::Simulation)
     
     if simulation.time_iteration == 0
         lin_acc_0 = zeros(2)

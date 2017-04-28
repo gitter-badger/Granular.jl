@@ -28,7 +28,7 @@ function bilinearInterpolation(field::Array{Float64, 4},
             field[i-1, j-1, k, it]*(1. - x_tilde))*(1. - y_tilde)
 end
 
-export sortIceFloesInOceanGrid
+export sortIceFloesInOceanGrid!
 """
 Find ice-floe positions in ocean grid, based on their center positions.
 """

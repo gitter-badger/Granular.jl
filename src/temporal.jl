@@ -1,4 +1,4 @@
-export setTotalTime
+export setTotalTime!
 """
     setTotalTime!(simulation::Simulation, t::float)
 
@@ -12,7 +12,7 @@ function setTotalTime!(simulation::Simulation, t::float)
     simulation.time_total = t
 end
 
-export setCurrentTime
+export setCurrentTime!
 """
     setCurrentTime!(simulation::Simulation, t::float)
 
@@ -26,7 +26,7 @@ function setCurrentTime!(simulation::Simulation, t::float)
     simulation.time = t
 end
 
-export incrementCurrentTime
+export incrementCurrentTime!
 """
     incrementCurrentTime!(simulation::Simulation, t::float)
 
@@ -40,7 +40,7 @@ function incrementCurrentTime!(simulation::Simulation, t::float)
     simulation.time += t
 end
 
-export setOutputFileInterval
+export setOutputFileInterval!
 """
    setOutputFileInterval!(simulation::Simulation, t::float)
 
@@ -54,7 +54,7 @@ function setOutputFileInterval!(simulation::Simulation, t::float; verbose=true)
     simulation.file_time_step = t
 end
 
-export disableOutputFiles
+export disableOutputFiles!
 "Disables the write of output files to disk during a simulation."
 function disableOutputFiles!(simulation::Simulation)
     simulation.file_time_step = 0.0
@@ -111,7 +111,7 @@ function findLargestIceFloeStiffness(simulation::Simulation)
     return k_n_max, k_t_max, i_n_max, i_t_max
 end
 
-export setTimeStep
+export setTimeStep!
 """
 Find the computational time step length suitable given the grain radii, contact
 stiffnesses, and grain density. Uses the scheme by Radjaii et al. 2011.

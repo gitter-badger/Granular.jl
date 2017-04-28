@@ -239,7 +239,7 @@ function createRegularOceanGrid(n::Array{Int, 1},
                  u, v, h, e)
 end
 
-export addOceanDrag
+export addOceanDrag!
 """
 Add Stokes-type drag from velocity difference between ocean and all ice floes.
 """
@@ -255,7 +255,7 @@ function addOceanDrag!(simulation::Simulation)
     end
 end
 
-export applyOceanDragToIceFloe
+export applyOceanDragToIceFloe!
 """
 Add Stokes-type drag from velocity difference between ocean and a single ice 
 floe.

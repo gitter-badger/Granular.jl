@@ -1,6 +1,6 @@
 ## Interaction functions
 
-export interact
+export interact!
 """
 Resolve mechanical interaction between all particle pairs.
 """
@@ -15,7 +15,7 @@ function interact!(simulation::Simulation)
     end
 end
 
-export interactIceFloes
+export interactIceFloes!
 """
 Resolve an grain-to-grain interaction using a prescibed contact law.  This 
 function adds the compressive force of the interaction to the ice floe 
