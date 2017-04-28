@@ -244,14 +244,24 @@ export addOceanDrag!
 Add Stokes-type drag from velocity difference between ocean and all ice floes.
 """
 function addOceanDrag!(simulation::Simulation)
-    if !simulation.ocean.id
+    if typeof(simulation.ocean.input_file) == Bool
         error("no ocean data read")
     end
 
     u, v, h, e = interpolateOceanState(simulation.ocean, simulation.time)
 
     for ice_floe in simulation.ice_floes
-        applyOceanDragToIceFloe!(ice_floe, u, v)
+        i, j = ice_floe.ocean_grid_pos
+        k = 1
+
+        x_tilde, y_tilde = getNonDimensionalCellCoordinates(simulation.ocean,
+                                                            i, j,
+                                                            ice_floe.lin_pos)
+
+        u_local = bilinearInterpolation(u, x_tilde, y_tilde, i, j, k, 1)
+        v_local = bilinearInterpolation(v, x_tilde, y_tilde, i, j, k, 1)
+
+        applyOceanDragToIceFloe!(ice_floe, u_local, v_local)
     end
 end
 
@@ -262,5 +272,15 @@ floe.
 """
 function applyOceanDragToIceFloe!(ice_floe::IceFloeCylindrical,
                                   u::float, v::float)
+    freeboard = .1*ice_floe.thickness  # height above water
+    rho_o = 1000.   # ocean density
+    draft = ice_floe.thickness - freeboard  # height of submerged thickness
+    c_o_v = 123  # ocean drag coefficient, vertical
+    c_o_h = 123  # ocean drag coefficient, horizontal
+    length = ice_floe.areal_radius*2.
+    width = ice_floe.areal_radius*2.
 
+    ice_floe.force +=
+        rho_w * (.5*c_o_v*width*draft*freeboard + c_o_h*length*width) *
+        ([u, v] - ice_floe.vel)*norm([u, v] - ice_floe.vel)
 end

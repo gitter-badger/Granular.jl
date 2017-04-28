@@ -110,7 +110,7 @@ function run!(simulation::Simulation;
         zeroForcesAndTorques!(simulation)
         findContacts!(simulation)
         interact!(simulation)
-        if simulation.ocean.input_file
+        if typeof(simulation.ocean.input_file) != Bool
             addOceanDrag!(simulation)
         end
         updateIceFloeKinematics!(simulation, method=temporal_integration_method)

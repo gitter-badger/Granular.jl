@@ -98,6 +98,9 @@ end
 n = length(sim.ice_floes) - n_walls
 info("added $(n) ice floes")
 
-
 writeVTK(sim)
+
 # Run temporal loop
+setTotalTime!(sim, 24.*60.*60.)
+setTimeStep!(sim)
+run!(sim)

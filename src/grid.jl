@@ -72,6 +72,21 @@ function findCellContainingPoint(ocean::Ocean, point::Array{float, 1})
     return i, j
 end
 
+export getNonDimensionalCellCoordinates
+"""
+Returns the non-dimensional conformal mapped coordinates for point `point` in 
+cell `i,j`, based off the coordinates in the `ocean` grid.
+
+This function is a wrapper for `getCellCornerCoordinates()` and 
+`conformalQuadrilateralCoordinates()`.
+"""
+function getNonDimensionalCellCoordinates(ocean::Ocean, i::Int, j::Int,
+                                          point::Array{float, 1})
+
+    sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
+    x_tilde, y_tilde = conformalQuadrilateralCoordinates(sw, se, ne, nw, point)
+    return x_tilde, y_tilde
+end
 
 export isPointInCell
 """
@@ -81,7 +96,7 @@ conformal mapping approach (`method = "Conformal"`).  The area-based approach is
 more robust.  This function returns `true` or `false`.
 """
 function isPointInCell(ocean::Ocean, i::Int, j::Int, point::Array{float, 1};
-                      method::String="Area")
+                       method::String="Area")
 
     sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
 
