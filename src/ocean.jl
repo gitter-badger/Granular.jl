@@ -207,7 +207,8 @@ cells in the horizontal dimension, and `n[3]` vertical cells.  The cell corner
 and center coordinates will be set according to the grid spatial dimensions 
 `L[1]`, `L[2]`, and `L[3]`.  The grid `u`, `v`, `h`, and `e` fields will contain 
 one 4-th dimension matrix per `time` step.  Sea surface will be at `z=0.` with 
-the ocean spanning `z<0.`.
+the ocean spanning `z<0.`.  Vertical indexing starts with `k=0` at the sea 
+surface, and increases downwards.
 """
 function createRegularOceanGrid(n::Array{Int, 1},
                                 L::Array{float, 1};
@@ -222,8 +223,8 @@ function createRegularOceanGrid(n::Array{Int, 1},
     xh = repmat(linspace(origo[1] + .5*dx[1], L[1] - .5*dx[1], n[1]), 1, n[2])
     yh = repmat(linspace(origo[2] + .5*dx[2], L[2] - .5*dx[2], n[2])', n[1], 1)
 
-    zl = linspace(-L[3] + .5*dx[3], -.5*dx[3], n[3])
-    zi = linspace(-L[3], 0., n[3] + 1)
+    zl = -linspace(.5*dx[3], L[3] - .5*dx[3], n[3])
+    zi = -linspace(0., L[3], n[3] + 1)
 
     u = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
     v = zeros(n[1] + 1, n[2] + 1, n[3], length(time))

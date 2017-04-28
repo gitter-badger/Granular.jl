@@ -21,12 +21,12 @@ function writeVTK(simulation::Simulation;
     simulation.file_number += 1
     filename = string(folder, "/", simulation.id, ".icefloes.", 
                       simulation.file_number)
-    writeIceFloeVTK(simulation, filename)
+    writeIceFloeVTK(simulation, filename, verbose=verbose)
 
     if typeof(simulation.ocean.input_file) != Bool && ocean
         filename = string(folder, "/", simulation.id, ".ocean.", 
                         simulation.file_number)
-        writeOceanVTK(simulation.ocean, filename)
+        writeOceanVTK(simulation.ocean, filename, verbose=verbose)
     end
 end
 
@@ -125,16 +125,29 @@ function writeOceanVTK(ocean::Ocean,
     end
     for ix=1:size(xq, 1)
         for iy=1:size(xq, 2)
-            xq[ix,iy,:] = ocean.zl
-            yq[ix,iy,:] = ocean.zl
+            zq[ix,iy,:] = ocean.zl
         end
     end
 
     # add arrays to VTK file
     vtkfile = WriteVTK.vtk_grid(filename, xq, yq, zq)
 
-    WriteVTK.vtk_point_data(vtkfile, u, "Zonal velocity [m/s]")
-    WriteVTK.vtk_point_data(vtkfile, v, "Meridional velocity [m/s]")
+    WriteVTK.vtk_point_data(vtkfile, ocean.u[:, :, :, 1],
+                            "u: Zonal velocity [m/s]")
+    WriteVTK.vtk_point_data(vtkfile, ocean.v[:, :, :, 1],
+                            "v: Meridional velocity [m/s]")
+    # write velocities as 3d vector
+    vel = zeros(3, size(xq, 1), size(xq, 2), size(xq, 3))
+    for ix=1:size(xq, 1)
+        for iy=1:size(xq, 2)
+            for iz=1:size(xq, 3)
+                vel[1, ix, iy, iz] = ocean.u[ix, iy, iz, 1]
+                vel[2, ix, iy, iz] = ocean.v[ix, iy, iz, 1]
+            end
+        end
+    end
+    
+    WriteVTK.vtk_point_data(vtkfile, vel, "Velocity [m/s]")
 
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose

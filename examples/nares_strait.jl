@@ -13,7 +13,8 @@ sim.ocean = createRegularOceanGrid(n, L, name="poiseuille_flow")
 sim.ocean.v[:, :, 1, 1] = 1e-8*((sim.ocean.xq - Lx/2.).^2 - Lx^2./4.)
 
 # Initialize confining walls, which are ice floes that are fixed in space
-r = .5e3
+#r = .5e3
+r = minimum(L[1:2]/n[1:2])/2.
 h = 1.
 
 ## N-S segments
