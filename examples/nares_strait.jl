@@ -62,11 +62,41 @@ for i in 1:length(x)
     addIceFloeCylindrical(sim, [x[i], y[i]], r, h, fixed=true, verbose=false)
 end
 
-info("added $(length(sim.ice_floes)) fixed ice floes as walls")
+n_walls = length(sim.ice_floes)
+info("added $(n_walls) fixed ice floes as walls")
+
+# Initialize ice floes in wedge north of the constriction
+iy = 1
+dy = sqrt((2.*r)^2. - dx^2.)
+spacing_to_boundaries = 4.*r
+floe_padding = .5*r
+noise_amplitude = floe_padding
+Base.Random.srand(1)
+for y in (L[2] - r - noise_amplitude):(-(2.*r + floe_padding)):((L[2] - 
+    Ly_constriction)/2. + Ly_constriction)
+    for x in (Lx*.125):(2.*r + floe_padding):(Lx*.875 - 2.*r)
+        if iy % 2 == 0
+            x += 1.5*r
+        end
+
+        x_ = x + noise_amplitude*(0.5 - Base.Random.rand())
+        y_ = y +noise_amplitude*(0.5 - Base.Random.rand())
+
+        if y_ < -dy/dx*x_ + L[2] + spacing_to_boundaries
+            continue
+        end
+            
+        if y_ < dy/dx*x_ + (L[2] - dy/dx*Lx) + spacing_to_boundaries
+            continue
+        end
+            
+        addIceFloeCylindrical(sim, [x_, y_], r, h, verbose=false)
+    end
+    iy += 1
+end
+n = length(sim.ice_floes) - n_walls
+info("added $(n) ice floes")
+
+
 writeVTK(sim)
-
-
-# Initialize ice floes
-
-
 # Run temporal loop
