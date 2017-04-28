@@ -8,17 +8,42 @@ export writeVTK
 Write a VTK file to disk containing all ice floes in the `simulation` in an 
 unstructured mesh (file type `.vtu`).  These files can be read by ParaView and 
 can be visualized by applying a *Glyph* filter.
+
+If the simulation contains an `Ocean` data structure, it's contents will be 
+written to separate `.vtu` files.  This can be disabled by setting the argument 
+`ocean=false`.
 """
 function writeVTK(simulation::Simulation;
-                     folder::String=".",
-                     verbose::Bool=false)
+                  folder::String=".",
+                  verbose::Bool=false,
+                  ocean::Bool=true)
 
     simulation.file_number += 1
-    filename = string(folder, "/", simulation.id, ".", simulation.file_number)
+    filename = string(folder, "/", simulation.id, ".icefloes.", 
+                      simulation.file_number)
+    writeIceFloeVTK(simulation, filename)
+
+    if typeof(simulation.ocean.input_file) != Bool && ocean
+        filename = string(folder, "/", simulation.id, ".ocean.", 
+                        simulation.file_number)
+        writeOceanVTK(simulation.ocean, filename)
+    end
+end
+
+export writeIceFloeVTK
+"""
+Write a VTK file to disk containing all ice floes in the `simulation` in an 
+unstructured mesh (file type `.vtu`).  These files can be read by ParaView and 
+can be visualized by applying a *Glyph* filter.  This function is called by 
+`writeVTK()`.
+"""
+function writeIceFloeVTK(simulation::Simulation,
+                         filename::String;
+                         verbose::Bool=false)
 
     ifarr = convertIceFloeDataToArrays(simulation)
     
-    # write to disk
+    # add arrays to VTK file
     vtkfile = WriteVTK.vtk_grid(filename, ifarr.lin_pos, WriteVTK.MeshCell[])
 
     WriteVTK.vtk_point_data(vtkfile, ifarr.density, "Density [kg m^-3]")
@@ -69,6 +94,47 @@ function writeVTK(simulation::Simulation;
 
     WriteVTK.vtk_point_data(vtkfile, ifarr.pressure,
                             "Contact pressure [Pa]")
+
+    outfiles = WriteVTK.vtk_save(vtkfile)
+    if verbose
+        println("Output file: " * outfiles[1])
+    else
+        return nothing
+    end
+end
+
+export writeOceanVTK
+"""
+Write a VTK file to disk containing all ocean data in the `simulation` in a 
+structured grid (file type `.vts`).  These files can be read by ParaView and can 
+be visualized by applying a *Glyph* filter.  This function is called by 
+`writeVTK()`.
+"""
+function writeOceanVTK(ocean::Ocean,
+                       filename::String;
+                       verbose::Bool=false)
+    
+    # make each coordinate array three-dimensional
+    xq = similar(ocean.u[:,:,:,1])
+    yq = similar(ocean.u[:,:,:,1])
+    zq = similar(ocean.u[:,:,:,1])
+
+    for iz=1:size(xq, 3)
+        xq[:,:,iz] = ocean.xq
+        yq[:,:,iz] = ocean.yq
+    end
+    for ix=1:size(xq, 1)
+        for iy=1:size(xq, 2)
+            xq[ix,iy,:] = ocean.zl
+            yq[ix,iy,:] = ocean.zl
+        end
+    end
+
+    # add arrays to VTK file
+    vtkfile = WriteVTK.vtk_grid(filename, xq, yq, zq)
+
+    WriteVTK.vtk_point_data(vtkfile, u, "Zonal velocity [m/s]")
+    WriteVTK.vtk_point_data(vtkfile, v, "Meridional velocity [m/s]")
 
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
