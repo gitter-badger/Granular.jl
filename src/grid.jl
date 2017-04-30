@@ -63,8 +63,8 @@ Returns the `i`, `j` index of the ocean grid cell containing the `point`.
 function findCellContainingPoint(ocean::Ocean, point::Array{float, 1})
 
     found = false
-    for i=1:size(ocean.h, 1)
-        for j=1:size(ocean.h, 2)
+    for i=1:size(ocean.xh, 1)
+        for j=1:size(ocean.yh, 2)
             if isPointInCell(ocean, i, j, point)
                 return i, j
             end
