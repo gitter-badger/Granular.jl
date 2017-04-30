@@ -45,7 +45,7 @@ type IceFloeCylindrical
 
     pressure::float
 
-    #ocean_grid_pos::Array{Int, 2}
+    ocean_grid_pos::Array{Int, 1}
 end
 
 # Type for gathering data from ice floe objects into single arrays
@@ -130,6 +130,8 @@ https://mom6.readthedocs.io/en/latest/api/generated/pages/Horizontal_indexing.ht
     placement in `[xh, yh, zl, time]`.
 * `e::Array{Float64, Int}`: interface height relative to mean sea level [m],  
     dimensions correspond to placement in `[xh, yh, zi, time]`.
+* `ice_floe_list::Array{Float64, Int}`: interface height relative to mean sea 
+    level [m],  dimensions correspond to placement in `[xh, yh, zi, time]`.
 =#
 type Ocean
     input_file::Any
@@ -154,7 +156,7 @@ type Ocean
     h::Array{Float64, 4}
     e::Array{Float64, 4}
 
-    #ice_floe_list::Array{Array{Int, 1}, 2}
+    ice_floe_list::Array{Array{Int, 1}, 2}
 end
 
 # Top-level simulation type

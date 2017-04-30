@@ -35,6 +35,7 @@ Find ice-floe positions in ocean grid, based on their center positions.
 function sortIceFloesInOceanGrid!(simulation::Simulation, verbose=true)
 
     # TODO: initialize empty ice_floe_list before appending to list
+    simulation.ocean.ice_floe_list
 
     for idx in 1:length(simulation.ice_floes)
 

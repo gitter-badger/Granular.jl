@@ -28,7 +28,8 @@ function addIceFloeCylindrical(simulation::Simulation,
                                pressure::float = 0.,
                                fixed::Bool = false,
                                rotating::Bool = true,
-                               verbose::Bool = true)
+                               verbose::Bool = true,
+                               ocean_grid_pos::Array{Int, 1} = [0, 0])
 
     # Check input values
     if length(lin_pos) != 2
@@ -97,7 +98,9 @@ function addIceFloeCylindrical(simulation::Simulation,
                                  contact_static_friction,
                                  contact_dynamic_friction,
 
-                                 pressure
+                                 pressure,
+
+                                 ocean_grid_pos
                                 )
 
     # Overwrite previous placeholder values
