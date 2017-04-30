@@ -285,6 +285,6 @@ function applyOceanDragToIceFloe!(ice_floe::IceFloeCylindrical,
     width = ice_floe.areal_radius*2.
 
     ice_floe.force +=
-        rho_w * (.5*c_o_v*width*draft*freeboard + c_o_h*length*width) *
+        rho_o * (.5*c_o_v*width*draft*freeboard + c_o_h*length*width) *
         ([u, v] - ice_floe.vel)*norm([u, v] - ice_floe.vel)
 end

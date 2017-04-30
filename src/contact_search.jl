@@ -17,7 +17,7 @@ within the vicinity.  When this method is applied, it is assumed that the
 * `method::String`: the contact-search method to apply.  Valid options are "all 
     to all" and "ocean grid".
 """
-function findContacts!(simulation::Simulation,
+function findContacts!(simulation::Simulation;
                        method::String = "all to all")
 
     if method == "all to all"
