@@ -14,7 +14,7 @@ SeaIce.writeVTK(sim)
 if Base.is_linux()
     cmd = "sha256sum"
 elseif Base.is_apple()
-    cmd = "shasum -a 256"
+    cmd = ["shasum", "-a", "256"]
 else
     error("checksum verification of VTK file not supported on this platform")
 end
