@@ -1,6 +1,7 @@
 #!/usr/bin/env julia
 
-# Check the contact search and geometry of a two-particle interaction
+# Check the grid interpolation and sorting functions
+verbose = true
 
 info("#### $(basename(@__FILE__)) ####")
 
@@ -82,3 +83,16 @@ info("Testing cell binning")
 @test SeaIce.findCellContainingPoint(ocean, [6.2, 53.4]) == (1, 1)
 @test SeaIce.findCellContainingPoint(ocean, [7.2, 53.4]) == (2, 1)
 @test_throws ErrorException SeaIce.findCellContainingPoint(ocean, [0.2, 53.4])
+
+sim = SeaIce.createSimulation()
+sim.ocean = SeaIce.readOceanNetCDF("Baltic/00010101.ocean_month.nc",
+                                   "Baltic/ocean_hgrid.nc")
+SeaIce.addIceFloeCylindrical(sim, [6.5, 53.5], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [6.6, 53.5], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [7.5, 53.5], 10., 1., verbose=verbose)
+SeaIce.sortIceFloesInOceanGrid!(sim, verbose=verbose)
+@test sim.ice_floes[1].ocean_grid_pos == [1, 1]
+@test sim.ice_floes[2].ocean_grid_pos == [1, 1]
+@test sim.ice_floes[3].ocean_grid_pos == [2, 1]
+@test sim.ocean.ice_floe_list[1, 1] == [1, 2]
+@test sim.ocean.ice_floe_list[2, 1] == [3]

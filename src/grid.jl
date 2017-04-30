@@ -32,22 +32,27 @@ export sortIceFloesInOceanGrid!
 """
 Find ice-floe positions in ocean grid, based on their center positions.
 """
-function sortIceFloesInOceanGrid!(simulation::Simulation, verbose=true)
+function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
 
-    # TODO: initialize empty ice_floe_list before appending to list
-    simulation.ocean.ice_floe_list
+    simulation.ocean.ice_floe_list =
+        Array{Array{Int, 1}}(size(simulation.ocean.xh, 1), 
+                             size(simulation.ocean.xh, 2))
+    for i=1:size(simulation.ocean.xh, 1)
+        for j=1:size(simulation.ocean.xh, 2)
+            simulation.ocean.ice_floe_list[i, j] = Int[]
+        end
+    end
 
     for idx in 1:length(simulation.ice_floes)
 
-        if cellContainsIceFloe(simulation.ocean, i, j,
-                               simulation.ice_floes[idx])
+        i, j = findCellContainingPoint(simulation.ocean,
+                                       simulation.ice_floes[idx].lin_pos)
 
-            # add cell to ice floe
-            simulation.ice_floes[idx].ocean_grid_pos = [i, j]
+        # add cell to ice floe
+        simulation.ice_floes[idx].ocean_grid_pos = [i, j]
 
-            # add ice floe to cell
-            push!(simulation.ice_floe_list[i, j], idx)
-        end
+        # add ice floe to cell
+        push!(simulation.ocean.ice_floe_list[i, j], idx)
     end
 end
 
@@ -127,10 +132,6 @@ Returns ocean-grid corner coordinates in the following order (south-west corner,
 south-east corner, north-east corner, north-west corner).
 """
 function getCellCornerCoordinates(ocean::Ocean, i::Int, j::Int)
-    #sw = [ocean.xq[i-1, j-1], ocean.yq[i-1, j-1]]
-    #se = [ocean.xq[  i, j-1], ocean.yq[  i, j-1]]
-    #ne = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
-    #nw = [ocean.xq[i-1,   j], ocean.yq[i-1,   j]]
     sw = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
     se = [ocean.xq[i+1,   j], ocean.yq[i+1,   j]]
     ne = [ocean.xq[i+1, j+1], ocean.yq[i+1, j+1]]

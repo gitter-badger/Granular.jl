@@ -108,6 +108,9 @@ function run!(simulation::Simulation;
         end
 
         zeroForcesAndTorques!(simulation)
+        if typeof(simulation.ocean.input_file) != Bool
+            sortIceFloesInOceanGrid!(simulation)
+        end
         findContacts!(simulation)
         interact!(simulation)
         if typeof(simulation.ocean.input_file) != Bool
