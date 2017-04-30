@@ -94,11 +94,11 @@ end
 
 #=
 Type containing all relevant data from MOM6 NetCDF files.  The ocean grid is a 
-staggered of Arakawa-C type, with north-east convention centered on the 
-    h-points.  During read, the velocities are interpolated to the cell corners 
-    (q-points).
+staggered of Arakawa-C type, with south-west convention centered on the 
+h-points.  During read, the velocities are interpolated to the cell corners 
+(q-points).
 
-    q(i-1,  j) ------------------ q(  i,  j)
+    q(  i,j+1) ------------------ q(i+1,j+1)
          |                             |
          |                             |
          |                             |
@@ -108,10 +108,7 @@ staggered of Arakawa-C type, with north-east convention centered on the
          |                             |
          |                             |
          |                             |
-    q(i-1,j-1) ------------------ q(  i,j-1)
-
-Source: 
-https://mom6.readthedocs.io/en/latest/api/generated/pages/Horizontal_indexing.html
+    q(  i,  j) ------------------ q(i+1,  j)
 
 # Fields
 * `input_file::String`: path to input NetCDF file

@@ -1,7 +1,7 @@
 """
 Use bilinear interpolation to interpolate a staggered grid to an arbitrary 
-position in a cell.  Assumes north-east convention, i.e. (i,j) is located at the 
-north-east corner.
+position in a cell.  Assumes south-west convention, i.e. (i,j) is located at the 
+south-west (-x, -y)-facing corner.
 
 # Arguments
 * `field::Array{Float64, 4}`: a scalar field to interpolate from
@@ -22,10 +22,10 @@ function bilinearInterpolation(field::Array{Float64, 4},
         error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
     end
 
-    return (field[i, j, k, it]*x_tilde +
-            field[i-1, j, k, it]*(1. - x_tilde))*y_tilde +
-           (field[i, j-1, k, it]*x_tilde +
-            field[i-1, j-1, k, it]*(1. - x_tilde))*(1. - y_tilde)
+    return (field[i+1, j+1, k, it]*x_tilde +
+            field[i, j+1, k, it]*(1. - x_tilde))*y_tilde +
+           (field[i+1, j, k, it]*x_tilde +
+            field[i, j, k, it]*(1. - x_tilde))*(1. - y_tilde)
 end
 
 export sortIceFloesInOceanGrid!
@@ -58,8 +58,8 @@ Returns the `i`, `j` index of the ocean grid cell containing the `point`.
 function findCellContainingPoint(ocean::Ocean, point::Array{float, 1})
 
     found = false
-    for i=2:(size(ocean.h)[1] + 1)
-        for j=2:(size(ocean.h)[2] + 1)
+    for i=1:size(ocean.h, 1)
+        for j=1:size(ocean.h, 2)
             if isPointInCell(ocean, i, j, point)
                 return i, j
             end
@@ -131,10 +131,14 @@ Returns ocean-grid corner coordinates in the following order (south-west corner,
 south-east corner, north-east corner, north-west corner).
 """
 function getCellCornerCoordinates(ocean::Ocean, i::Int, j::Int)
-    sw = [ocean.xq[i-1, j-1], ocean.yq[i-1, j-1]]
-    se = [ocean.xq[  i, j-1], ocean.yq[  i, j-1]]
-    ne = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
-    nw = [ocean.xq[i-1,   j], ocean.yq[i-1,   j]]
+    #sw = [ocean.xq[i-1, j-1], ocean.yq[i-1, j-1]]
+    #se = [ocean.xq[  i, j-1], ocean.yq[  i, j-1]]
+    #ne = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
+    #nw = [ocean.xq[i-1,   j], ocean.yq[i-1,   j]]
+    sw = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
+    se = [ocean.xq[i+1,   j], ocean.yq[i+1,   j]]
+    ne = [ocean.xq[i+1, j+1], ocean.yq[i+1, j+1]]
+    nw = [ocean.xq[  i, j+1], ocean.yq[  i, j+1]]
     return sw, se, ne, nw
 end
 

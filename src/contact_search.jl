@@ -1,17 +1,29 @@
 ## Contact mapping
 export findContacts!
 """
+    findContacts!(simulation[, method])
+    
 Top-level function to perform an inter-ice floe contact search, based on ice 
 floe linear positions and contact radii.
 
 The simplest contact search algorithm (`method="all to all"`) is the most 
-computationally expensive (O(n^2)).
+computationally expensive (O(n^2)).  The method "ocean grid" bins the ice floes 
+into their corresponding cells on the ocean grid and searches for contacts only 
+within the vicinity.  When this method is applied, it is assumed that the 
+`contact_radius` values of the ice floes are *smaller than half the cell size*.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the ice floes.
+* `method::String`: the contact-search method to apply.  Valid options are "all 
+    to all" and "ocean grid".
 """
 function findContacts!(simulation::Simulation,
                        method::String = "all to all")
 
     if method == "all to all"
         findContactsAllToAll!(simulation)
+    elseif method == "ocean grid"
+        findContactsOceanGrid!(simulation)
     else
         error("Unknown contact search method '$method'")
     end
