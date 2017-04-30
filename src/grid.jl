@@ -86,7 +86,7 @@ function getNonDimensionalCellCoordinates(ocean::Ocean, i::Int, j::Int,
 
     sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
     x_tilde, y_tilde = conformalQuadrilateralCoordinates(sw, se, ne, nw, point)
-    return x_tilde, y_tilde
+    return [x_tilde, y_tilde]
 end
 
 export isPointInCell

@@ -14,13 +14,23 @@ info("Testing area-determination methods")
 
 info("Testing area-based cell content determination")
 @test SeaIce.isPointInCell(ocean, 2, 2, [6.5, 53.5]) == true
+@test SeaIce.getNonDimensionalCellCoordinates(ocean, 2, 2, [6.5, 53.5]) ≈
+    [.5, .5]
 @test SeaIce.isPointInCell(ocean, 2, 2, [6.1, 53.5]) == true
+@test SeaIce.getNonDimensionalCellCoordinates(ocean, 2, 2, [6.1, 53.5]) ≈
+    [.1, .5]
 @test SeaIce.isPointInCell(ocean, 2, 2, [6.0, 53.5]) == true
+@test SeaIce.getNonDimensionalCellCoordinates(ocean, 2, 2, [6.0, 53.5]) ≈
+    [.0, .5]
 @test SeaIce.isPointInCell(ocean, 2, 2, [6.1, 53.7]) == true
 @test SeaIce.isPointInCell(ocean, 2, 2, [6.1, 53.9]) == true
 @test SeaIce.isPointInCell(ocean, 2, 2, [6.1, 53.99999]) == true
+@test SeaIce.getNonDimensionalCellCoordinates(ocean, 2, 2, [6.1, 53.99999]) ≈
+    [.1, .99999]
 @test SeaIce.isPointInCell(ocean, 2, 2, [7.5, 53.5]) == false
 @test SeaIce.isPointInCell(ocean, 2, 2, [0.0, 53.5]) == false
+x_tilde, _ = SeaIce.getNonDimensionalCellCoordinates(ocean, 2, 2, [0., 53.5])
+@test x_tilde < 0.
 
 info("Testing conformal mapping methods")
 @test SeaIce.conformalQuadrilateralCoordinates([0., 0.],
