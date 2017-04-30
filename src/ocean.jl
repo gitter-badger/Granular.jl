@@ -279,12 +279,12 @@ function applyOceanDragToIceFloe!(ice_floe::IceFloeCylindrical,
     freeboard = .1*ice_floe.thickness  # height above water
     rho_o = 1000.   # ocean density
     draft = ice_floe.thickness - freeboard  # height of submerged thickness
-    c_o_v = 123  # ocean drag coefficient, vertical
-    c_o_h = 123  # ocean drag coefficient, horizontal
+    c_o_v = .85  # ocean drag coefficient, vertical, Hunke and Comeau 2011
+    c_o_h = 5e-4  # ocean drag coefficient, horizontal
     length = ice_floe.areal_radius*2.
     width = ice_floe.areal_radius*2.
 
     ice_floe.force +=
         rho_o * (.5*c_o_v*width*draft*freeboard + c_o_h*length*width) *
-        ([u, v] - ice_floe.vel)*norm([u, v] - ice_floe.vel)
+        ([u, v] - ice_floe.lin_vel)*norm([u, v] - ice_floe.lin_vel)
 end

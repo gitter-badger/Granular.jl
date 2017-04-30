@@ -47,6 +47,8 @@ end
 
 export findContactsAllToAll!
 """
+    findContactsAllToAll!(simulation)
+
 Perform an O(n^2) all-to-all contact search between all ice floes in the 
 `simulation` object.  Contacts between fixed ice floes are ignored.
 """
@@ -72,6 +74,51 @@ function findContactsAllToAll!(simulation::Simulation)
                     push!(simulation.contact_pairs, [i, j])
                     push!(simulation.overlaps, 
                           overlap_ij*position_ij/norm(position_ij))
+                end
+            end
+        end
+    end
+end
+
+export findContactsOceanGrid!
+"""
+    findContactsOceanGrid!(simulation)
+
+Perform an O(n*log(n)) cell-based contact search between all ice floes in the 
+`simulation` object.  Contacts between fixed ice floes are ignored.
+"""
+function findContactsOceanGrid!(simulation::Simulation)
+
+    for idx_i = 1:length(simulation.ice_floes)
+
+        grid_pos = simulation.ice_floes[idx_i].ocean_grid_pos
+        nx, ny = size(simulation.ocean.xh)
+
+        for i=(grid_pos[1] - 1):(grid_pos[1] + 1)
+            for j=(grid_pos[2] - 1):(grid_pos[2] + 1)
+
+                # only check for contacts within grid boundaries
+                if i < 1 || i > nx || j < 1 || j > ny
+                    continue
+                end
+
+                for idx_j in simulation.ocean.ice_floe_list[i, j]
+
+                    if idx_i < idx_j
+
+                        # Inter-grain position vector and grain overlap
+                        position_ij = interIceFloePositionVector(simulation,
+                                                                 idx_i, idx_j)
+                        overlap_ij = findOverlap(simulation, idx_i, idx_j, 
+                                                 position_ij)
+
+                        # Check if grains overlap (overlap when negative)
+                        if overlap_ij < 0.0
+                            push!(simulation.contact_pairs, [idx_i, idx_j])
+                            push!(simulation.overlaps, 
+                                  overlap_ij*position_ij/norm(position_ij))
+                        end
+                    end
                 end
             end
         end
