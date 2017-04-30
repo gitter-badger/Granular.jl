@@ -65,12 +65,8 @@ function findCellContainingPoint(ocean::Ocean, point::Array{float, 1})
             end
         end
     end
-    if !found
-        # throw an error for now, maybe remove ice floe later on
-        error("point not found in grid")
-    end
-
-    return i, j
+    # throw an error for now, maybe remove ice floe later on
+    error("point not found in grid")
 end
 
 export getNonDimensionalCellCoordinates
