@@ -30,6 +30,16 @@ info("Testing findContacts(...)")
 sim = deepcopy(sim_copy)
 SeaIce.findContacts!(sim)
 
+sim.ice_floes[1].fixed = true
+@test 1 == length(sim.overlaps)
+@test 1 == length(sim.contact_pairs)
+@test_approx_eq [1, 2] sim.contact_pairs[1]
+@test_approx_eq [-2., 0.] sim.overlaps[1]
+
+info("Testing findContacts(...)")
+sim = deepcopy(sim_copy)
+SeaIce.findContacts!(sim)
+
 @test 1 == length(sim.overlaps)
 @test 1 == length(sim.contact_pairs)
 @test_approx_eq [1, 2] sim.contact_pairs[1]
@@ -66,6 +76,28 @@ SeaIce.findContactsOceanGrid!(sim)
 @test 1 == length(sim.contact_pairs)
 @test_approx_eq [1, 2] sim.contact_pairs[1]
 @test_approx_eq [-2., 0.] sim.overlaps[1]
+
+sim = deepcopy(sim_copy)
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [80., 80., 2.])
+sim.ice_floes[1].fixed = true
+SeaIce.sortIceFloesInOceanGrid!(sim)
+SeaIce.findContactsOceanGrid!(sim)
+
+@test 1 == length(sim.overlaps)
+@test 1 == length(sim.contact_pairs)
+@test_approx_eq [1, 2] sim.contact_pairs[1]
+@test_approx_eq [-2., 0.] sim.overlaps[1]
+
+sim = deepcopy(sim_copy)
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [80., 80., 2.])
+sim.ice_floes[1].fixed = true
+sim.ice_floes[2].fixed = true
+println(length(sim.ice_floes))
+SeaIce.sortIceFloesInOceanGrid!(sim)
+SeaIce.findContactsOceanGrid!(sim)
+
+@test 0 == length(sim.overlaps)
+@test 0 == length(sim.contact_pairs)
 
 info("Testing findContacts(...)")
 sim = deepcopy(sim_copy)

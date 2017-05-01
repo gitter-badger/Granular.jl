@@ -60,8 +60,8 @@ function findContactsAllToAll!(simulation::Simulation)
         for j = 1:length(simulation.ice_floes)
             if i < j
 
-                if simulation.ice_floes[i].fixed &&
-                    simulation.ice_floes[j].fixed ||
+                if (simulation.ice_floes[i].fixed &&
+                    simulation.ice_floes[j].fixed) ||
                     !simulation.ice_floes[i].enabled ||
                     !simulation.ice_floes[j].enabled
                     continue
@@ -107,11 +107,11 @@ function findContactsOceanGrid!(simulation::Simulation)
                 for idx_j in simulation.ocean.ice_floe_list[i, j]
 
                     if idx_i < idx_j
-                        if simulation.ice_floes[i].fixed &&
-                            simulation.ice_floes[j].fixed ||
-                            !simulation.ice_floes[i].enabled ||
-                            !simulation.ice_floes[j].enabled
-                            continue
+
+                        if (simulation.ice_floes[idx_i].fixed &&
+                            simulation.ice_floes[idx_j].fixed) ||
+                            !simulation.ice_floes[idx_i].enabled ||
+                            !simulation.ice_floes[idx_j].enabled
                         end
 
                         # Inter-grain position vector and grain overlap
