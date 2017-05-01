@@ -15,7 +15,7 @@ written to separate `.vtu` files.  This can be disabled by setting the argument
 """
 function writeVTK(simulation::Simulation;
                   folder::String=".",
-                  verbose::Bool=false,
+                  verbose::Bool=true,
                   ocean::Bool=true)
 
     simulation.file_number += 1
@@ -97,7 +97,7 @@ function writeIceFloeVTK(simulation::Simulation,
 
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
-        println("Output file: " * outfiles[1])
+        info("Output file: " * outfiles[1])
     else
         return nothing
     end
@@ -151,7 +151,7 @@ function writeOceanVTK(ocean::Ocean,
 
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
-        println("Output file: " * outfiles[1])
+        info("Output file: " * outfiles[1])
     else
         return nothing
     end

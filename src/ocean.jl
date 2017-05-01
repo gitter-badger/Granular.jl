@@ -261,6 +261,13 @@ function addOceanDrag!(simulation::Simulation)
         x_tilde, y_tilde = getNonDimensionalCellCoordinates(simulation.ocean,
                                                             i, j,
                                                             ice_floe.lin_pos)
+        if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
+            warn("""
+                 relative coordinates outside bounds ($(x_tilde), $(y_tilde)),
+                 pos = $(ice_floe.lin_pos) at i,j = $(i), $(j).
+
+                 """)
+        end
 
         u_local = bilinearInterpolation(u, x_tilde, y_tilde, i, j, k, 1)
         v_local = bilinearInterpolation(v, x_tilde, y_tilde, i, j, k, 1)

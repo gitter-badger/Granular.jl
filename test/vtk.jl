@@ -9,7 +9,7 @@ sim = SeaIce.createSimulation(id="test")
 SeaIce.addIceFloeCylindrical(sim, [ 0., 0.], 10., 1., verbose=false)
 SeaIce.addIceFloeCylindrical(sim, [18., 0.], 10., 1., verbose=false)
 sim.ocean = SeaIce.createRegularOceanGrid([10, 20, 5], [10., 25., 2.])  
-SeaIce.writeVTK(sim)
+SeaIce.writeVTK(sim, verbose=false)
 
 if Base.is_linux()
     cmd = "sha256sum"

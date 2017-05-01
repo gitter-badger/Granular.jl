@@ -1,4 +1,6 @@
 """
+    bilinearInterpolation(field, x_tilde, y_tilde, i, j, k, it)
+
 Use bilinear interpolation to interpolate a staggered grid to an arbitrary 
 position in a cell.  Assumes south-west convention, i.e. (i,j) is located at the 
 south-west (-x, -y)-facing corner.
