@@ -15,20 +15,19 @@ sim.ocean = SeaIce.createRegularOceanGrid(n, L, name="poiseuille_flow")
 sim.ocean.v[:, :, 1, 1] = 1e-8*((sim.ocean.xq - Lx/2.).^2 - Lx^2./4.)
 
 # Initialize confining walls, which are ice floes that are fixed in space
-#r = .5e3
 r = minimum(L[1:2]/n[1:2])/2.
 h = 1.
 
 ## N-S segments
 for y in linspace((L[2] - Ly_constriction)/2.,
                   Ly_constriction + (L[2] - Ly_constriction)/2., 
-                  Int(floor(Ly_constriction/(r*2))))
+                  Int(round(Ly_constriction/(r*2))))
     SeaIce.addIceFloeCylindrical(sim, [(Lx - Lx_constriction)/2., y], r, h, 
                                  fixed=true, verbose=false)
 end
 for y in linspace((L[2] - Ly_constriction)/2.,
                   Ly_constriction + (L[2] - Ly_constriction)/2., 
-                  Int(floor(Ly_constriction/(r*2))))
+                  Int(round(Ly_constriction/(r*2))))
     SeaIce.addIceFloeCylindrical(sim,
                                  [Lx_constriction + (L[1] - Lx_constriction)/2., 
                                   y], r, h, fixed=true, verbose=false)
