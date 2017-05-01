@@ -12,6 +12,8 @@ export createSimulation
                       ice_floes=Array{IceFloeCylindrical, 1}[],
                       contact_pairs=Array{Int64, 1}[],
                       overlaps=Array{Array{Float64, 1}, 1}[],
+                      contact_parallel_displacement=
+                          Array{Array{Float64, 1}, 1}[])
 
 Create a simulation object containing all relevant variables such as temporal 
 parameters, and lists of ice floes and contacts.
@@ -30,6 +32,8 @@ function createSimulation(;id::String="unnamed",
                           ice_floes=Array{IceFloeCylindrical, 1}[],
                           contact_pairs=Array{Int64, 1}[],
                           overlaps=Array{Array{Float64, 1}, 1}[],
+                          contact_parallel_displacement=
+                              Array{Array{Float64, 1}, 1}[],
                           ocean::Ocean=createEmptyOcean())
 
     return Simulation(id,
@@ -43,6 +47,7 @@ function createSimulation(;id::String="unnamed",
                       ice_floes,
                       contact_pairs,
                       overlaps,
+                      contact_parallel_displacement,
                       ocean)
 end
 
@@ -165,7 +170,7 @@ function disableIceFloe!(simulation::Simulation, i::Integer)
         error("Index must be greater than 0 (i = $i)")
     end
 
-    simulation.ice_floes[i].enable = false
+    simulation.ice_floes[i].enabled = false
 end
 
 export zeroForcesAndTorques!

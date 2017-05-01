@@ -10,7 +10,7 @@ L = [Lx, Lx*1.5, 1e3]
 Ly_constriction = L[2]*.33
 #n = [100, 100, 2]
 #n = [50, 50, 2]
-n = [25, 25, 2]
+n = [6, 6, 2]
 sim.ocean = SeaIce.createRegularOceanGrid(n, L, name="poiseuille_flow")
 sim.ocean.v[:, :, 1, 1] = 1e-8*((sim.ocean.xq - Lx/2.).^2 - Lx^2./4.)
 

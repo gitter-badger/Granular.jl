@@ -54,6 +54,18 @@ SeaIce.findContacts!(sim)
 @test 0 == length(sim.overlaps)
 @test 0 == length(sim.contact_pairs)
 
+sim = deepcopy(sim_copy)
+SeaIce.disableIceFloe!(sim, 1)
+SeaIce.findContacts!(sim)
+@test 0 == length(sim.overlaps)
+@test 0 == length(sim.contact_pairs)
+
+sim = deepcopy(sim_copy)
+SeaIce.disableIceFloe!(sim, 1)
+SeaIce.disableIceFloe!(sim, 2)
+SeaIce.findContacts!(sim)
+@test 0 == length(sim.overlaps)
+@test 0 == length(sim.contact_pairs)
 
 info("Testing if interact(...) removes contacts correctly")
 sim = deepcopy(sim_copy)
