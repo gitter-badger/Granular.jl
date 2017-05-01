@@ -50,6 +50,12 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
         i, j = findCellContainingPoint(simulation.ocean,
                                        simulation.ice_floes[idx].lin_pos)
 
+        # remove ice floe if it is outside of the grid
+        if i == 0 && j == 0
+export removeIceFloe!
+
+        end
+
         # add cell to ice floe
         simulation.ice_floes[idx].ocean_grid_pos = [i, j]
 
@@ -60,11 +66,19 @@ end
 
 export findCellContainingPoint
 """
+    findCellContainingPoint(ocean, point[, method])
+
 Returns the `i`, `j` index of the ocean grid cell containing the `point`.
 The function uses either an area-based approach (`method = "Area"`), or a 
 conformal mapping approach (`method = "Conformal"`).  The area-based approach is 
-more robust.  This function returns the coordinates of the cell or raises an 
-error.
+more robust.  This function returns the coordinates of the cell.  If no match is 
+found the function returns `(0,0)`.
+
+# Arguments
+* `ocean::Ocean`: object containing ocean data.
+* `point::Array{float, 1}`: two-dimensional vector of point to check.
+* `method::String`: approach to use for determining if point is inside cell or 
+    not, can be "Conformal" (default) or "Areal".
 """
 function findCellContainingPoint(ocean::Ocean, point::Array{float, 1};
                                  method::String="Conformal")
@@ -75,8 +89,7 @@ function findCellContainingPoint(ocean::Ocean, point::Array{float, 1};
             end
         end
     end
-    # throw an error for now, maybe remove ice floe later on
-    error("point not found in grid")
+    return 0, 0
 end
 
 export getNonDimensionalCellCoordinates

@@ -34,6 +34,7 @@ type IceFloeCylindrical
     # Kinematic constraint flags
     fixed::Bool
     rotating::Bool
+    enabled::Bool
 
     # Rheological parameters
     contact_stiffness_normal::float
@@ -80,6 +81,7 @@ type IceFloeArrays
     # Kinematic constraint flags
     fixed
     rotating
+    enabled
 
     # Rheological parameters
     contact_stiffness_normal

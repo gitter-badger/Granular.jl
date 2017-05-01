@@ -28,6 +28,7 @@ function addIceFloeCylindrical(simulation::Simulation,
                                pressure::float = 0.,
                                fixed::Bool = false,
                                rotating::Bool = true,
+                               enabled::Bool = true,
                                verbose::Bool = true,
                                ocean_grid_pos::Array{Int, 1} = [0, 0])
 
@@ -90,6 +91,7 @@ function addIceFloeCylindrical(simulation::Simulation,
 
                                  fixed,
                                  rotating,
+                                 enabled,
 
                                  contact_stiffness_normal,
                                  contact_stiffness_tangential,
@@ -183,6 +185,7 @@ function convertIceFloeDataToArrays(simulation::Simulation)
 
                           Array(Int, length(simulation.ice_floes)),
                           Array(Int, length(simulation.ice_floes)),
+                          Array(Int, length(simulation.ice_floes)),
 
                           Array(Float64, length(simulation.ice_floes)),
                           Array(Float64, length(simulation.ice_floes)),
@@ -221,6 +224,7 @@ function convertIceFloeDataToArrays(simulation::Simulation)
 
         ifarr.fixed[i] = Int(simulation.ice_floes[i].fixed)
         ifarr.rotating[i] = Int(simulation.ice_floes[i].rotating)
+        ifarr.enabled[i] = Int(simulation.ice_floes[i].enabled)
 
         ifarr.contact_stiffness_normal[i] = 
             simulation.ice_floes[i].contact_stiffness_normal

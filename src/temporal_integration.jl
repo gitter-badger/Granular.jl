@@ -21,10 +21,16 @@ function updateIceFloeKinematics!(simulation::Simulation;
 
     if method == "Two-term Taylor"
         for ice_floe in simulation.ice_floes
+            if !ice_floe.enabled
+                continue
+            end
             updateIceFloeKinematicsTwoTermTaylor!(ice_floe, simulation)
         end
     elseif method == "Three-term Taylor"
         for ice_floe in simulation.ice_floes
+            if !ice_floe.enabled
+                continue
+            end
             updateIceFloeKinematicsThreeTermTaylor!(ice_floe, simulation)
         end
     else

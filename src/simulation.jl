@@ -144,7 +144,6 @@ confirmation message will be printed to stdout`."
 function addIceFloe!(simulation::Simulation,
                      icefloe::IceFloeCylindrical,
                      verbose::Bool = False)
-    # Append icefloe to global icefloe array
     push!(simulation.ice_floes, icefloe)
 
     if verbose
@@ -160,6 +159,16 @@ function removeIceFloe!(simulation::Simulation, i::Integer)
     end
 
     delete!(simulation.ice_floes, i)
+end
+
+export disableIceFloe!
+"Disable ice floe with index `i` in the `simulation` object."
+function disableIceFloe!(simulation::Simulation, i::Integer)
+    if i < 1
+        error("Index must be greater than 0 (i = $i)")
+    end
+
+    simulation.ice_floes
 end
 
 export zeroForcesAndTorques!

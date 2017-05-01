@@ -78,6 +78,7 @@ function writeIceFloeVTK(simulation::Simulation,
 
     WriteVTK.vtk_point_data(vtkfile, ifarr.fixed, "Fixed in space [-]")
     WriteVTK.vtk_point_data(vtkfile, ifarr.rotating, "Free to rotate [-]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.enabled, "Enabled [-]")
 
     WriteVTK.vtk_point_data(vtkfile, ifarr.contact_stiffness_normal,
                             "Contact stiffness (normal) [N m^-1]")

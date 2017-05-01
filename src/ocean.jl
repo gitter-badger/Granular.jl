@@ -255,6 +255,11 @@ function addOceanDrag!(simulation::Simulation)
     u, v, h, e = interpolateOceanState(simulation.ocean, simulation.time)
 
     for ice_floe in simulation.ice_floes
+
+        if !ice_floe.enabled
+            continue
+        end
+
         i, j = ice_floe.ocean_grid_pos
         k = 1
 
