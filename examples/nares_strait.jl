@@ -120,7 +120,8 @@ while sim.time < sim.time_total
     end
     for i=1:size(sim.ocean.xh, 1)
         if sim.ocean.ice_floe_list[i, end] == []
-            x, y = SeaIce.getCellCenterCoordinates(sim.ocean, i, j)
+            x, y = SeaIce.getCellCenterCoordinates(sim.ocean, i, 
+                                                   size(sim.ocean.xh, 2))
             x += noise_amplitude*(0.5 - Base.Random.rand())
             y += noise_amplitude*(0.5 - Base.Random.rand())
             SeaIce.addIceFloeCylindrical(sim, [x, y], r, h, verbose=false)
