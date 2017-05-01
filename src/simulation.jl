@@ -26,6 +26,7 @@ function createSimulation(;id::String="unnamed",
                           time_step::Float64=-1.,
                           file_time_step::Float64=-1.,
                           file_number::Int=0,
+                          file_time_since_output_file::Float64=0.,
                           ice_floes=Array{IceFloeCylindrical, 1}[],
                           contact_pairs=Array{Int64, 1}[],
                           overlaps=Array{Array{Float64, 1}, 1}[],
@@ -38,6 +39,7 @@ function createSimulation(;id::String="unnamed",
                       time_step,
                       file_time_step,
                       file_number,
+                      file_time_since_output_file,
                       ice_floes,
                       contact_pairs,
                       overlaps,
@@ -89,15 +91,14 @@ function run!(simulation::Simulation;
 
     checkTimeParameters(simulation)
 
-    time_since_output_file = 0.0
 
     while simulation.time <= simulation.time_total
 
         if simulation.file_time_step > 0.0 &&
-            time_since_output_file >= simulation.file_time_step
+            simulation.file_time_since_output_file >= simulation.file_time_step
 
             writeVTK(simulation, verbose=show_file_output)
-            time_since_output_file = 0.0
+            simulation.file_time_since_output_file = 0.0
         end
 
         if verbose && simulation.time_iteration % status_interval == 0
@@ -120,7 +121,6 @@ function run!(simulation::Simulation;
         # Update time variables
         simulation.time_iteration += 1
         incrementCurrentTime!(simulation, simulation.time_step)
-        time_since_output_file = time_since_output_file + simulation.time_step
 
         if single_step
             return

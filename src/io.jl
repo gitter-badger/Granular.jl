@@ -160,13 +160,11 @@ end
 
 export removeSimulationFiles
 """
-    removeSimulationFiles(simulation[, folder, verbose])
+    removeSimulationFiles(simulation[, folder])
 
 Remove all simulation output files from the specified folder.
 """
-function removeSimulationFiles(simulation::Simulation;
-                               folder::String=".")
-
+function removeSimulationFiles(simulation::Simulation; folder::String=".")
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtu"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vts"`)
 end

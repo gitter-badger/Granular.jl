@@ -38,6 +38,7 @@ function incrementCurrentTime!(simulation::Simulation, t::float)
         error("Current time increment should be a positive value (t = $t s)")
     end
     simulation.time += t
+    simulation.file_time_since_output_file += t
 end
 
 export setOutputFileInterval!

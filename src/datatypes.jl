@@ -168,6 +168,7 @@ type Simulation
     time_step::Float64
     file_time_step::Float64
     file_number::Int
+    file_time_since_output_file::Float64
 
     ice_floes::Array{IceFloeCylindrical, 1}
     contact_pairs::Array{Array{Int, 1}, 1}
