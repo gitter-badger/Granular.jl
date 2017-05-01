@@ -112,3 +112,28 @@ SeaIce.sortIceFloesInOceanGrid!(sim, verbose=verbose)
 @test sim.ice_floes[3].ocean_grid_pos == [2, 1]
 @test sim.ocean.ice_floe_list[1, 1] == [1, 2]
 @test sim.ocean.ice_floe_list[2, 1] == [3]
+
+info("Testing ocean drag")
+sim = SeaIce.createSimulation()
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
+sim.ocean.u[:,:,1,1] = 5.
+SeaIce.addIceFloeCylindrical(sim, [2.5, 3.5], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [2.6, 2.5], 1., 1., verbose=verbose)
+SeaIce.sortIceFloesInOceanGrid!(sim, verbose=verbose)
+sim.time = ocean.time[1]
+SeaIce.addOceanDrag!(sim)
+@test sim.ice_floes[1].force[1] > 0.
+@test sim.ice_floes[1].force[2] ≈ 0.
+@test sim.ice_floes[2].force[1] > 0.
+@test sim.ice_floes[2].force[2] ≈ 0.
+sim.ocean.u[:,:,1,1] = -5.
+sim.ocean.v[:,:,1,1] = 5.
+SeaIce.addIceFloeCylindrical(sim, [2.5, 3.5], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [2.6, 2.5], 1., 1., verbose=verbose)
+SeaIce.sortIceFloesInOceanGrid!(sim, verbose=verbose)
+sim.time = ocean.time[1]
+SeaIce.addOceanDrag!(sim)
+@test sim.ice_floes[1].force[1] < 0.
+@test sim.ice_floes[1].force[2] > 0.
+@test sim.ice_floes[2].force[1] < 0.
+@test sim.ice_floes[2].force[2] > 0.
