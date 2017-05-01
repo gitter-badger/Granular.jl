@@ -81,7 +81,8 @@ noise_amplitude = floe_padding
 Base.Random.srand(1)
 for y in (L[2] - r - noise_amplitude):(-(2.*r + floe_padding)):((L[2] - 
     Ly_constriction)/2. + Ly_constriction)
-    for x in (Lx*.125):(2.*r + floe_padding):(Lx*.875 - 2.*r)
+    for x in (r + noise_amplitude):(2.*r + floe_padding):(Lx - r - 
+                                                          noise_amplitude)
         if iy % 2 == 0
             x += 1.5*r
         end
@@ -104,8 +105,19 @@ end
 n = length(sim.ice_floes) - n_walls
 info("added $(n) ice floes")
 
-# Run temporal loop
+# Set temporal parameters
 SeaIce.setTotalTime!(sim, 24.*60.*60.)
 SeaIce.setOutputFileInterval!(sim, 60.)
 SeaIce.setTimeStep!(sim)
-SeaIce.run!(sim, status_interval=1)
+
+# Run simulation for 10 time steps, then add new icefloes from the top
+while sim.time < sim.time_total
+    for it=1:10
+        SeaIce.run!(sim, status_interval=1, single_step=true)
+    end
+    for i=1:size(sim.ocean.xh, 1)
+        if sim.ocean.ice_floe_list[i, end] == []
+            SeaIce.addIceFloeCylindrical(sim, [x, y], r, h, verbose=false)
+        end
+    end
+end

@@ -8,6 +8,14 @@ info("#### $(basename(@__FILE__)) ####")
 ocean = SeaIce.readOceanNetCDF("Baltic/00010101.ocean_month.nc",
                                "Baltic/ocean_hgrid.nc")
 
+info("Testing coordinate retrieval functions")
+sw, se, ne, nw = SeaIce.getCellCornerCoordinates(ocean, 1, 1)
+@test sw ≈ [6., 53.]
+@test se ≈ [7., 53.]
+@test ne ≈ [7., 54.]
+@test nw ≈ [6., 54.]
+@test SeaIce.getCellCenterCoordinates(ocean, 1, 1) ≈ [6.5, 53.5]
+
 info("Testing area-determination methods")
 @test SeaIce.areaOfTriangle([0., 0.], [1., 0.], [0., 1.]) ≈ .5
 @test SeaIce.areaOfTriangle([1., 0.], [0., 1.], [0., 0.]) ≈ .5

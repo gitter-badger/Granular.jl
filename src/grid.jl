@@ -145,8 +145,15 @@ end
 
 export getCellCornerCoordinates
 """
+    getCellCornerCoordinates(ocean, i, j)
+
 Returns ocean-grid corner coordinates in the following order (south-west corner, 
 south-east corner, north-east corner, north-west corner).
+
+# Arguments
+* `ocean::Ocean`: ocean object containing grid.
+* `i::Int`: x-index of cell.
+* `j::Int`: y-index of cell.
 """
 function getCellCornerCoordinates(ocean::Ocean, i::Int, j::Int)
     sw = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
@@ -154,6 +161,21 @@ function getCellCornerCoordinates(ocean::Ocean, i::Int, j::Int)
     ne = [ocean.xq[i+1, j+1], ocean.yq[i+1, j+1]]
     nw = [ocean.xq[  i, j+1], ocean.yq[  i, j+1]]
     return sw, se, ne, nw
+end
+
+export getCellCenterCoordinates
+"""
+    getCellCenterCoordinates(ocean, i, j)
+
+Returns ocean-grid center coordinates (h-point).
+
+# Arguments
+* `ocean::Ocean`: ocean object containing grid.
+* `i::Int`: x-index of cell.
+* `j::Int`: y-index of cell.
+"""
+function getCellCenterCoordinates(ocean::Ocean, i::Int, j::Int)
+    return [ocean.xh[i, j], ocean.yh[i, j]]
 end
 
 export areaOfTriangle
