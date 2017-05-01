@@ -18,7 +18,7 @@ elseif Base.is_apple()
 else
     error("checksum verification of VTK file not supported on this platform")
 end
-@test readstring(`$(cmd) test.icefloes.1.vtu`) == "72f4e4b854d7e92afd8cde0b79a4af6a29e49714b751ffc30a4ff3867f44b50  test.icefloes.1.vtu\n"
+@test readstring(`$(cmd) test.icefloes.1.vtu`) == "72f4e4b854d7e92afd8cde0b79a4af6a29e49714b751ffc30a4ff3867f44b505  test.icefloes.1.vtu\n"
 @test readstring(`$(cmd) test.ocean.1.vts`) == "f0117e414c4e71a0c55980f63865eb03b6c597fa2546983258b8a57eb4ff2a25  test.ocean.1.vts\n"
 
 rm("test.icefloes.1.vtu")
