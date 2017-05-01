@@ -79,10 +79,19 @@ ocean.u[1, 2, 1, 1] = 0.0
 @test SeaIce.bilinearInterpolation(ocean.u, .25, .25, 1, 1, 1, 1) ≈ .75
 @test SeaIce.bilinearInterpolation(ocean.u, .75, .75, 1, 1, 1, 1) ≈ .25
 
-info("Testing cell binning")
-@test SeaIce.findCellContainingPoint(ocean, [6.2, 53.4]) == (1, 1)
-@test SeaIce.findCellContainingPoint(ocean, [7.2, 53.4]) == (2, 1)
-@test_throws ErrorException SeaIce.findCellContainingPoint(ocean, [0.2, 53.4])
+info("Testing cell binning - Area-based approach")
+@test SeaIce.findCellContainingPoint(ocean, [6.2,53.4], method="Area") == (1, 1)
+@test SeaIce.findCellContainingPoint(ocean, [7.2,53.4], method="Area") == (2, 1)
+@test_throws ErrorException SeaIce.findCellContainingPoint(ocean, [0.2, 53.4],
+                                                           method="Area")
+
+info("Testing cell binning - Conformal mapping")
+@test SeaIce.findCellContainingPoint(ocean, [6.2,53.4], method="Conformal") == 
+    (1, 1)
+@test SeaIce.findCellContainingPoint(ocean, [7.2,53.4], method="Conformal") == 
+    (2, 1)
+@test_throws ErrorException SeaIce.findCellContainingPoint(ocean, [0.2, 53.4],
+                                                           method="Conformal")
 
 sim = SeaIce.createSimulation()
 sim.ocean = SeaIce.readOceanNetCDF("Baltic/00010101.ocean_month.nc",

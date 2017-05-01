@@ -61,13 +61,16 @@ end
 export findCellContainingPoint
 """
 Returns the `i`, `j` index of the ocean grid cell containing the `point`.
+The function uses either an area-based approach (`method = "Area"`), or a 
+conformal mapping approach (`method = "Conformal"`).  The area-based approach is 
+more robust.  This function returns the coordinates of the cell or raises an 
+error.
 """
-function findCellContainingPoint(ocean::Ocean, point::Array{float, 1})
-
-    found = false
+function findCellContainingPoint(ocean::Ocean, point::Array{float, 1};
+                                 method::String="Conformal")
     for i=1:size(ocean.xh, 1)
         for j=1:size(ocean.yh, 2)
-            if isPointInCell(ocean, i, j, point)
+            if isPointInCell(ocean, i, j, point, method=method)
                 return i, j
             end
         end

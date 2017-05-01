@@ -104,8 +104,6 @@ end
 n = length(sim.ice_floes) - n_walls
 info("added $(n) ice floes")
 
-SeaIce.writeVTK(sim)
-
 # Run temporal loop
 SeaIce.setTotalTime!(sim, 24.*60.*60.)
 SeaIce.setOutputFileInterval!(sim, 60.)
