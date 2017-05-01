@@ -52,7 +52,7 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
 
         # remove ice floe if it is outside of the grid
         if i == 0 && j == 0
-            disableIceFloe(simulation, idx)
+            disableIceFloe!(simulation, idx)
         end
 
         # add cell to ice floe
