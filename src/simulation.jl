@@ -168,7 +168,7 @@ function disableIceFloe!(simulation::Simulation, i::Integer)
         error("Index must be greater than 0 (i = $i)")
     end
 
-    simulation.ice_floes
+    simulation.ice_floes[i].enable = false
 end
 
 export zeroForcesAndTorques!
