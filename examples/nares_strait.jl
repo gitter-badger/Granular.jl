@@ -105,6 +105,9 @@ end
 n = length(sim.ice_floes) - n_walls
 info("added $(n) ice floes")
 
+# Remove old simulation files
+SeaIce.removeSimulationFiles(sim)
+
 # Set temporal parameters
 SeaIce.setTotalTime!(sim, 24.*60.*60.)
 SeaIce.setOutputFileInterval!(sim, 60.)
