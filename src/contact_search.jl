@@ -112,6 +112,7 @@ function findContactsOceanGrid!(simulation::Simulation)
                             simulation.ice_floes[idx_j].fixed) ||
                             !simulation.ice_floes[idx_i].enabled ||
                             !simulation.ice_floes[idx_j].enabled
+                            continue
                         end
 
                         # Inter-grain position vector and grain overlap

@@ -92,7 +92,6 @@ sim = deepcopy(sim_copy)
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [80., 80., 2.])
 sim.ice_floes[1].fixed = true
 sim.ice_floes[2].fixed = true
-println(length(sim.ice_floes))
 SeaIce.sortIceFloesInOceanGrid!(sim)
 SeaIce.findContactsOceanGrid!(sim)
 
