@@ -97,6 +97,9 @@ function run!(simulation::Simulation;
         if simulation.file_time_step > 0.0 &&
             simulation.file_time_since_output_file >= simulation.file_time_step
 
+            if show_file_output
+                println()
+            end
             writeVTK(simulation, verbose=show_file_output)
             simulation.file_time_since_output_file = 0.0
         end
