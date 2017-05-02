@@ -4,7 +4,7 @@ mechanics.
 
 Build status on Linux/Mac: [![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) 
 
-Build status on Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/SeaIce.jl?svg=true)](https://ci.appveyor.com/project/anders-dc/seaice-jl/) 
+Build status on Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/seaice-jl?svg=true)](https://ci.appveyor.com/project/anders-dc/seaice-jl/) 
 
 Test coverage: [![codecov.io](http://codecov.io/github/anders-dc/SeaIce.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/SeaIce.jl?branch=master)
 
