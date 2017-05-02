@@ -88,7 +88,9 @@ function run!(simulation::Simulation;
               status_interval::Int=100,
               show_file_output::Bool=true,
               single_step::Bool=false,
-              temporal_integration_method::String="Three-term Taylor")
+              temporal_integration_method::String="Three-term Taylor",
+              contact_model::String="Three-term Taylor",
+             )
 
     if single_step && simulation.time >= simulation.time_total
         simulation.time_total += simulation.time_step

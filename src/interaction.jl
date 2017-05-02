@@ -4,7 +4,8 @@ export interact!
 """
 Resolve mechanical interaction between all particle pairs.
 """
-function interact!(simulation::Simulation)
+function interact!(simulation::Simulation;
+                   contact_model::String = "Linear Elastic No Tangential")
 
     # IceFloe to grain collisions
     while !isempty(simulation.contact_pairs)
@@ -13,7 +14,8 @@ function interact!(simulation::Simulation)
         contact_parallel_displacement = 
             pop!(simulation.contact_parallel_displacement)
         interactIceFloes!(simulation, contact_pair[1], contact_pair[2],
-                          overlap_vector, contact_parallel_displacement)
+                          overlap_vector, contact_parallel_displacement,
+                          contact_model=contact_model)
     end
 end
 
@@ -27,25 +29,27 @@ function interactIceFloes!(simulation::Simulation,
                            i::Integer, j::Integer,
                            overlap_vector::Array{Float64, 1},
                            contact_parallel_displacement::Array{Float64, 1};
-                           contact_normal::String = "LinearElasticNoTangential")
+                           contact_model::String =
+                               "Linear Elastic No Tangential")
 
     force = zeros(2)
 
-    if contact_normal == "None"
+    if contact_model == "None"
         return nothing
 
-    elseif contact_normal == "LinearElasticNoTangential" ||
-        contact_normal == "LinearElastic"
+    elseif contact_model == "Linear Elastic No Tangential" ||
+        contact_model == "LinearElastic"
         force_n = interactNormalLinearElastic(simulation, i, j, overlap_vector)
 
-        if contact_normal == "LinearElastic"
-            force_t, torque = interactTangentialLinearElastic(simulation, i, j,
-                                                              overlap_vector,
-                                                              contact_parallel_displacement)
+        if contact_model == "Linear Elastic"
+            force_t, torque = interactTangentialLinearElasticFrictional(
+                                         simulation, i, j,
+                                         overlap_vector,
+                                         contact_parallel_displacement)
         end
 
     else
-        error("Unknown contact_normal interaction model '$contact_normal'")
+        error("Unknown contact_model interaction model '$contact_model'")
     end
 
     simulation.ice_floes[i].force += force_n;
@@ -78,7 +82,7 @@ export interactTangentialLinearElastic
 Resolves linear-elastic interaction between two ice floes in the 
 contact-parallel (tangential) direction.
 """
-function interactTangentialLinearElastic(simulation::Simulation,
+function interactTangentialLinearElasticFrictional(simulation::Simulation,
                                      i::Integer, j::Integer,
                                      overlap_vector::vector,
                                      contact_parallel_displacement::vector)
@@ -90,7 +94,6 @@ function interactTangentialLinearElastic(simulation::Simulation,
     # correct displacement for contact rotation
     n = overlap_vector/norm(overlap_vector)
     contact_parallel_displacement -= (n * dot(n, contact_parallel_displacement))
-
 
     force_t = k_t_harmonic_mean * contact_parallel_displacement
 
