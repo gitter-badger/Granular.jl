@@ -15,6 +15,8 @@ if Base.is_linux()
     cmd = "sha256sum"
 elseif Base.is_apple()
     cmd = ["shasum", "-a", "256"]
+elseif Base.is_windows()
+    cmd = ["powershell", "-Command", "\"Get-FileHash", "-Algorithm", "SHA256\""]
 else
     error("checksum verification of VTK file not supported on this platform")
 end
