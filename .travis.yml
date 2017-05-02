@@ -2,6 +2,7 @@
 language: julia
 os:
   - linux
+  - osx
 julia:
   - release
   - nightly
@@ -11,6 +12,8 @@ notifications:
           - andersd@riseup.net
       on_success: never # default: change
       on_failure: always # default: always
-after_success:
-# push coverage results to Codecov
-  - julia -e 'cd(Pkg.dir("SeaIce")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+deploy:
+  - provider: script
+    script: julia -e 'cd(Pkg.dir("SeaIce")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+    on:
+      os: linux
