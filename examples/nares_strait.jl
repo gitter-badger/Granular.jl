@@ -113,11 +113,16 @@ SeaIce.setTotalTime!(sim, 24.*60.*60.)
 SeaIce.setOutputFileInterval!(sim, 60.)
 SeaIce.setTimeStep!(sim)
 
+gamma_t = 1e4  # N/(m/s)
+for i=1:length(sim.ice_floes)
+    sim.ice_floes[i].contact_viscosity_tangential = gamma_t
+end
+
 # Run simulation for 10 time steps, then add new icefloes from the top
 while sim.time < sim.time_total
     for it=1:10
         SeaIce.run!(sim, status_interval=1, single_step=true,
-                   contact_tangential_rheology="Linear Viscous Frictional")
+                    contact_tangential_rheology="Linear Viscous Frictional")
     end
     for i=1:size(sim.ocean.xh, 1)
         if sim.ocean.ice_floe_list[i, end] == []
@@ -126,10 +131,14 @@ while sim.time < sim.time_total
                                                    size(sim.ocean.xh, 2))
 
             # Enable for high mass flux
-            SeaIce.addIceFloeCylindrical(sim, [x-r, y-r], r, h, verbose=false)
-            SeaIce.addIceFloeCylindrical(sim, [x+r, y-r], r, h, verbose=false)
-            SeaIce.addIceFloeCylindrical(sim, [x+r, y+r], r, h, verbose=false)
-            SeaIce.addIceFloeCylindrical(sim, [x-r, y+r], r, h, verbose=false)
+            SeaIce.addIceFloeCylindrical(sim, [x-r, y-r], r, h, verbose=false,
+                    contact_viscosity_tangential=gamma_t)
+            SeaIce.addIceFloeCylindrical(sim, [x+r, y-r], r, h, verbose=false,
+                    contact_viscosity_tangential=gamma_t)
+            SeaIce.addIceFloeCylindrical(sim, [x+r, y+r], r, h, verbose=false,
+                    contact_viscosity_tangential=gamma_t)
+            SeaIce.addIceFloeCylindrical(sim, [x-r, y+r], r, h, verbose=false,
+                    contact_viscosity_tangential=gamma_t)
 
             # Enable for low mass flux
             #x += noise_amplitude*(0.5 - Base.Random.rand())
