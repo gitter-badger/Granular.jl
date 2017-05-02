@@ -1,6 +1,10 @@
 # SeaIce
 
-[![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) [![codecov.io](http://codecov.io/github/anders-dc/SeaIce.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/SeaIce.jl?branch=master)
+Build status on Linux/Mac: [![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) 
+
+Build status on Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/SeaIce.jl)](https://ci.appveyor.com/api/projects/status/github/SeaIce.jl) 
+
+Code test coverage: [![codecov.io](http://codecov.io/github/anders-dc/SeaIce.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/SeaIce.jl?branch=master)
 
 A [Julia](https://julialang.org) package for sea-ice thermodynamics and granular 
 mechanics.
