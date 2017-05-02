@@ -89,8 +89,8 @@ function run!(simulation::Simulation;
               show_file_output::Bool=true,
               single_step::Bool=false,
               temporal_integration_method::String="Three-term Taylor",
-              contact_model::String="Three-term Taylor",
-             )
+              contact_normal_rheology::String = "Linear Elastic",
+              contact_tangential_rheology::String = "None")
 
     if single_step && simulation.time >= simulation.time_total
         simulation.time_total += simulation.time_step
@@ -122,7 +122,9 @@ function run!(simulation::Simulation;
         else
             findContacts!(simulation, method="all to all")
         end
-        interact!(simulation)
+        interact!(simulation,
+                   contact_normal_rheology=contact_normal_rheology,
+                   contact_tangential_rheology=contact_tangential_rheology)
         if typeof(simulation.ocean.input_file) != Bool
             addOceanDrag!(simulation)
         end
