@@ -8,9 +8,9 @@ Lx = 50.e3
 Lx_constriction = Lx*.25
 L = [Lx, Lx*1.5, 1e3]
 Ly_constriction = L[2]*.33
-#n = [100, 100, 2]
-#n = [50, 50, 2]
-n = [6, 6, 2]
+#n = [100, 100, 2]  # high resolution
+#n = [50, 50, 2]  # intermedite resolution
+n = [6, 6, 2]  # coarse resolution
 sim.ocean = SeaIce.createRegularOceanGrid(n, L, name="poiseuille_flow")
 sim.ocean.v[:, :, 1, 1] = 1e-8*((sim.ocean.xq - Lx/2.).^2 - Lx^2./4.)
 
@@ -120,11 +120,24 @@ while sim.time < sim.time_total
     end
     for i=1:size(sim.ocean.xh, 1)
         if sim.ocean.ice_floe_list[i, end] == []
+
             x, y = SeaIce.getCellCenterCoordinates(sim.ocean, i, 
                                                    size(sim.ocean.xh, 2))
-            x += noise_amplitude*(0.5 - Base.Random.rand())
-            y += noise_amplitude*(0.5 - Base.Random.rand())
-            SeaIce.addIceFloeCylindrical(sim, [x, y], r, h, verbose=false)
+
+            # Enable for high mass flux
+            SeaIce.addIceFloeCylindrical(sim, [x-r, y-r], r, h, verbose=false)
+            SeaIce.addIceFloeCylindrical(sim, [x+r, y-r], r, h, verbose=false)
+            SeaIce.addIceFloeCylindrical(sim, [x+r, y+r], r, h, verbose=false)
+            SeaIce.addIceFloeCylindrical(sim, [x-r, y+r], r, h, verbose=false)
+
+            # Enable for low mass flux
+            #x += noise_amplitude*(0.5 - Base.Random.rand())
+            #y += noise_amplitude*(0.5 - Base.Random.rand())
+            #SeaIce.addIceFloeCylindrical(sim, [x, y], r, h, verbose=false)
         end
     end
 end
+
+
+
+
