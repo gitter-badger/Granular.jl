@@ -73,7 +73,7 @@ freedom for an `icefloe`.
 """
 function updateIceFloeKinematicsThreeTermTaylor!(icefloe::IceFloeCylindrical,
                                                  simulation::Simulation)
-    
+
     if simulation.time_iteration == 0
         lin_acc_0 = zeros(2)
         ang_acc_0 = 0.

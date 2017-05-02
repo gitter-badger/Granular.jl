@@ -122,7 +122,11 @@ function interactTangentialLinearViscousFrictional(simulation::Simulation,
 end
 
 function harmonicMean(a::Any, b::Any)
-    return 2.*a*b/(a + b)
+    hm = 2.*a*b/(a + b)
+    if isnan(hm)
+        return 0.
+    end
+    return hm
 end
 
 function findTorque(simulation::Simulation, overlap_vector::vector, 

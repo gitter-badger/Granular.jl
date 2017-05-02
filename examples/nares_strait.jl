@@ -116,7 +116,8 @@ SeaIce.setTimeStep!(sim)
 # Run simulation for 10 time steps, then add new icefloes from the top
 while sim.time < sim.time_total
     for it=1:10
-        SeaIce.run!(sim, status_interval=1, single_step=true)
+        SeaIce.run!(sim, status_interval=1, single_step=true,
+                   contact_tangential_rheology="Linear Viscous Frictional")
     end
     for i=1:size(sim.ocean.xh, 1)
         if sim.ocean.ice_floe_list[i, end] == []
@@ -137,7 +138,3 @@ while sim.time < sim.time_total
         end
     end
 end
-
-
-
-
