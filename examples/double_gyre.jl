@@ -7,7 +7,7 @@ sim = SeaIce.createSimulation(id="double_gyre")
 L = [100e3, 50e3, 1e3]
 Ly_constriction = 20e3
 #n = [750, 500, 2]  # high resolution
-n = [50, 25, 2]  # intermedite resolution
+n = [30, 15, 2]  # intermedite resolution
 #n = [8, 5, 2]  # coarse resolution
 sim.ocean = SeaIce.createRegularOceanGrid(n, L, name="double_gyre")
 
@@ -15,8 +15,8 @@ epsilon = 0.25  # amplitude of periodic oscillations
 t = 0.
 a = epsilon*sin(2.*pi*t)
 b = 1. - 2.*epsilon*sin(2.*pi*t)
-for i in size(sim.ocean.u, 1)
-    for j in size(sim.ocean.u, 2)
+for i=1:size(sim.ocean.u, 1)
+    for j=1:size(sim.ocean.u, 2)
 
         x = sim.ocean.xq[i, j]/(L[1]*.5)  # x in [0;2]
         y = sim.ocean.yq[i, j]/L[2]       # y in [0;1]
@@ -24,8 +24,8 @@ for i in size(sim.ocean.u, 1)
         f = a*x^2. + b*x
         df_dx = 2.*a*x + b
 
-        sim.ocean.u[i, j, 1, 1] = -pi/10.*sin(pi*f)*cos(pi*y)
-        sim.ocean.v[i, j, 1, 1] = pi/10.*cos(pi*f)*sin(pi*y)*df_dx
+        sim.ocean.u[i, j, 1, 1] = -pi/10.*sin(pi*f)*cos(pi*y) * 1e1
+        sim.ocean.v[i, j, 1, 1] = pi/10.*cos(pi*f)*sin(pi*y)*df_dx * 1e1
     end
 end
 
@@ -58,10 +58,10 @@ info("added $(n_walls) fixed ice floes as walls")
 floe_padding = .5*r
 noise_amplitude = .8*floe_padding
 Base.Random.srand(1)
-for y in (2.*r + noise_amplitude):(2.*r + floe_padding):(L[2] - 2.*r - 
+for y in (4.*r + noise_amplitude):(2.*r + floe_padding):(L[2] - 4.*r - 
                                                          noise_amplitude)
                                                          
-    for x in (2.*r + noise_amplitude):(2.*r + floe_padding):(L[1] - 2.*r - 
+    for x in (4.*r + noise_amplitude):(2.*r + floe_padding):(L[1] - 4.*r - 
                                                              noise_amplitude)
         #if iy % 2 == 0
             #x += 1.5*r
