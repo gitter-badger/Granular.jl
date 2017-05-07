@@ -9,7 +9,8 @@ Lx_constriction = 10e3
 L = [Lx, Lx*1.5, 1e3]
 Ly_constriction = 20e3
 #n = [100, 100, 2]  # high resolution
-n = [50, 50, 2]  # intermedite resolution
+#n = [50, 50, 2]  # intermedite resolution
+n = [25, 25, 2]
 #n = [6, 6, 2]  # coarse resolution
 sim.ocean = SeaIce.createRegularOceanGrid(n, L, name="poiseuille_flow")
 sim.ocean.v[:, :, 1, 1] = 1e-8*((sim.ocean.xq - Lx/2.).^2 - Lx^2./4.)
@@ -109,12 +110,13 @@ info("added $(n) ice floes")
 SeaIce.removeSimulationFiles(sim)
 
 k_n = 1e6  # N/m
+k_t = k_n
 gamma_t = 1e7  # N/(m/s)
 mu_d = 0.7
-rotating = false
+rotating = true
 for i=1:length(sim.ice_floes)
     sim.ice_floes[i].contact_stiffness_normal = k_n
-    sim.ice_floes[i].contact_stiffness_tangential = k_n
+    sim.ice_floes[i].contact_stiffness_tangential = k_t
     sim.ice_floes[i].contact_viscosity_tangential = gamma_t
     sim.ice_floes[i].contact_dynamic_friction = mu_d
     sim.ice_floes[i].rotating = rotating
@@ -140,25 +142,25 @@ while sim.time < sim.time_total
             # Enable for high mass flux
             SeaIce.addIceFloeCylindrical(sim, [x-r, y-r], r, h, verbose=false,
                     contact_stiffness_normal=k_n,
-                    contact_stiffness_normal=k_t,
+                    contact_stiffness_normal=k_n,
                     contact_viscosity_tangential=gamma_t,
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
             SeaIce.addIceFloeCylindrical(sim, [x+r, y-r], r, h, verbose=false,
                     contact_stiffness_normal=k_n,
-                    contact_stiffness_normal=k_t,
+                    contact_stiffness_normal=k_n,
                     contact_viscosity_tangential=gamma_t,
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
             SeaIce.addIceFloeCylindrical(sim, [x+r, y+r], r, h, verbose=false,
                     contact_stiffness_normal=k_n,
-                    contact_stiffness_normal=k_t,
+                    contact_stiffness_normal=k_n,
                     contact_viscosity_tangential=gamma_t,
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
             SeaIce.addIceFloeCylindrical(sim, [x-r, y+r], r, h, verbose=false,
                     contact_stiffness_normal=k_n,
-                    contact_stiffness_normal=k_t,
+                    contact_stiffness_normal=k_n,
                     contact_viscosity_tangential=gamma_t,
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
