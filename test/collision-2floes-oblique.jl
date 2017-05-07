@@ -204,8 +204,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional",
             verbose=verbose)
 
-@test sim.ice_floes[1].ang_pos > 0.
-@test sim.ice_floes[1].ang_vel > 0.
+@test sim.ice_floes[1].ang_pos < 0.
+@test sim.ice_floes[1].ang_vel < 0.
 @test sim.ice_floes[2].ang_pos ≈ 0.
 @test sim.ice_floes[2].ang_vel ≈ 0.
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
@@ -241,8 +241,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
             verbose=verbose)
 
-@test sim.ice_floes[1].ang_pos > 0.
-@test sim.ice_floes[1].ang_vel > 0.
+@test sim.ice_floes[1].ang_pos < 0.
+@test sim.ice_floes[1].ang_vel < 0.
 @test sim.ice_floes[2].ang_pos ≈ 0.
 @test sim.ice_floes[2].ang_vel ≈ 0.
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
@@ -259,8 +259,8 @@ SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
             verbose=verbose)
 
-@test sim.ice_floes[1].ang_pos > 0.
-@test sim.ice_floes[1].ang_vel > 0.
+@test sim.ice_floes[1].ang_pos < 0.
+@test sim.ice_floes[1].ang_vel < 0.
 @test sim.ice_floes[2].ang_pos ≈ 0.
 @test sim.ice_floes[2].ang_vel ≈ 0.
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
@@ -293,10 +293,10 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
             verbose=verbose)
 
-@test sim.ice_floes[1].ang_pos > 0.
-@test sim.ice_floes[1].ang_vel > 0.
-@test sim.ice_floes[2].ang_pos > 0.
-@test sim.ice_floes[2].ang_vel > 0.
+@test sim.ice_floes[1].ang_pos < 0.
+@test sim.ice_floes[1].ang_vel < 0.
+@test sim.ice_floes[2].ang_pos < 0.
+@test sim.ice_floes[2].ang_vel < 0.
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test_approx_eq_eps E_kin_lin_init+E_kin_rot_init E_kin_lin_final+E_kin_rot_final E_kin_lin_init*tol 
@@ -324,10 +324,10 @@ SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
             verbose=verbose)
 
-@test sim.ice_floes[1].ang_pos > 0.
-@test sim.ice_floes[1].ang_vel > 0.
-@test sim.ice_floes[2].ang_pos > 0.
-@test sim.ice_floes[2].ang_vel > 0.
+@test sim.ice_floes[1].ang_pos < 0.
+@test sim.ice_floes[1].ang_vel < 0.
+@test sim.ice_floes[2].ang_pos < 0.
+@test sim.ice_floes[2].ang_vel < 0.
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test_approx_eq_eps E_kin_lin_init+E_kin_rot_init E_kin_lin_final+E_kin_rot_final E_kin_lin_init*tol 

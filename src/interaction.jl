@@ -61,7 +61,7 @@ function interactIceFloes!(simulation::Simulation,
     simulation.ice_floes[j].force -= force_n + force_t;
 
     if norm(force_t) > 0.
-        torque = -findTorque(simulation, overlap_vector, force_t, i, j)
+        torque = findTorque(simulation, overlap_vector, force_t, i, j)
         simulation.ice_floes[i].torque += torque
         simulation.ice_floes[j].torque += torque
     end
