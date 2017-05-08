@@ -11,11 +11,11 @@ function interact!(simulation::Simulation;
     # IceFloe to grain collisions
     while !isempty(simulation.contact_pairs)
         contact_pair = pop!(simulation.contact_pairs)
-        overlap_vector = pop!(simulation.overlaps)
+        overlap = pop!(simulation.overlaps)
         contact_parallel_displacement = 
             pop!(simulation.contact_parallel_displacement)
         interactIceFloes!(simulation, contact_pair[1], contact_pair[2],
-                          overlap_vector, contact_parallel_displacement,
+                          overlap, contact_parallel_displacement,
                           contact_normal_rheology=contact_normal_rheology,
                           contact_tangential_rheology=
                               contact_tangential_rheology)
@@ -30,8 +30,8 @@ function adds the compressive force of the interaction to the ice floe
 """
 function interactIceFloes!(simulation::Simulation,
                            i::Int, j::Int,
-                           overlap_vector::Array{Float64, 1},
-                           contact_parallel_displacement::Array{Float64, 1};
+                           overlap::vector,
+                           contact_parallel_displacement::vector;
                            contact_normal_rheology::String = "Linear Elastic",
                            contact_tangential_rheology::String = "None")
 
@@ -41,7 +41,7 @@ function interactIceFloes!(simulation::Simulation,
     if contact_normal_rheology == "None"
         # do nothing
     elseif contact_normal_rheology == "Linear Elastic"
-        force_n = interactNormalLinearElastic(simulation, i, j, overlap_vector)
+        force_n = interactNormalLinearElastic(simulation, i, j, overlap)
     else
         error("Unknown contact_normal_rheology '$contact_normal_rheology'")
     end
@@ -50,7 +50,7 @@ function interactIceFloes!(simulation::Simulation,
         # do nothing
     elseif contact_tangential_rheology == "Linear Viscous Frictional"
         force_t = interactTangentialLinearViscousFrictional(simulation, i, j,
-                                                            overlap_vector,
+                                                            overlap,
                                                             force_n)
     else
         error("Unknown contact_tangential_rheology ", 
@@ -61,7 +61,7 @@ function interactIceFloes!(simulation::Simulation,
     simulation.ice_floes[j].force -= force_n + force_t;
 
     if norm(force_t) > 0.
-        torque = -findTorque(simulation, overlap_vector, force_t, i, j)
+        torque = -findTorque(simulation, overlap, force_t, i, j)
         simulation.ice_floes[i].torque += torque
         simulation.ice_floes[j].torque += torque
     end
@@ -79,46 +79,108 @@ direction.
 """
 function interactNormalLinearElastic(simulation::Simulation,
                                      i::Int, j::Int,
-                                     overlap_vector::vector)
+                                     overlap::vector)
 
     k_n_harmonic_mean = 
         harmonicMean(simulation.ice_floes[i].contact_stiffness_normal,
                      simulation.ice_floes[j].contact_stiffness_normal)
 
-    return k_n_harmonic_mean * overlap_vector
+    return -k_n_harmonic_mean*overlap
 end
 
 export interactTangentialLinearElastic
 """
-Resolves linear-elastic interaction between two ice floes in the 
-contact-parallel (tangential) direction.
+    interactTangentialLinearViscousFrictional(simulation, i, j,
+                                              overlap, force_n)
+
+Resolves linear-viscous interaction between two ice floes in the contact- 
+parallel (tangential) direction, with a frictional limit dependent on the 
+Coulomb criterion.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the ice floes.
+* `i::Int`: index of the first ice floe.
+* `j::Int`: index of the second ice floe.
+* `overlap::vector`: two-dimensional vector pointing from i to j.
+* `force_n::vector`: normal force from the interaction.
 """
 function interactTangentialLinearViscousFrictional(simulation::Simulation,
                                                    i::Int, j::Integer,
-                                                   overlap_vector::vector,
+                                                   overlap::vector,
                                                    force_n::vector)
 
+    """
     contact_parallel_velocity = findContactParallelVelocity(simulation, i, j, 
-                                                            overlap_vector)
+                                                            overlap)
 
-    if norm(contact_parallel_velocity) ≈ 0.
+
+
+    if contact_parallel_velocity ≈ 0.
         return [0., 0.]
     end
-
     gamma_t_harmonic_mean = harmonicMean(
                      simulation.ice_floes[i].contact_viscosity_tangential,
                      simulation.ice_floes[j].contact_viscosity_tangential)
-
-    if norm(gamma_t_harmonic_mean) ≈ 0.
-        return [0., 0.]
-    end
-
     mu_d_minimum = min(simulation.ice_floes[i].contact_dynamic_friction,
                        simulation.ice_floes[j].contact_dynamic_friction)
 
-    return -min(norm(gamma_t_harmonic_mean*contact_parallel_velocity), 
-                mu_d_minimum*norm(force_n))*
-        contact_parallel_velocity/norm(contact_parallel_velocity)
+    if gamma_t_harmonic_mean ≈ 0. || mu_d_minimum ≈ 0.
+        return [0., 0.]
+    end
+
+    force_t = abs(gamma_t_harmonic_mean*contact_parallel_velocity)
+    if force_t > mu_d_minimum*norm(force_n)
+        force_t = mu_d_minimum*norm(force_n)
+    end
+    if contact_parallel_velocity > 0.
+        force_t = -force_t
+    end
+
+    return force_t*contactParallelVector(contactNormalVector(overlap))
+    """
+
+    p = simulation.ice_floes[i].lin_pos - simulation.ice_floes[j].lin_pos
+
+    r_i = simulation.ice_floes[i].contact_radius
+    r_j = simulation.ice_floes[j].contact_radius
+
+    dist = norm(p)
+    dn = dist - (r_i + r_j)
+
+    if dn < 0.
+        n = p/dist
+        t = [-n[2], n[1]]
+
+        vel_lin = simulation.ice_floes[i].lin_vel -
+            simulation.ice_floes[j].lin_vel
+
+        vel_n = dot(vel_lin, n)
+        vel_t = dot(vel_lin, t) -
+            harmonicMean(r_i, r_j)*(simulation.ice_floes[i].ang_vel +
+                                    simulation.ice_floes[j].ang_vel)
+
+        #force_n = -kn * dn - nu * vn;
+
+        gamma_t_harmonic_mean = harmonicMean(
+                     simulation.ice_floes[i].contact_viscosity_tangential,
+                     simulation.ice_floes[j].contact_viscosity_tangential)
+
+        force_t = abs(gamma_t_harmonic_mean * vel_t)
+
+        mu_d_minimum = min(simulation.ice_floes[i].contact_dynamic_friction,
+                           simulation.ice_floes[j].contact_dynamic_friction)
+
+        if force_t > mu_d_minimum*norm(force_n)
+            force_t = mu_d_minimum*norm(force_n)
+        end
+        if vel_t > 0.
+            force_t = -force_t
+        end
+
+        return force_t*t
+
+    end
+
 end
 
 function harmonicMean(a::Any, b::Any)
@@ -129,24 +191,39 @@ function harmonicMean(a::Any, b::Any)
     return hm
 end
 
-function findTorque(simulation::Simulation, overlap_vector::vector, 
-                    force_t::vector, i::Int, j::Int)
-    n = overlap_vector/norm(overlap_vector)
-    return -findEffectiveRadius(simulation, i, j, overlap_vector)*
-        (n[1]*force_t[2] - n[2]*force_t[1])
+function findTorque(simulation::Simulation, overlap::vector, force_t::vector, 
+                    i::Int, j::Int)
+    return -findEffectiveRadius(simulation, i, j, overlap)*norm(force_t)
 end
 
 function findEffectiveRadius(simulation::Simulation, i::Int, j::Int,
-                             overlap_vector::vector)
+                             overlap::vector)
     return harmonicMean(simulation.ice_floes[i].contact_radius,
-                        simulation.ice_floes[j].contact_radius)
-                        - norm(overlap_vector)/2.
+                        simulation.ice_floes[j].contact_radius) -
+                        norm(overlap)/2.
+end
+
+function findContactNormalVelocity(simulation::Simulation, i::Int, j::Int,
+                                   overlap::vector)
+    n = contactNormalVector(overlap)
+    v_ij = simulation.ice_floes[i].lin_vel - simulation.ice_floes[j].lin_vel
+    return v_ij[1]*n[1] + v_ij[2]*n[2]
 end
 
 function findContactParallelVelocity(simulation::Simulation, i::Int, j::Int,
-                                     overlap_vector::vector)
-    return simulation.ice_floes[i].lin_vel -
-        simulation.ice_floes[j].lin_vel +
-        findEffectiveRadius(simulation, i, j, overlap_vector)*
-        (simulation.ice_floes[i].ang_vel + simulation.ice_floes[j].ang_vel)
+                                     overlap::vector)
+    v_ij = simulation.ice_floes[i].lin_vel - simulation.ice_floes[j].lin_vel
+    n = contactNormalVector(overlap)
+    t = contactParallelVector(n)
+    return (v_ij[1]*t[1] + v_ij[2]*t[2] -
+        findEffectiveRadius(simulation, i, j, overlap)*
+        (simulation.ice_floes[i].ang_vel + simulation.ice_floes[j].ang_vel))
+end
+
+function contactNormalVector(overlap::vector)
+    return overlap/norm(overlap)
+end
+
+function contactParallelVector(n::vector)
+    return [-n[2], n[1]]
 end

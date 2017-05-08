@@ -30,9 +30,20 @@ function findContacts!(simulation::Simulation;
 end
 
 export interIceFloePositionVector
+"""
+    interIceFloePositionVector(simulation, i, j)
+
+Returns a `vector` pointing from ice floe `i` to ice floe `j` in the 
+`simulation`.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the ice floes.
+* `i::Int`: index of the first ice floe.
+* `j::Int`: index of the second ice floe.
+"""
 function interIceFloePositionVector(simulation::Simulation,
                                     i::Integer, j::Integer)
-    return simulation.ice_floes[j].lin_pos - simulation.ice_floes[i].lin_pos
+    return simulation.ice_floes[i].lin_pos - simulation.ice_floes[j].lin_pos
 end
 
 """
@@ -95,20 +106,24 @@ end
 
 export addContact!
 """
-checkAndAddContact!(simulation, i, j)
+    checkAndAddContact!(simulation, i, j)
 
-Check for contact between two ice floes and register the interaction.
+Check for contact between two ice floes and register the interaction in the 
+`simulation` object.  The indexes of the two ice floes is stored in 
+`simulation.contact_pairs` as `[i, j]`.  The overlap vector is parallel to a 
+straight line connecting the ice floe centers, points away from ice floe `i` and 
+towards `j`, and is stored in `simulation.overlaps`.  A zero-length vector is 
+written to `simulation.contact_parallel_displacement`.
 
 # Arguments
-* `simulation::Simulation`: the simulation object containing the ice floes
-* `i::Int`: index of the first ice floe
-* `j::Int`: index of the second ice floe
+* `simulation::Simulation`: the simulation object containing the ice floes.
+* `i::Int`: index of the first ice floe.
+* `j::Int`: index of the second ice floe.
 """
 function checkAndAddContact!(simulation::Simulation, i::Int, j::Int)
     if i < j
 
-        if (simulation.ice_floes[i].fixed &&
-            simulation.ice_floes[j].fixed) ||
+        if (simulation.ice_floes[i].fixed && simulation.ice_floes[j].fixed) ||
             !simulation.ice_floes[i].enabled ||
             !simulation.ice_floes[j].enabled
             return
