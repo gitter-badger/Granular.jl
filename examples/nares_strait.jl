@@ -2,16 +2,16 @@
 import SeaIce
 
 sim = SeaIce.createSimulation(id="nares_strait")
+n = [25, 25, 2]
+
+#sim = SeaIce.createSimulation(id="nares_strait_coarse")
+#n = [6, 6, 2]
 
 # Initialize ocean
 Lx = 50.e3
 Lx_constriction = 10e3
 L = [Lx, Lx*1.5, 1e3]
 Ly_constriction = 20e3
-#n = [100, 100, 2]  # high resolution
-#n = [50, 50, 2]  # intermedite resolution
-n = [25, 25, 2]
-#n = [6, 6, 2]  # coarse resolution
 sim.ocean = SeaIce.createRegularOceanGrid(n, L, name="poiseuille_flow")
 sim.ocean.v[:, :, 1, 1] = 1e-8*((sim.ocean.xq - Lx/2.).^2 - Lx^2./4.)
 
