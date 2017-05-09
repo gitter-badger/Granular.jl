@@ -11,11 +11,10 @@ function interact!(simulation::Simulation;
     # IceFloe to grain collisions
     while !isempty(simulation.contact_pairs)
         contact_pair = pop!(simulation.contact_pairs)
-        overlap = pop!(simulation.overlaps)
         contact_parallel_displacement = 
             pop!(simulation.contact_parallel_displacement)
         interactIceFloes!(simulation, contact_pair[1], contact_pair[2],
-                          overlap, contact_parallel_displacement,
+                          contact_parallel_displacement,
                           contact_normal_rheology=contact_normal_rheology,
                           contact_tangential_rheology=
                               contact_tangential_rheology)
@@ -30,23 +29,24 @@ function adds the compressive force of the interaction to the ice floe
 """
 function interactIceFloes!(simulation::Simulation,
                            i::Int, j::Int,
-                           overlap::vector,
                            contact_parallel_displacement::vector;
                            contact_normal_rheology::String = "Linear Elastic",
                            contact_tangential_rheology::String = "None")
 
-    force_n = 0.
-    force_t = 0.
+    force_n = 0.  # Contact-normal force
+    force_t = 0.  # Contact-parallel (tangential) force
 
+    # Inter-position vector
     p = simulation.ice_floes[i].lin_pos - simulation.ice_floes[j].lin_pos
     dist = norm(p)
 
     r_i = simulation.ice_floes[i].contact_radius
     r_j = simulation.ice_floes[j].contact_radius
 
-    dn = dist - (r_i + r_j)
+    # Floe distance
+    delta_n = dist - (r_i + r_j)
 
-    if dn < 0.  # Contact (this should always occur)
+    if delta_n < 0.  # Contact (this should always occur)
 
         # Local axes
         n = p/dist
@@ -60,9 +60,15 @@ function interactIceFloes!(simulation::Simulation,
             harmonicMean(r_i, r_j)*(simulation.ice_floes[i].ang_vel +
                                     simulation.ice_floes[j].ang_vel)
 
+        # Correct old tangential displacement for contact rotation and add new
+        delta_t = dot(t, contact_parallel_displacement -
+                      (n*dot(n, contact_parallel_displacement))) +
+            vel_t*simulation.time_step
+
+        # Effective radius
         R_ij = harmonicMean(simulation.ice_floes[i].contact_radius,
-                            simulation.ice_floes[j].contact_radius) -
-               norm(overlap)/2.
+                            simulation.ice_floes[j].contact_radius) - 
+            abs(delta_n)/2.
 
         # Contact mechanical parameters
         k_n_harmonic_mean = 
@@ -87,29 +93,41 @@ function interactIceFloes!(simulation::Simulation,
         # Determine contact forces
         if contact_normal_rheology == "None"
             force_n = 0.
+
         elseif contact_normal_rheology == "Linear Elastic"
-            force_n = -k_n_harmonic_mean*dn
+            force_n = -k_n_harmonic_mean*delta_n
+
         elseif contact_normal_rheology == "Linear Viscous Elastic"
-            force_n = -k_n_harmonic_mean*dn - gamma_n_harmonic_mean*vel_n
+            force_n = -k_n_harmonic_mean*delta_n - gamma_n_harmonic_mean*vel_n
             if force_n < 0.
                 force_n = 0.
             end
+
         else
             error("unknown contact_normal_rheology '$contact_normal_rheology'")
         end
 
         if contact_tangential_rheology == "None"
             # do nothing
-        elseif contact_tangential_rheology == "Linear Elastic Frictional"
-            error("not yet implemented")
+
+        elseif contact_tangential_rheology ==
+            "Linear Elastic Viscous Frictional"
+            force_t = -k_t_harmonic_mean*delta_t - gamma_t_harmonic_mean*vel_t
+            if abs(force_t) > mu_d_minimum*abs(force_n)
+                force_t = mu_d_minimum*abs(force_n)*force_t/abs(force_t)
+                delta_t = (-force_t - gamma_t_harmonic_mean*vel_t)/
+                    k_t_harmonic_mean
+            end
+
         elseif contact_tangential_rheology == "Linear Viscous Frictional"
             force_t = abs(gamma_t_harmonic_mean * vel_t)
-            if force_t > mu_d_minimum*norm(force_n)
-                force_t = mu_d_minimum*norm(force_n)
+            if force_t > mu_d_minimum*abs(force_n)
+                force_t = mu_d_minimum*abs(force_n)
             end
             if vel_t > 0.
                 force_t = -force_t
             end
+
         else
             error("unknown contact_tangential_rheology ", 
                   "'$contact_tangential_rheology'")
@@ -119,6 +137,8 @@ function interactIceFloes!(simulation::Simulation,
         error("function called to process non-existent contact between ice " *
               "floes $i and $j")
     end
+
+    contact_parallel_displacement = delta_t*t
 
     simulation.ice_floes[i].force += force_n*n + force_t*t;
     simulation.ice_floes[j].force -= force_n*n + force_t*t;

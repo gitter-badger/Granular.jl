@@ -11,7 +11,6 @@ export createSimulation
                       file_number::Int=0,
                       ice_floes=Array{IceFloeCylindrical, 1}[],
                       contact_pairs=Array{Int64, 1}[],
-                      overlaps=Array{Array{Float64, 1}, 1}[],
                       contact_parallel_displacement=
                           Array{Array{Float64, 1}, 1}[])
 
@@ -31,7 +30,6 @@ function createSimulation(;id::String="unnamed",
                           file_time_since_output_file::Float64=0.,
                           ice_floes=Array{IceFloeCylindrical, 1}[],
                           contact_pairs=Array{Int64, 1}[],
-                          overlaps=Array{Array{Float64, 1}, 1}[],
                           contact_parallel_displacement=
                               Array{Array{Float64, 1}, 1}[],
                           ocean::Ocean=createEmptyOcean())
@@ -46,7 +44,6 @@ function createSimulation(;id::String="unnamed",
                       file_time_since_output_file,
                       ice_floes,
                       contact_pairs,
-                      overlaps,
                       contact_parallel_displacement,
                       ocean)
 end
