@@ -27,7 +27,7 @@ sim_init = deepcopy(sim)
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.2
+tol = 0.1
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="None", verbose=verbose)
@@ -41,7 +41,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.02
+tol = 0.01
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", 
             contact_tangential_rheology="None", verbose=verbose)
@@ -83,7 +83,7 @@ sim_init = deepcopy(sim)
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.2
+tol = 0.1
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", 
             contact_tangential_rheology="None", verbose=verbose)
@@ -97,7 +97,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.02
+tol = 0.01
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", 
             contact_tangential_rheology="None", verbose=verbose)
@@ -140,7 +140,7 @@ sim_init = deepcopy(sim)
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.2
+tol = 0.1
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_init = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
@@ -159,7 +159,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.02
+tol = 0.01
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_init = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
@@ -198,7 +198,7 @@ sim_init = deepcopy(sim)
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.2
+tol = 0.1
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional",
@@ -216,7 +216,7 @@ info("mu_d = 0.")
 sim = deepcopy(sim_init)
 sim.ice_floes[1].contact_dynamic_friction = 0.
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.02
+tol = 0.01
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_init = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
@@ -235,7 +235,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.06
+tol = 0.02
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
@@ -253,7 +253,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.07
+tol = 0.03
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
@@ -287,7 +287,7 @@ sim_init = deepcopy(sim)
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.2
+tol = 0.1
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
@@ -304,7 +304,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.05
+tol = 0.02
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
@@ -318,16 +318,16 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.04
+tol = 0.02
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
             verbose=verbose)
 
-@test sim.ice_floes[1].ang_pos > 0.
-@test sim.ice_floes[1].ang_vel > 0.
-@test sim.ice_floes[2].ang_pos > 0.
-@test sim.ice_floes[2].ang_vel > 0.
+@test sim.ice_floes[1].ang_pos < 0.
+@test sim.ice_floes[1].ang_vel < 0.
+@test sim.ice_floes[2].ang_pos < 0.
+@test sim.ice_floes[2].ang_vel < 0.
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test_approx_eq_eps E_kin_lin_init+E_kin_rot_init E_kin_lin_final+E_kin_rot_final E_kin_lin_init*tol 
@@ -353,7 +353,7 @@ sim_init = deepcopy(sim)
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.2
+tol = 0.1
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
@@ -370,7 +370,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.05
+tol = 0.02
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
@@ -384,16 +384,16 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.04
+tol = 0.02
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
             verbose=verbose)
 
-@test sim.ice_floes[1].ang_pos < 0.
-@test sim.ice_floes[1].ang_vel < 0.
-@test sim.ice_floes[2].ang_pos < 0.
-@test sim.ice_floes[2].ang_vel < 0.
+@test sim.ice_floes[1].ang_pos > 0.
+@test sim.ice_floes[1].ang_vel > 0.
+@test sim.ice_floes[2].ang_pos > 0.
+@test sim.ice_floes[2].ang_vel > 0.
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test_approx_eq_eps E_kin_lin_init+E_kin_rot_init E_kin_lin_final+E_kin_rot_final E_kin_lin_init*tol 
@@ -419,7 +419,7 @@ sim_init = deepcopy(sim)
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.2
+tol = 0.1
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
@@ -436,7 +436,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.05
+tol = 0.02
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
@@ -450,7 +450,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.04
+tol = 0.02
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             contact_tangential_rheology="Linear Viscous Frictional", 
