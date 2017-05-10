@@ -4,7 +4,7 @@ import SeaIce
 #sim = SeaIce.createSimulation(id="nares_strait")
 #n = [25, 25, 2]
 
-sim = SeaIce.createSimulation(id="nares_strait_coarse")
+sim = SeaIce.createSimulation(id="nares_strait_coarse_elast")
 n = [6, 6, 2]
 
 # Initialize ocean
@@ -110,8 +110,9 @@ info("added $(n) ice floes")
 SeaIce.removeSimulationFiles(sim)
 
 k_n = 1e6  # N/m
-k_t = 0.
-gamma_t = 1e7  # N/(m/s)
+k_t = k_n
+#gamma_t = 1e7  # N/(m/s)
+gamma_t = 0.
 mu_d = 0.7
 rotating = true
 for i=1:length(sim.ice_floes)

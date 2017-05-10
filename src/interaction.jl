@@ -8,10 +8,13 @@ Resolve mechanical interaction between all particle pairs.
 """
 function interact!(simulation::Simulation)
     for i=1:Int(ceil(length(simulation.ice_floes)/2.))  # i <= Int(N/2)
-        for ic=1:simulation.ice_floes[i].n_contacts
-        #for ic=1:Nc_max
+        for ic=1:Nc_max
 
             j = simulation.ice_floes[i].contacts[ic]
+
+            if j == 0
+                break  # end of contact list reached
+            end
 
             if norm(simulation.ice_floes[i].lin_pos - 
                     simulation.ice_floes[j].lin_pos) - 
