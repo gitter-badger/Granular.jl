@@ -23,6 +23,7 @@ function interact!(simulation::Simulation)
 
                 simulation.ice_floes[i].contacts[ic] = 0  # remove contact
                 simulation.ice_floes[i].n_contacts -= 1
+                simulation.ice_floes[j].n_contacts -= 1
             else
                 interactIceFloes!(simulation, i, j, ic)
             end
