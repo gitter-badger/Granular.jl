@@ -44,9 +44,12 @@ type IceFloeCylindrical
     contact_static_friction::float
     contact_dynamic_friction::float
 
+    # Interaction
     pressure::float
-
+    n_contacts::Int
     ocean_grid_pos::Array{Int, 1}
+    contacts::Array{Int, 1}
+    contact_parallel_displacement::Array{Array{Float64, 1}, 1}
 end
 
 # Type for gathering data from ice floe objects into single arrays
@@ -92,6 +95,7 @@ type IceFloeArrays
     contact_dynamic_friction
 
     pressure
+    n_contacts
 end
 
 #=
@@ -171,8 +175,6 @@ type Simulation
     file_time_since_output_file::Float64
 
     ice_floes::Array{IceFloeCylindrical, 1}
-    contact_pairs::Array{Array{Int, 1}, 1}
-    contact_parallel_displacement::Array{Array{Float64, 1}, 1}
 
     ocean::Ocean
 end

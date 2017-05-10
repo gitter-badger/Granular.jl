@@ -9,10 +9,7 @@ export createSimulation
                       time_step::Float64=-1.,
                       file_time_step::Float64=-1.,
                       file_number::Int=0,
-                      ice_floes=Array{IceFloeCylindrical, 1}[],
-                      contact_pairs=Array{Int64, 1}[],
-                      contact_parallel_displacement=
-                          Array{Array{Float64, 1}, 1}[])
+                      ice_floes=Array{IceFloeCylindrical, 1}[])
 
 Create a simulation object containing all relevant variables such as temporal 
 parameters, and lists of ice floes and contacts.
@@ -29,9 +26,6 @@ function createSimulation(;id::String="unnamed",
                           file_number::Int=0,
                           file_time_since_output_file::Float64=0.,
                           ice_floes=Array{IceFloeCylindrical, 1}[],
-                          contact_pairs=Array{Int64, 1}[],
-                          contact_parallel_displacement=
-                              Array{Array{Float64, 1}, 1}[],
                           ocean::Ocean=createEmptyOcean())
 
     return Simulation(id,
@@ -43,8 +37,6 @@ function createSimulation(;id::String="unnamed",
                       file_number,
                       file_time_since_output_file,
                       ice_floes,
-                      contact_pairs,
-                      contact_parallel_displacement,
                       ocean)
 end
 
@@ -85,9 +77,7 @@ function run!(simulation::Simulation;
               status_interval::Int=100,
               show_file_output::Bool=true,
               single_step::Bool=false,
-              temporal_integration_method::String="Three-term Taylor",
-              contact_normal_rheology::String = "Linear Elastic",
-              contact_tangential_rheology::String = "None")
+              temporal_integration_method::String="Three-term Taylor")
 
     if single_step && simulation.time >= simulation.time_total
         simulation.time_total += simulation.time_step
@@ -119,9 +109,7 @@ function run!(simulation::Simulation;
         else
             findContacts!(simulation, method="all to all")
         end
-        interact!(simulation,
-                   contact_normal_rheology=contact_normal_rheology,
-                   contact_tangential_rheology=contact_tangential_rheology)
+        interact!(simulation)
         if typeof(simulation.ocean.input_file) != Bool
             addOceanDrag!(simulation)
         end

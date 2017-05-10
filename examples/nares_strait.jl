@@ -1,11 +1,11 @@
 #!/usr/bin/env julia
 import SeaIce
 
-sim = SeaIce.createSimulation(id="nares_strait")
-n = [25, 25, 2]
+#sim = SeaIce.createSimulation(id="nares_strait")
+#n = [25, 25, 2]
 
-#sim = SeaIce.createSimulation(id="nares_strait_coarse")
-#n = [6, 6, 2]
+sim = SeaIce.createSimulation(id="nares_strait_coarse")
+n = [6, 6, 2]
 
 # Initialize ocean
 Lx = 50.e3
@@ -110,7 +110,7 @@ info("added $(n) ice floes")
 SeaIce.removeSimulationFiles(sim)
 
 k_n = 1e6  # N/m
-k_t = k_n
+k_t = 0.
 gamma_t = 1e7  # N/(m/s)
 mu_d = 0.7
 rotating = true
@@ -130,8 +130,7 @@ SeaIce.setTimeStep!(sim)
 # Run simulation for 10 time steps, then add new icefloes from the top
 while sim.time < sim.time_total
     for it=1:10
-        SeaIce.run!(sim, status_interval=1, single_step=true,
-                    contact_tangential_rheology="Linear Viscous Frictional")
+        SeaIce.run!(sim, status_interval=1, single_step=true)
     end
     for i=1:size(sim.ocean.xh, 1)
         if sim.ocean.ice_floe_list[i, end] == []

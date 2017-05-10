@@ -120,23 +120,38 @@ written to `simulation.contact_parallel_displacement`.
 * `i::Int`: index of the first ice floe.
 * `j::Int`: index of the second ice floe.
 """
-function checkAndAddContact!(simulation::Simulation, i::Int, j::Int)
+function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
     if i < j
 
-        if (simulation.ice_floes[i].fixed && simulation.ice_floes[j].fixed) ||
-            !simulation.ice_floes[i].enabled ||
-            !simulation.ice_floes[j].enabled
+        if (sim.ice_floes[i].fixed && sim.ice_floes[j].fixed) ||
+            !sim.ice_floes[i].enabled ||
+            !sim.ice_floes[j].enabled
             return
         end
 
         # Inter-grain position vector and grain overlap
-        position_ij = interIceFloePositionVector(simulation, i, j)
-        overlap_ij = findOverlap(simulation, i, j, position_ij)
+        position_ij = interIceFloePositionVector(sim, i, j)
+        overlap_ij = findOverlap(sim, i, j, position_ij)
 
         # Check if grains overlap (overlap when negative)
-        if overlap_ij < 0.0
-            push!(simulation.contact_pairs, [i, j])
-            push!(simulation.contact_parallel_displacement, zeros(2))
+        if overlap_ij < 0.
+            for ic=1:(Nc_max + 1)
+                if ic == (Nc_max + 1)
+                    error("contact $i-$j exceeds max. number of contacts " *
+                          "(Nc_max = $Nc_max) for ice floe $i")
+
+                elseif sim.ice_floes[i].contacts[ic] == j
+                    break  # contact already registered
+
+                elseif sim.ice_floes[i].contacts[ic] == 0  # empty
+                    sim.ice_floes[i].n_contacts += 1  # register new contact
+                    sim.ice_floes[j].n_contacts += 1
+                    sim.ice_floes[i].contacts[ic] = j
+                    sim.ice_floes[i].contact_parallel_displacement[ic] =
+                        zeros(2)
+                    break
+                end
+            end
         end
     end
 end

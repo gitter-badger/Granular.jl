@@ -1,5 +1,7 @@
 ## Manage icefloes in the model
 
+Nc_max = 32  # max. no. of contacts per ice floe
+
 export addIceFloeCylindrical
 """
 Adds a grain to the simulation. Example:
@@ -20,7 +22,7 @@ function addIceFloeCylindrical(simulation::Simulation,
                                torque::float = 0.,
                                density::float = 934.,
                                contact_stiffness_normal::float = 1.e6,
-                               contact_stiffness_tangential::float = 1.e6,
+                               contact_stiffness_tangential::float = 0.,
                                contact_viscosity_normal::float = 0.,
                                contact_viscosity_tangential::float = 0.,
                                contact_static_friction::float = 0.4,
@@ -30,7 +32,13 @@ function addIceFloeCylindrical(simulation::Simulation,
                                rotating::Bool = true,
                                enabled::Bool = true,
                                verbose::Bool = true,
-                               ocean_grid_pos::Array{Int, 1} = [0, 0])
+                               ocean_grid_pos::Array{Int, 1} = [0, 0],
+                               n_contacts::Int = 0,
+                               contacts::Array{Int, 1} = zeros(Int, Nc_max),
+                               contact_parallel_displacement::
+                                   Array{Array{Float64, 1}, 1}
+                                   =
+                                   Array{Array{Float64, 1}, 1}(Nc_max))
 
     # Check input values
     if length(lin_pos) != 2
@@ -65,6 +73,9 @@ function addIceFloeCylindrical(simulation::Simulation,
         areal_radius = contact_radius
     end
 
+    for i=1:Nc_max
+        contact_parallel_displacement[i] = zeros(2)
+    end
 
     # Create icefloe object with placeholder values for surface area, volume, 
     # mass, and moment of inertia.
@@ -101,8 +112,10 @@ function addIceFloeCylindrical(simulation::Simulation,
                                  contact_dynamic_friction,
 
                                  pressure,
-
-                                 ocean_grid_pos
+                                 n_contacts,
+                                 ocean_grid_pos,
+                                 contacts,
+                                 contact_parallel_displacement
                                 )
 
     # Overwrite previous placeholder values
@@ -194,7 +207,8 @@ function convertIceFloeDataToArrays(simulation::Simulation)
                           Array(Float64, length(simulation.ice_floes)),
                           Array(Float64, length(simulation.ice_floes)),
 
-                          Array(Float64, length(simulation.ice_floes))
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Int, length(simulation.ice_floes))
                          )
 
     # fill arrays
@@ -240,6 +254,8 @@ function convertIceFloeDataToArrays(simulation::Simulation)
             simulation.ice_floes[i].contact_dynamic_friction
 
         ifarr.pressure[i] = simulation.ice_floes[i].pressure
+
+        ifarr.n_contacts[i] = simulation.ice_floes[i].n_contacts
     end
 
     return ifarr
