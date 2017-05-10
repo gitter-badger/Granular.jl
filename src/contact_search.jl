@@ -124,8 +124,7 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
     if i < j
 
         if (sim.ice_floes[i].fixed && sim.ice_floes[j].fixed) ||
-            !sim.ice_floes[i].enabled ||
-            !sim.ice_floes[j].enabled
+            !sim.ice_floes[i].enabled || !sim.ice_floes[j].enabled
             return
         end
 
@@ -140,16 +139,18 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
                     error("contact $i-$j exceeds max. number of contacts " *
                           "(Nc_max = $Nc_max) for ice floe $i")
 
-                elseif sim.ice_floes[i].contacts[ic] == j
-                    break  # contact already registered
+                else
+                    if sim.ice_floes[i].contacts[ic] == j
+                        break  # contact already registered
 
-                elseif sim.ice_floes[i].contacts[ic] == 0  # empty
-                    sim.ice_floes[i].n_contacts += 1  # register new contact
-                    sim.ice_floes[j].n_contacts += 1
-                    sim.ice_floes[i].contacts[ic] = j
-                    sim.ice_floes[i].contact_parallel_displacement[ic] =
-                        zeros(2)
-                    break
+                    elseif sim.ice_floes[i].contacts[ic] == 0  # empty
+                        sim.ice_floes[i].n_contacts += 1  # register new contact
+                        sim.ice_floes[j].n_contacts += 1
+                        sim.ice_floes[i].contacts[ic] = j
+                        sim.ice_floes[i].contact_parallel_displacement[ic] =
+                            zeros(2)
+                        break
+                    end
                 end
             end
         end

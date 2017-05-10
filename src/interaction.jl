@@ -7,13 +7,13 @@ export interact!
 Resolve mechanical interaction between all particle pairs.
 """
 function interact!(simulation::Simulation)
-    for i=1:Int(ceil(length(simulation.ice_floes)/2.))  # i <= Int(N/2)
+    for i=1:length(simulation.ice_floes)
         for ic=1:Nc_max
 
             j = simulation.ice_floes[i].contacts[ic]
 
-            if j == 0
-                break  # end of contact list reached
+            if i > j  # skip i > j and j == 0
+                continue
             end
 
             if norm(simulation.ice_floes[i].lin_pos - 
@@ -52,7 +52,10 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
     # Floe distance
     delta_n = dist - (r_i + r_j)
 
-    if delta_n < 0.  # Contact (this should always occur)
+    if delta_n > 0.  # Double-check contact
+        error("function called to process non-existent contact between ice " *
+              "floes $i and $j")
+    else
 
         # Local axes
         n = p/dist
@@ -128,8 +131,7 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
 
         elseif k_t_harmonic_mean > 0.
 
-                force_t = -k_t_harmonic_mean*delta_t -
-                    gamma_t_harmonic_mean*vel_t
+            force_t = -k_t_harmonic_mean*delta_t - gamma_t_harmonic_mean*vel_t
 
             if abs(force_t) > mu_d_minimum*abs(force_n)
                 force_t = mu_d_minimum*abs(force_n)*force_t/abs(force_t)
@@ -141,10 +143,6 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
             error("unknown contact_tangential_rheology (k_t = " *
                   "$k_t_harmonic_mean, gamma_t = $gamma_t_harmonic_mean")
         end
-
-    else
-        error("function called to process non-existent contact between ice " *
-              "floes $i and $j")
     end
     simulation.ice_floes[i].contact_parallel_displacement[ic] = delta_t*t
 

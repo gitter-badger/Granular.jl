@@ -261,6 +261,51 @@ function convertIceFloeDataToArrays(simulation::Simulation)
     return ifarr
 end
 
+export printIceFloeInfo
+"""
+    printIceFloeInfo(icefloe::IceFloeCylindrical)
+
+Prints the contents of an ice floe to stdout in a formatted style.
+"""
+function printIceFloeInfo(f::IceFloeCylindrical)
+    println("  density:                 $(f.density) kg/m^3")
+    println("  thickness:               $(f.thickness) m")
+    println("  contact_radius:          $(f.contact_radius) m")
+    println("  areal_radius:            $(f.areal_radius) m")
+    println("  circumreference:         $(f.circumreference) m")
+    println("  horizontal_surface_area: $(f.horizontal_surface_area) m^2")
+    println("  side_surface_area:       $(f.side_surface_area) m^2")
+    println("  volume:                  $(f.volume) m^3")
+    println("  mass:                    $(f.mass) kg")
+    println("  moment_of_inertia:       $(f.moment_of_inertia) kg*m^2\n")
+
+    println("  lin_pos: $(f.lin_pos) m")
+    println("  lin_vel: $(f.lin_vel) m/s")
+    println("  lin_acc: $(f.lin_acc) m/s^2")
+    println("  force:   $(f.force) N\n")
+
+    println("  ang_pos: $(f.ang_pos) rad")
+    println("  ang_vel: $(f.ang_vel) rad/s")
+    println("  ang_acc: $(f.ang_acc) rad/s^2")
+    println("  torque:  $(f.torque) N*m\n")
+
+    println("  fixed:    $(f.fixed)")
+    println("  rotating: $(f.rotating)")
+    println("  enabled:  $(f.enabled)\n")
+
+    println("  k_n:     $(f.contact_stiffness_normal) N/m")
+    println("  k_t:     $(f.contact_stiffness_tangential) N/m")
+    println("  gamma_n: $(f.contact_viscosity_normal) N/(m/s)")
+    println("  gamma_t: $(f.contact_viscosity_tangential) N/(m/s)")
+    println("  mu_s:    $(f.contact_static_friction)")
+    println("  mu_d:    $(f.contact_dynamic_friction)\n")
+
+    println("  pressure:   $(f.pressure) Pa")
+    println("  n_contacts: $(f.n_contacts)")
+    println("  contacts:   $(f.contacts)")
+    println("  delta_t:    $(f.contact_parallel_displacement)")
+end
+
 export iceFloeKineticTranslationalEnergy
 "Returns the translational kinetic energy of the ice floe"
 function iceFloeKineticTranslationalEnergy(icefloe::IceFloeCylindrical)
