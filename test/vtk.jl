@@ -24,9 +24,11 @@ else
 end
 
 @test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == 
-"a01d322026a56b1332c2174e4b513015c63ad44e2a28140bd2c2cccf7df38a13  test.icefloes.1.vtu\n"
+"88daceb1b99c519154b1acdcf8f340967794c552c74ea70c4af8954d8af5296a  " *
+"test.icefloes.1.vtu\n"
 
 @test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == 
-"f0117e414c4e71a0c55980f63865eb03b6c597fa2546983258b8a57eb4ff2a25  test.ocean.1.vts\n"
+"f0117e414c4e71a0c55980f63865eb03b6c597fa2546983258b8a57eb4ff2a25  " * 
+"test.ocean.1.vts\n"
 
 SeaIce.removeSimulationFiles(sim)

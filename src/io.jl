@@ -96,6 +96,9 @@ function writeIceFloeVTK(simulation::Simulation,
     WriteVTK.vtk_point_data(vtkfile, ifarr.pressure,
                             "Contact pressure [Pa]")
 
+    WriteVTK.vtk_point_data(vtkfile, ifarr.n_contacts,
+                            "Number of contacts [-]")
+
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
         info("Output file: " * outfiles[1])
