@@ -109,7 +109,7 @@ info("added $(n) ice floes")
 # Remove old simulation files
 SeaIce.removeSimulationFiles(sim)
 
-k_n = 1e6  # N/m
+k_n = 1e7  # N/m
 k_t = k_n
 #gamma_t = 1e7  # N/(m/s)
 gamma_t = 0.
