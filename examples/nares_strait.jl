@@ -1,11 +1,11 @@
 #!/usr/bin/env julia
 import SeaIce
 
-#sim = SeaIce.createSimulation(id="nares_strait")
-#n = [25, 25, 2]
+sim = SeaIce.createSimulation(id="nares_strait_elast")
+n = [25, 25, 2]
 
-sim = SeaIce.createSimulation(id="nares_strait_coarse_elast")
-n = [6, 6, 2]
+#sim = SeaIce.createSimulation(id="nares_strait_coarse_elast")
+#n = [6, 6, 2]
 
 # Initialize ocean
 Lx = 50.e3
@@ -17,6 +17,7 @@ sim.ocean.v[:, :, 1, 1] = 1e-8*((sim.ocean.xq - Lx/2.).^2 - Lx^2./4.)
 
 # Initialize confining walls, which are ice floes that are fixed in space
 r = minimum(L[1:2]/n[1:2])/2.
+r_min = r/2.
 h = 1.
 
 ## N-S segments
@@ -99,7 +100,8 @@ for y in (L[2] - r - noise_amplitude):(-(2.*r + floe_padding)):((L[2] -
             continue
         end
             
-        SeaIce.addIceFloeCylindrical(sim, [x_, y_], r, h, verbose=false)
+        r_rand = r_min + Base.Random.rand()*(r - r_min)
+        SeaIce.addIceFloeCylindrical(sim, [x_, y_], r_rand, h, verbose=false)
     end
     iy += 1
 end
@@ -140,27 +142,35 @@ while sim.time < sim.time_total
                                                    size(sim.ocean.xh, 2))
 
             # Enable for high mass flux
-            SeaIce.addIceFloeCylindrical(sim, [x-r, y-r], r, h, verbose=false,
+            r_rand = r_min + Base.Random.rand()*(r - r_min)
+            SeaIce.addIceFloeCylindrical(sim, [x-r, y-r], r_rand, h, 
+                    verbose=false,
                     contact_stiffness_normal=k_n,
-                    contact_stiffness_normal=k_n,
+                    contact_stiffness_tangential=k_t,
                     contact_viscosity_tangential=gamma_t,
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
-            SeaIce.addIceFloeCylindrical(sim, [x+r, y-r], r, h, verbose=false,
+            r_rand = r_min + Base.Random.rand()*(r - r_min)
+            SeaIce.addIceFloeCylindrical(sim, [x+r, y-r], r_rand, h, 
+                    verbose=false,
                     contact_stiffness_normal=k_n,
-                    contact_stiffness_normal=k_n,
+                    contact_stiffness_tangential=k_t,
                     contact_viscosity_tangential=gamma_t,
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
-            SeaIce.addIceFloeCylindrical(sim, [x+r, y+r], r, h, verbose=false,
+            r_rand = r_min + Base.Random.rand()*(r - r_min)
+            SeaIce.addIceFloeCylindrical(sim, [x+r, y+r], r_rand, h, 
+                    verbose=false,
                     contact_stiffness_normal=k_n,
-                    contact_stiffness_normal=k_n,
+                    contact_stiffness_tangential=k_t,
                     contact_viscosity_tangential=gamma_t,
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
-            SeaIce.addIceFloeCylindrical(sim, [x-r, y+r], r, h, verbose=false,
+            r_rand = r_min + Base.Random.rand()*(r - r_min)
+            SeaIce.addIceFloeCylindrical(sim, [x-r, y+r], r_rand, h, 
+                    verbose=false,
                     contact_stiffness_normal=k_n,
-                    contact_stiffness_normal=k_n,
+                    contact_stiffness_tangential=k_t,
                     contact_viscosity_tangential=gamma_t,
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
