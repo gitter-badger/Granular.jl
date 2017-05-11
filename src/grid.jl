@@ -7,7 +7,8 @@ south-west (-x, -y)-facing corner.
 
 # Arguments
 * `field::Array{Float64, 4}`: a scalar field to interpolate from
-* `p::float`: point position
+* `x_tilde::float`: x point position [0;1]
+* `y_tilde::float`: y point position [0;1]
 * `i::Int`: i-index of cell containing point
 * `j::Int`: j-index of scalar field to interpolate from
 * `it::Int`: time step from scalar field to interpolate from
@@ -28,6 +29,42 @@ function bilinearInterpolation(field::Array{Float64, 4},
             field[i, j+1, k, it]*(1. - x_tilde))*y_tilde +
            (field[i+1, j, k, it]*x_tilde +
             field[i, j, k, it]*(1. - x_tilde))*(1. - y_tilde)
+end
+
+"""
+    curl(ocean, x_tilde, y_tilde, i, j, k, it)
+
+Use bilinear interpolation to interpolate curl value for a staggered velocity 
+grid to an arbitrary position in a cell.  Assumes south-west convention, i.e.  
+(i,j) is located at the south-west (-x, -y)-facing corner.
+
+# Arguments
+* `ocean::Ocean`: grid for which to determine curl
+* `x_tilde::float`: x point position [0;1]
+* `y_tilde::float`: y point position [0;1]
+* `i::Int`: i-index of cell containing point
+* `j::Int`: j-index of scalar field to interpolate from
+* `it::Int`: time step from scalar field to interpolate from
+"""
+function curl(ocean::Ocean,
+              x_tilde::Float64,
+              y_tilde::Float64,
+              i::Int,
+              j::Int,
+              k::Int,
+              it::Int)
+
+    sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
+    sw_se = norm(sw - se)
+    se_ne = norm(se - ne)
+    nw_ne = norm(nw - ne)
+    sw_nw = norm(sw - nw)
+
+    return (
+    ((ocean.v[i+1, j  , k,it] - ocean.v[i  , j  , k,it])/sw_se*(1. - y_tilde) +
+     ((ocean.v[i+1, j+1, k,it] - ocean.v[i  , j+1, k,it])/nw_ne)*y_tilde) -
+    ((ocean.u[i  , j+1, k,it] - ocean.u[i  , j  , k,it])/sw_nw*(1. - x_tilde) +
+     ((ocean.u[i+1, j+1, k,it] - ocean.u[i+1, j  , k,it])/se_ne)*x_tilde))
 end
 
 export sortIceFloesInOceanGrid!

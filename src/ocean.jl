@@ -245,7 +245,8 @@ end
 
 export addOceanDrag!
 """
-Add Stokes-type drag from velocity difference between ocean and all ice floes.
+Add drag from linear and angular velocity difference between ocean and all ice 
+floes.
 """
 function addOceanDrag!(simulation::Simulation)
     if typeof(simulation.ocean.input_file) == Bool
@@ -276,8 +277,10 @@ function addOceanDrag!(simulation::Simulation)
 
         u_local = bilinearInterpolation(u, x_tilde, y_tilde, i, j, k, 1)
         v_local = bilinearInterpolation(v, x_tilde, y_tilde, i, j, k, 1)
+        vel_curl = curl(simulation.ocean, x_tilde, y_tilde, i, j, k, 1)
 
         applyOceanDragToIceFloe!(ice_floe, u_local, v_local)
+        applyOceanVorticityToIceFloe!(ice_floe, vel_curl)
     end
 end
 
@@ -297,6 +300,26 @@ function applyOceanDragToIceFloe!(ice_floe::IceFloeCylindrical,
     width = ice_floe.areal_radius*2.
 
     ice_floe.force +=
-        rho_o * (.5*c_o_v*width*draft*freeboard + c_o_h*length*width) *
+        rho_o * (.5*c_o_v*width*draft + c_o_h*length*width) *
         ([u, v] - ice_floe.lin_vel)*norm([u, v] - ice_floe.lin_vel)
+end
+
+export applyOceanVorticityToIceFloe!
+"""
+Add Stokes-type torque from angular velocity difference between ocean and a 
+single ice floe.  See Eq. 9.28 in "Introduction to Fluid Mechanics" by Nakayama 
+and Boucher, 1999.
+"""
+function applyOceanVorticityToIceFloe!(ice_floe::IceFloeCylindrical, 
+                                       ocean_curl::float)
+    freeboard = .1*ice_floe.thickness  # height above water
+    rho_o = 1000.   # ocean density
+    draft = ice_floe.thickness - freeboard  # height of submerged thickness
+    c_o_v = .85  # ocean drag coefficient, vertical, Hunke and Comeau 2011
+    c_o_h = 5e-4  # ocean drag coefficient, horizontal
+
+    ice_floe.torque +=
+        pi*ice_floe.areal_radius^4.*rho_o*
+        (ice_floe.areal_radius/5.*c_o_h + draft*c_o_h)*
+        abs(.5*ocean_curl - ice_floe.ang_vel)*(.5*ocean_curl - ice_floe.ang_vel)
 end

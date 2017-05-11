@@ -137,3 +137,18 @@ SeaIce.addOceanDrag!(sim)
 @test sim.ice_floes[1].force[2] > 0.
 @test sim.ice_floes[2].force[1] < 0.
 @test sim.ice_floes[2].force[2] > 0.
+
+info("Testing curl function")
+ocean.u[1, 1, 1, 1] = 1.0
+ocean.u[2, 1, 1, 1] = 1.0
+ocean.u[2, 2, 1, 1] = 0.0
+ocean.u[1, 2, 1, 1] = 0.0
+ocean.v[:, :, 1, 1] = 0.0
+@test SeaIce.curl(ocean, .5, .5, 1, 1, 1, 1) > 0.
+
+ocean.u[1, 1, 1, 1] = 0.0
+ocean.u[2, 1, 1, 1] = 0.0
+ocean.u[2, 2, 1, 1] = 1.0
+ocean.u[1, 2, 1, 1] = 1.0
+ocean.v[:, :, 1, 1] = 0.0
+@test SeaIce.curl(ocean, .5, .5, 1, 1, 1, 1) < 0.
