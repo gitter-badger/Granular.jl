@@ -88,17 +88,29 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
             continue
         end
 
-        i, j = findCellContainingPoint(simulation.ocean,
-                                       simulation.ice_floes[idx].lin_pos)
+        # After first iteration, check if ice floe is in same cell before 
+        # traversing entire grid
+        i_old, j_old = simulation.ice_floes[idx].ocean_grid_pos
+        if simulation.time > 0. &&
+            i_old > 0 && j_old > 0 &&
+            isPointInCell(simulation.ocean, i_old, j_old,
+                         simulation.ice_floes[idx].lin_pos)
+            i = i_old
+            j = j_old
 
-        # remove ice floe if it is outside of the grid
-        if i == 0 && j == 0
-            disableIceFloe!(simulation, idx)
-            continue
+        else
+            i, j = findCellContainingPoint(simulation.ocean,
+                                           simulation.ice_floes[idx].lin_pos)
+
+            # remove ice floe if it is outside of the grid
+            if i == 0 && j == 0
+                disableIceFloe!(simulation, idx)
+                continue
+            end
+
+            # add cell to ice floe
+            simulation.ice_floes[idx].ocean_grid_pos = [i, j]
         end
-
-        # add cell to ice floe
-        simulation.ice_floes[idx].ocean_grid_pos = [i, j]
 
         # add ice floe to cell
         push!(simulation.ocean.ice_floe_list[i, j], idx)
@@ -157,7 +169,7 @@ conformal mapping approach (`method = "Conformal"`).  The area-based approach is
 more robust.  This function returns `true` or `false`.
 """
 function isPointInCell(ocean::Ocean, i::Int, j::Int, point::Array{float, 1};
-                       method::String="Area")
+                       method::String="Conformal")
 
     sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
 
