@@ -17,6 +17,8 @@ if Base.is_linux()
 elseif Base.is_apple()
     cmd = ["shasum", "-a", "256"]
 elseif Base.is_windows()
+    info("checksum verification not yet implemented on Windows")
+    exit()
     cmd = ["powershell", "-Command", "\"Get-FileHash", "-Algorithm", "SHA256"]
     cmd_post = "\""
 else
