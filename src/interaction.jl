@@ -159,9 +159,9 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
 end
 
 function harmonicMean(a::Any, b::Any)
-    hm = 2.*a*b/(a + b)
-    if isnan(hm)
+    if a ≈ 0. && b ≈ 0
         return 0.
+    else
+        return 2.*a*b/(a + b)
     end
-    return hm
 end
