@@ -84,6 +84,10 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
 
     for idx in 1:length(simulation.ice_floes)
 
+        if !simulation.ice_floes[idx].enabled
+            continue
+        end
+
         i, j = findCellContainingPoint(simulation.ocean,
                                        simulation.ice_floes[idx].lin_pos)
 
