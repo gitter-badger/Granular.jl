@@ -34,3 +34,21 @@ end
 "test.ocean.1.vts\n"
 
 SeaIce.removeSimulationFiles(sim)
+
+info("Testing VTK write during run!()")
+SeaIce.setOutputFileInterval!(sim, 1e-9)
+SeaIce.setTotalTime!(sim, 1.5)
+SeaIce.setTimeStep!(sim)
+sim.file_number = 0
+SeaIce.run!(sim, single_step=true)
+SeaIce.run!(sim, single_step=true)
+
+@test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == 
+"203030169e90d9ab9538074d2c196ae61dbd8dc3522fcc18e294d4ee70fe4504  " *
+"test.icefloes.1.vtu\n"
+
+@test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == 
+"f0117e414c4e71a0c55980f63865eb03b6c597fa2546983258b8a57eb4ff2a25  " * 
+"test.ocean.1.vts\n"
+
+SeaIce.removeSimulationFiles(sim)

@@ -1,6 +1,7 @@
 import SeaIce
 using Base.Test
 
+include("icefloe.jl")
 include("contact-search-and-geometry.jl")
 include("collision-2floes-normal.jl")
 include("collision-5floes-normal.jl")

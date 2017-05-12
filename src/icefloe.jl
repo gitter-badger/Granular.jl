@@ -53,15 +53,6 @@ function addIceFloeCylindrical(simulation::Simulation,
         error("Linear acceleration must be a two-element array (lin_acc = ",
               "$lin_acc)")
     end
-    if length(ang_pos) != 1
-        error("Angular position must be a scalar (ang_pos = $ang_pos)")
-    end
-    if length(ang_vel) != 1
-        error("Angular velocity must be a scalar (ang_vel = $ang_vel)")
-    end
-    if length(ang_acc) != 1
-        error("Angular acceleration must be a scalar (ang_acc = $ang_acc)")
-    end
     if contact_radius <= 0.0
         error("Radius must be greater than 0.0 (radius = $contact_radius m)")
     end
