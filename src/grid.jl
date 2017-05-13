@@ -99,8 +99,36 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
             j = j_old
 
         else
-            i, j = findCellContainingPoint(simulation.ocean,
-                                           simulation.ice_floes[idx].lin_pos)
+
+            # Search for point in 8 neighboring cells
+            nx = size(simulation.ocean.xh, 1)
+            ny = size(simulation.ocean.xh, 2)
+            found = false
+            for i_rel=-1:1
+                for j_rel=-1:1
+                    if i_rel == 0 && j_rel == 0
+                        continue  # cell previously searched
+                    end
+                    i_t = max(min(i_old + i_rel, nx), 1)
+                    j_t = max(min(j_old + j_rel, ny), 1)
+                    
+                    if isPointInCell(simulation.ocean, i_t, j_t,
+                                  simulation.ice_floes[idx].lin_pos)
+                        i = i_t
+                        j = j_t
+                        found = true
+                        break
+                    end
+                end
+                if found
+                    break
+                end
+            end
+
+            if !found
+                i, j = findCellContainingPoint(simulation.ocean,
+                                               simulation.ice_floes[idx].lin_pos)
+            end
 
             # remove ice floe if it is outside of the grid
             if i == 0 && j == 0
@@ -135,6 +163,7 @@ found the function returns `(0,0)`.
 """
 function findCellContainingPoint(ocean::Ocean, point::Array{float, 1};
                                  method::String="Conformal")
+
     for i=1:size(ocean.xh, 1)
         for j=1:size(ocean.yh, 2)
             if isPointInCell(ocean, i, j, point, method=method)
