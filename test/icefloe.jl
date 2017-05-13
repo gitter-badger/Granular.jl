@@ -17,4 +17,5 @@ SeaIce.printIceFloeInfo(sim.ice_floes[1])
     lin_acc=[.2,.2,.2])
 @test_throws ErrorException SeaIce.addIceFloeCylindrical(sim, [.1, .1], 0., 1.)
 @test_throws ErrorException SeaIce.addIceFloeCylindrical(sim, [.1, .1], 10., 1., 
-density=-2.)
+    density=-2.)
+@test_throws ErrorException SeaIce.disableIceFloe!(sim, 0)

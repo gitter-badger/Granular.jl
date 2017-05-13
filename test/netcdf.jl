@@ -4,6 +4,9 @@
 
 info("#### $(basename(@__FILE__)) ####")
 
+@test_throws ErrorException SeaIce.readOceanStateNetCDF("nonexistentfile")
+@test_throws ErrorException SeaIce.readOceanGridNetCDF("nonexistentfile")
+
 info("Testing dimensions of content read from Baltic test case")
 ocean = SeaIce.readOceanNetCDF("Baltic/00010101.ocean_month.nc",
                                "Baltic/ocean_hgrid.nc")
@@ -22,6 +25,7 @@ info("Testing ocean state interpolation")
 @test_throws ErrorException SeaIce.interpolateOceanState(ocean, time=1.e34)
 u1, v1, h1, e1 = SeaIce.interpolateOceanState(ocean, ocean.time[1])
 u2, v2, h2, e2 = SeaIce.interpolateOceanState(ocean, ocean.time[2])
+@test_throws ErrorException SeaIce.interpolateOceanState(ocean, -1.)
 u1_5, v1_5, h1_5, e1_5 = SeaIce.interpolateOceanState(ocean,
     ocean.time[1] + (ocean.time[2] - ocean.time[1])/2.)
 @test_approx_eq u1 ocean.u[:, :, :, 1]

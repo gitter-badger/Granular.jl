@@ -142,16 +142,6 @@ function addIceFloe!(simulation::Simulation,
     end
 end
 
-export removeIceFloe!
-"Remove ice floe with index `i` from the `simulation` object."
-function removeIceFloe!(simulation::Simulation, i::Integer)
-    if i < 1
-        error("Index must be greater than 0 (i = $i)")
-    end
-
-    delete!(simulation.ice_floes, i)
-end
-
 export disableIceFloe!
 "Disable ice floe with index `i` in the `simulation` object."
 function disableIceFloe!(simulation::Simulation, i::Integer)
