@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 import SeaIce
 
-sim = SeaIce.createSimulation(id="nares_strait")
+sim = SeaIce.createSimulation(id="strait")
 n = [10, 10, 2]
 
 #sim = SeaIce.createSimulation(id="nares_strait_coarse_elast")
@@ -127,7 +127,7 @@ for i=1:length(sim.ice_floes)
 end
 
 # Set temporal parameters
-SeaIce.setTotalTime!(sim, 12.*60.*60.)
+SeaIce.setTotalTime!(sim, 6.*60.*60.)
 SeaIce.setOutputFileInterval!(sim, 60.)
 SeaIce.setTimeStep!(sim)
 
