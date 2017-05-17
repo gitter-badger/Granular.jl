@@ -29,9 +29,10 @@ end
 "88daceb1b99c519154b1acdcf8f340967794c552c74ea70c4af8954d8af5296a  " *
 "test.icefloes.1.vtu\n"
 
-@test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == 
-"f0117e414c4e71a0c55980f63865eb03b6c597fa2546983258b8a57eb4ff2a25  " * 
+oceanchecksum = "d56ffb109841a803f2b2b94c74c87f7a497237204841d557d2b1043694d51f0d  " *
 "test.ocean.1.vts\n"
+
+@test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == oceanchecksum
 
 SeaIce.removeSimulationFiles(sim)
 
@@ -47,8 +48,6 @@ SeaIce.run!(sim, single_step=true)
 "203030169e90d9ab9538074d2c196ae61dbd8dc3522fcc18e294d4ee70fe4504  " *
 "test.icefloes.1.vtu\n"
 
-@test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == 
-"f0117e414c4e71a0c55980f63865eb03b6c597fa2546983258b8a57eb4ff2a25  " * 
-"test.ocean.1.vts\n"
+@test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == oceanchecksum
 
 SeaIce.removeSimulationFiles(sim)

@@ -151,7 +151,12 @@ function writeOceanVTK(ocean::Ocean,
         end
     end
     
-    WriteVTK.vtk_point_data(vtkfile, vel, "Velocity [m/s]")
+    WriteVTK.vtk_point_data(vtkfile, vel, "Velocity vector [m/s]")
+
+    WriteVTK.vtk_point_data(vtkfile, ocean.h[:, :, :, 1],
+                            "h: Layer thickness [m]")
+    WriteVTK.vtk_point_data(vtkfile, ocean.e[:, :, :, 1],
+                            "e: Relative interface height [m]")
 
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
