@@ -25,13 +25,15 @@ else
     error("checksum verification of VTK file not supported on this platform")
 end
 
-@test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == 
+icefloechecksum = 
 "88daceb1b99c519154b1acdcf8f340967794c552c74ea70c4af8954d8af5296a  " *
 "test.icefloes.1.vtu\n"
 
-oceanchecksum = "d56ffb109841a803f2b2b94c74c87f7a497237204841d557d2b1043694d51f0d  " *
+oceanchecksum =
+"d56ffb109841a803f2b2b94c74c87f7a497237204841d557d2b1043694d51f0d  " *
 "test.ocean.1.vts\n"
 
+@test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == icefloechecksum
 @test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == oceanchecksum
 
 SeaIce.removeSimulationFiles(sim)
@@ -44,10 +46,7 @@ sim.file_number = 0
 SeaIce.run!(sim, single_step=true)
 SeaIce.run!(sim, single_step=true)
 
-@test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == 
-"203030169e90d9ab9538074d2c196ae61dbd8dc3522fcc18e294d4ee70fe4504  " *
-"test.icefloes.1.vtu\n"
-
+@test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == icefloechecksum
 @test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == oceanchecksum
 
 SeaIce.removeSimulationFiles(sim)

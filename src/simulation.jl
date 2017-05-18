@@ -85,11 +85,12 @@ function run!(simulation::Simulation;
 
     checkTimeParameters(simulation)
 
+    it_file = 0
+    n_file_time_step =Int(round(simulation.file_time_step/simulation.time_step))
 
     while simulation.time <= simulation.time_total
 
-        if simulation.file_time_step > 0.0 &&
-            simulation.file_time_since_output_file >= simulation.file_time_step
+        if simulation.file_time_step > 0.0 && it_file >= n_file_time_step
 
             if show_file_output
                 println()
@@ -117,6 +118,7 @@ function run!(simulation::Simulation;
 
         # Update time variables
         simulation.time_iteration += 1
+        n_file_time_step += 1
         incrementCurrentTime!(simulation, simulation.time_step)
 
         if single_step
