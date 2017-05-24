@@ -26,7 +26,7 @@ else
 end
 
 icefloechecksum = 
-"4885bc7c0eccc5e43a77d370295841fae710465c8bcc120a13681a0947ffbd53  " *
+"de1ee347a6a15c665d3fa122c73092b3aa200bf8180007303f43f71396094d8d  " *
 "test.icefloes.1.vtu\n"
 
 oceanchecksum =

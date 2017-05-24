@@ -21,13 +21,14 @@ function addIceFloeCylindrical(simulation::Simulation,
                                ang_acc::float = 0.,
                                torque::float = 0.,
                                density::float = 934.,
-                               contact_stiffness_normal::float = 1.e6,
+                               contact_stiffness_normal::float = 1e7,
                                contact_stiffness_tangential::float = 0.,
                                contact_viscosity_normal::float = 0.,
                                contact_viscosity_tangential::float = 0.,
                                contact_static_friction::float = 0.4,
                                contact_dynamic_friction::float = 0.4,
-                               youngs_modulus::float = 2e9,  # Hopkins 2004
+                               youngs_modulus::float = 2e7,
+                               #youngs_modulus::float = 2e9,  # Hopkins 2004
                                poissons_ratio::float = 0.185,  # Hopkins 2004
                                tensile_strength::float = 500e3,  # Hopkins 2004
                                compressive_strength_prefactor::float = 1285e3,  

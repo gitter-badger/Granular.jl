@@ -99,13 +99,24 @@ function findLargestIceFloeStiffness(simulation::Simulation)
     i_n_max = -1
     i_t_max = -1
     for i in length(simulation.ice_floes)
+
         icefloe = simulation.ice_floes[i]
-        if icefloe.contact_stiffness_normal > k_n_max
-            k_n_max = icefloe.contact_stiffness_normal
+
+        if icefloe.youngs_modulus > 0.
+            k_n = icefloe.youngs_modulus*icefloe.thickness  # A = h*r
+            k_t = k_n*2.*(1. - icefloe.poissons_ratio^2.)/
+                ((2. - icefloe.poissons_ratio)*(1. + icefloe.poissons_ratio))
+        else
+            k_n = icefloe.contact_stiffness_normal
+            k_t = icefloe.contact_stiffness_tangential
+        end
+
+        if k_n > k_n_max
+            k_n_max = k_n
             i_n_max = i
         end
-        if icefloe.contact_stiffness_tangential > k_t_max
-            k_t_max = icefloe.contact_stiffness_tangential
+        if k_t > k_t_max
+            k_t_max = k_t
             i_t_max = i
         end
     end

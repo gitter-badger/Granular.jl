@@ -13,6 +13,8 @@ sim = SeaIce.createSimulation(id="test")
 SeaIce.addIceFloeCylindrical(sim, [0., 10.], 10., 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [19., 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
+sim.ice_floes[1].contact_dynamic_friction = 0.
+sim.ice_floes[2].contact_dynamic_friction = 0.
 sim.ice_floes[2].fixed = true
 
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
@@ -68,6 +70,8 @@ sim = SeaIce.createSimulation(id="test")
 SeaIce.addIceFloeCylindrical(sim, [0., 10.], 10., 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [19.0, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
+sim.ice_floes[1].contact_dynamic_friction = 0.
+sim.ice_floes[2].contact_dynamic_friction = 0.
 
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_init = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
@@ -229,7 +233,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.02
+tol = 0.04
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             verbose=verbose)
@@ -242,7 +246,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.02
+tol = 0.04
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             verbose=verbose)
@@ -292,7 +296,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.02
+tol = 0.04
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             verbose=verbose)
@@ -305,7 +309,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.02
+tol = 0.04
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             verbose=verbose)
@@ -325,8 +329,6 @@ sim = SeaIce.createSimulation(id="test")
 SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [19.0, -10.], 10., 1., verbose=verbose)
 sim.ice_floes[2].lin_vel[1] = -0.1
-sim.ice_floes[1].contact_viscosity_tangential = 1e4
-sim.ice_floes[2].contact_viscosity_tangential = 1e4
 
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_init = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
@@ -355,7 +357,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.02
+tol = 0.04
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             verbose=verbose)
@@ -368,7 +370,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.02
+tol = 0.04
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             verbose=verbose)
@@ -424,7 +426,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.007)
-tol = 0.02
+tol = 0.04
 info("Relative tolerance: $(tol*100.)%")
 SeaIce.run!(sim, temporal_integration_method="Two-term Taylor",
             verbose=verbose)
@@ -437,7 +439,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
 sim = deepcopy(sim_init)
 SeaIce.setTimeStep!(sim, epsilon=0.07)
-tol = 0.03
+tol = 0.04
 info("Relative tolerance: $(tol*100.)% with time step: $(sim.time_step)")
 SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
             verbose=verbose)

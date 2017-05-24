@@ -33,9 +33,14 @@ end
 
 export interactIceFloes!
 """
+    interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
+
 Resolve an grain-to-grain interaction using a prescibed contact law.  This 
 function adds the compressive force of the interaction to the ice floe 
 `pressure` field of mean compressive stress on the ice floe sides.
+
+The function uses the macroscopic contact parameterization based on Young's 
+modulus and Poisson's ratio if Young's modulus is a positive value.
 """
 function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
 
@@ -80,19 +85,37 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
             abs(delta_n)/2.
 
         # Contact mechanical parameters
-        k_n_harmonic_mean = 
-            harmonicMean(simulation.ice_floes[i].contact_stiffness_normal,
-                         simulation.ice_floes[j].contact_stiffness_normal)
+        if simulation.ice_floes[i].youngs_modulus > 0. &&
+            simulation.ice_floes[j].youngs_modulus > 0.
 
-        k_t_harmonic_mean = 
-            harmonicMean(simulation.ice_floes[i].contact_stiffness_tangential,
-                         simulation.ice_floes[j].contact_stiffness_tangential)
+            E = harmonicMean(simulation.ice_floes[i].youngs_modulus,
+                             simulation.ice_floes[j].youngs_modulus)
+            ν = harmonicMean(simulation.ice_floes[i].poissons_ratio,
+                             simulation.ice_floes[j].poissons_ratio)
 
-        gamma_n_harmonic_mean = harmonicMean(
+            # Contact area
+            A_ij = R_ij*min(simulation.ice_floes[i].thickness, 
+                            simulation.ice_floes[j].thickness)
+
+            # Effective normal and tangential stiffness
+            k_n = E*A_ij/R_ij
+            #k_t = k_n*ν   # Kneib et al 2016
+            k_t = k_n*2.*(1. - ν^2.)/((2. - ν)*(1. + ν))  # Obermayr et al 2011
+
+        else  # Micromechanical parameterization: k_n and k_t set explicitly
+            k_n = harmonicMean(simulation.ice_floes[i].contact_stiffness_normal,
+                             simulation.ice_floes[j].contact_stiffness_normal)
+
+            k_t =
+              harmonicMean(simulation.ice_floes[i].contact_stiffness_tangential,
+                           simulation.ice_floes[j].contact_stiffness_tangential)
+        end
+
+        gamma_n = harmonicMean(
                      simulation.ice_floes[i].contact_viscosity_normal,
                      simulation.ice_floes[j].contact_viscosity_normal)
 
-        gamma_t_harmonic_mean = harmonicMean(
+        gamma_t = harmonicMean(
                      simulation.ice_floes[i].contact_viscosity_tangential,
                      simulation.ice_floes[j].contact_viscosity_tangential)
 
@@ -100,28 +123,28 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
                            simulation.ice_floes[j].contact_dynamic_friction)
 
         # Determine contact forces
-        if k_n_harmonic_mean ≈ 0. && gamma_n_harmonic_mean ≈ 0.
+        if k_n ≈ 0. && gamma_n ≈ 0.
             force_n = 0.
 
-        elseif k_n_harmonic_mean > 0. && gamma_n_harmonic_mean ≈ 0.
-            force_n = -k_n_harmonic_mean*delta_n
+        elseif k_n > 0. && gamma_n ≈ 0.
+            force_n = -k_n*delta_n
 
-        elseif k_n_harmonic_mean > 0. && gamma_n_harmonic_mean > 0.
-            force_n = -k_n_harmonic_mean*delta_n - gamma_n_harmonic_mean*vel_n
+        elseif k_n > 0. && gamma_n > 0.
+            force_n = -k_n*delta_n - gamma_n*vel_n
             if force_n < 0.
                 force_n = 0.
             end
 
         else
-            error("unknown contact_normal_rheology (k_n = $k_n_harmonic_mean," *
-                  " gamma_n = $gamma_n_harmonic_mean")
+            error("unknown contact_normal_rheology (k_n = $k_n," *
+                  " gamma_n = $gamma_n")
         end
 
-        if k_t_harmonic_mean ≈ 0. && gamma_t_harmonic_mean ≈ 0.
+        if k_t ≈ 0. && gamma_t ≈ 0.
             # do nothing
 
-        elseif k_t_harmonic_mean ≈ 0. && gamma_t_harmonic_mean > 0.
-            force_t = abs(gamma_t_harmonic_mean * vel_t)
+        elseif k_t ≈ 0. && gamma_t > 0.
+            force_t = abs(gamma_t * vel_t)
             if force_t > mu_d_minimum*abs(force_n)
                 force_t = mu_d_minimum*abs(force_n)
             end
@@ -129,19 +152,18 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
                 force_t = -force_t
             end
 
-        elseif k_t_harmonic_mean > 0.
+        elseif k_t > 0.
 
-            force_t = -k_t_harmonic_mean*delta_t - gamma_t_harmonic_mean*vel_t
+            force_t = -k_t*delta_t - gamma_t*vel_t
 
             if abs(force_t) > mu_d_minimum*abs(force_n)
                 force_t = mu_d_minimum*abs(force_n)*force_t/abs(force_t)
-                delta_t = (-force_t - gamma_t_harmonic_mean*vel_t)/
-                    k_t_harmonic_mean
+                delta_t = (-force_t - gamma_t*vel_t)/k_t
             end
 
         else
             error("unknown contact_tangential_rheology (k_t = " *
-                  "$k_t_harmonic_mean, gamma_t = $gamma_t_harmonic_mean")
+                  "$k_t, gamma_t = $gamma_t")
         end
     end
     simulation.ice_floes[i].contact_parallel_displacement[ic] = delta_t*t
