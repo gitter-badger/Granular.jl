@@ -27,6 +27,15 @@ function addIceFloeCylindrical(simulation::Simulation,
                                contact_viscosity_tangential::float = 0.,
                                contact_static_friction::float = 0.4,
                                contact_dynamic_friction::float = 0.4,
+                               youngs_modulus::float = 2e9,  # Hopkins 2004
+                               poissons_ratio::float = 0.185,  # Hopkins 2004
+                               tensile_strength::float = 500e3,  # Hopkins 2004
+                               compressive_strength_prefactor::float = 1285e3,  
+                                   # Hopkins 2004
+                               ocean_drag_coeff_vert::float = 0.85, # H&C 2011
+                               ocean_drag_coeff_horiz::float = 5e-4, # H&C 2011
+                               atmos_drag_coeff_vert::float = 0.4, # H&C 2011
+                               atmos_drag_coeff_horiz::float = 2.5e-4, # H&C2011
                                pressure::float = 0.,
                                fixed::Bool = false,
                                rotating::Bool = true,
@@ -101,6 +110,16 @@ function addIceFloeCylindrical(simulation::Simulation,
                                  contact_viscosity_tangential,
                                  contact_static_friction,
                                  contact_dynamic_friction,
+
+                                 youngs_modulus,
+                                 poissons_ratio,
+                                 tensile_strength,
+                                 compressive_strength_prefactor,
+
+                                 ocean_drag_coeff_vert,
+                                 ocean_drag_coeff_horiz,
+                                 atmos_drag_coeff_vert,
+                                 atmos_drag_coeff_horiz,
 
                                  pressure,
                                  n_contacts,
@@ -199,6 +218,16 @@ function convertIceFloeDataToArrays(simulation::Simulation)
                           Array(Float64, length(simulation.ice_floes)),
 
                           Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+                          Array(Float64, length(simulation.ice_floes)),
+
+                          Array(Float64, length(simulation.ice_floes)),
                           Array(Int, length(simulation.ice_floes))
                          )
 
@@ -244,6 +273,21 @@ function convertIceFloeDataToArrays(simulation::Simulation)
         ifarr.contact_dynamic_friction[i] = 
             simulation.ice_floes[i].contact_dynamic_friction
 
+        ifarr.youngs_modulus[i] = simulation.ice_floes[i].youngs_modulus
+        ifarr.poissons_ratio[i] = simulation.ice_floes[i].poissons_ratio
+        ifarr.tensile_strength[i] = simulation.ice_floes[i].tensile_strength
+        ifarr.compressive_strength_prefactor[i] = 
+            simulation.ice_floes[i].compressive_strength_prefactor
+
+        ifarr.ocean_drag_coeff_vert[i] = 
+            simulation.ice_floes[i].ocean_drag_coeff_vert
+        ifarr.ocean_drag_coeff_horiz[i] = 
+            simulation.ice_floes[i].ocean_drag_coeff_horiz
+        ifarr.atmos_drag_coeff_vert[i] = 
+            simulation.ice_floes[i].atmos_drag_coeff_vert
+        ifarr.atmos_drag_coeff_horiz[i] = 
+            simulation.ice_floes[i].atmos_drag_coeff_horiz
+
         ifarr.pressure[i] = simulation.ice_floes[i].pressure
 
         ifarr.n_contacts[i] = simulation.ice_floes[i].n_contacts
@@ -286,10 +330,20 @@ function printIceFloeInfo(f::IceFloeCylindrical)
 
     println("  k_n:     $(f.contact_stiffness_normal) N/m")
     println("  k_t:     $(f.contact_stiffness_tangential) N/m")
-    println("  gamma_n: $(f.contact_viscosity_normal) N/(m/s)")
-    println("  gamma_t: $(f.contact_viscosity_tangential) N/(m/s)")
-    println("  mu_s:    $(f.contact_static_friction)")
-    println("  mu_d:    $(f.contact_dynamic_friction)\n")
+    println("  γ_n: $(f.contact_viscosity_normal) N/(m/s)")
+    println("  γ_t: $(f.contact_viscosity_tangential) N/(m/s)")
+    println("  μ_s:    $(f.contact_static_friction)")
+    println("  μ_d:    $(f.contact_dynamic_friction)\n")
+
+    println("  E:      $(f.youngs_modulus) Pa")
+    println("  ν:      $(f.poissons_ratio)")
+    println("  σ_t:    $(f.tensile_strength) Pa")
+    println("  c(σ_c): $(f.compressive_strength_prefactor) m^0.5 Pa\n")
+
+    println("  c_o_v:  $(f.ocean_drag_coeff_vert)")
+    println("  c_o_h:  $(f.ocean_drag_coeff_horiz)")
+    println("  c_a_v:  $(f.atmos_drag_coeff_vert)")
+    println("  c_a_h:  $(f.atmos_drag_coeff_horiz)\n")
 
     println("  pressure:   $(f.pressure) Pa")
     println("  n_contacts: $(f.n_contacts)")

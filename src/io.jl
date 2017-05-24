@@ -93,6 +93,24 @@ function writeIceFloeVTK(simulation::Simulation,
     WriteVTK.vtk_point_data(vtkfile, ifarr.contact_dynamic_friction,
                             "Contact friction (dynamic) [-]")
 
+    WriteVTK.vtk_point_data(vtkfile, ifarr.youngs_modulus,
+                            "Young's modulus [Pa]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.poissons_ratio,
+                            "Poisson's ratio [-]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.tensile_strength,
+                            "Tensile strength [Pa]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.compressive_strength_prefactor,
+                            "Compressive strength prefactor [m^0.5 Pa]")
+
+    WriteVTK.vtk_point_data(vtkfile, ifarr.ocean_drag_coeff_vert,
+                            "Ocean drag coefficient (vertical) [-]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.ocean_drag_coeff_horiz,
+                            "Ocean drag coefficient (horizontal) [-]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.atmos_drag_coeff_vert,
+                            "Atmosphere drag coefficient (vertical) [-]")
+    WriteVTK.vtk_point_data(vtkfile, ifarr.atmos_drag_coeff_horiz,
+                            "Atmosphere drag coefficient (horizontal) [-]")
+
     WriteVTK.vtk_point_data(vtkfile, ifarr.pressure,
                             "Contact pressure [Pa]")
 

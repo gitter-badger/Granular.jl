@@ -294,13 +294,12 @@ function applyOceanDragToIceFloe!(ice_floe::IceFloeCylindrical,
     freeboard = .1*ice_floe.thickness  # height above water
     rho_o = 1000.   # ocean density
     draft = ice_floe.thickness - freeboard  # height of submerged thickness
-    c_o_v = .85  # ocean drag coefficient, vertical, Hunke and Comeau 2011
-    c_o_h = 5e-4  # ocean drag coefficient, horizontal
     length = ice_floe.areal_radius*2.
     width = ice_floe.areal_radius*2.
 
     ice_floe.force +=
-        rho_o * (.5*c_o_v*width*draft + c_o_h*length*width) *
+        rho_o * (.5*ice_floe.ocean_drag_coeff_vert*width*draft + 
+        ice_floe.ocean_drag_coeff_horiz*length*width) *
         ([u, v] - ice_floe.lin_vel)*norm([u, v] - ice_floe.lin_vel)
 end
 
@@ -315,11 +314,10 @@ function applyOceanVorticityToIceFloe!(ice_floe::IceFloeCylindrical,
     freeboard = .1*ice_floe.thickness  # height above water
     rho_o = 1000.   # ocean density
     draft = ice_floe.thickness - freeboard  # height of submerged thickness
-    c_o_v = .85  # ocean drag coefficient, vertical, Hunke and Comeau 2011
-    c_o_h = 5e-4  # ocean drag coefficient, horizontal
 
     ice_floe.torque +=
         pi*ice_floe.areal_radius^4.*rho_o*
-        (ice_floe.areal_radius/5.*c_o_h + draft*c_o_h)*
+        (ice_floe.areal_radius/5.*ice_floe.ocean_drag_coeff_horiz + 
+        draft*ice_floe.ocean_drag_coeff_vert)*
         abs(.5*ocean_curl - ice_floe.ang_vel)*(.5*ocean_curl - ice_floe.ang_vel)
 end

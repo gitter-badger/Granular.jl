@@ -44,6 +44,17 @@ type IceFloeCylindrical
     contact_static_friction::float
     contact_dynamic_friction::float
 
+    youngs_modulus::float
+    poissons_ratio::float
+    tensile_strength::float
+    compressive_strength_prefactor::float
+
+    # Ocean/atmosphere interaction parameters
+    ocean_drag_coeff_vert::float
+    ocean_drag_coeff_horiz::float
+    atmos_drag_coeff_vert::float
+    atmos_drag_coeff_horiz::float
+
     # Interaction
     pressure::float
     n_contacts::Int
@@ -93,6 +104,16 @@ type IceFloeArrays
     contact_viscosity_tangential
     contact_static_friction
     contact_dynamic_friction
+
+    youngs_modulus
+    poissons_ratio
+    tensile_strength
+    compressive_strength_prefactor
+
+    ocean_drag_coeff_vert
+    ocean_drag_coeff_horiz
+    atmos_drag_coeff_vert
+    atmos_drag_coeff_horiz
 
     pressure
     n_contacts
