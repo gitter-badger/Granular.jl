@@ -137,8 +137,7 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
         # linearly increase tensile strength with time until max. value
         tensile_strength = min(simulation.ice_floes[i].contact_age[ic]/
                                (60.*60.*24.), 1.)*
-                               simulation.ice_floes[i].tensile_strength*
-                               simulation.ice_floes[i].thickness
+                               simulation.ice_floes[i].tensile_strength
 
         # break bond
         if abs(force_n) >= tensile_strength*A_ij
