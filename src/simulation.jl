@@ -85,8 +85,10 @@ function run!(simulation::Simulation;
 
     checkTimeParameters(simulation)
 
-    it_file = 0
-    n_file_time_step =Int(round(simulation.file_time_step/simulation.time_step))
+    it_file = Int(round(simulation.file_time_since_output_file/
+                        simulation.time_step))
+    n_file_time_step = Int(round(simulation.file_time_step/
+                                 simulation.time_step))
 
     while simulation.time <= simulation.time_total
 
@@ -132,8 +134,14 @@ function run!(simulation::Simulation;
 end
 
 export addIceFloe!
-"Add an `icefloe` to the `simulation` object.  If `verbose` is true, a short 
-confirmation message will be printed to stdout`."
+"""
+    addIceFloe!(simulation::Simulation,
+                icefloe::IceFloeCylindrical,
+                verbose::Bool = False)
+
+Add an `icefloe` to the `simulation` object.  If `verbose` is true, a short 
+confirmation message will be printed to stdout.
+"""
 function addIceFloe!(simulation::Simulation,
                      icefloe::IceFloeCylindrical,
                      verbose::Bool = False)
