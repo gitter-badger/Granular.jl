@@ -141,7 +141,7 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
                                simulation.ice_floes[i].thickness
 
         # break bond
-        if abs(force_n) > tensile_strength*A_ij
+        if abs(force_n) >= tensile_strength*A_ij
             force_n = 0.
             force_t = 0.
             simulation.ice_floes[i].contacts[ic] = 0  # remove contact
