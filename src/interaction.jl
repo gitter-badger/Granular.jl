@@ -16,6 +16,7 @@ function interact!(simulation::Simulation)
                 continue
             end
 
+            """
             if norm(simulation.ice_floes[i].lin_pos - 
                     simulation.ice_floes[j].lin_pos) - 
                 (simulation.ice_floes[i].contact_radius + 
@@ -25,8 +26,9 @@ function interact!(simulation::Simulation)
                 simulation.ice_floes[i].n_contacts -= 1
                 simulation.ice_floes[j].n_contacts -= 1
             else
-                interactIceFloes!(simulation, i, j, ic)
-            end
+            """
+            interactIceFloes!(simulation, i, j, ic)
+            #end
         end
     end
 end
@@ -76,6 +78,9 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
     # Effective radius
     R_ij = harmonicMean(simulation.ice_floes[i].contact_radius,
                         simulation.ice_floes[j].contact_radius) - abs(δ_n)/2.
+    # Contact area
+    A_ij = R_ij*min(simulation.ice_floes[i].thickness, 
+                    simulation.ice_floes[j].thickness)
 
     # Contact mechanical parameters
     if simulation.ice_floes[i].youngs_modulus > 0. &&
@@ -85,10 +90,6 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
                          simulation.ice_floes[j].youngs_modulus)
         ν = harmonicMean(simulation.ice_floes[i].poissons_ratio,
                          simulation.ice_floes[j].poissons_ratio)
-
-        # Contact area
-        A_ij = R_ij*min(simulation.ice_floes[i].thickness, 
-                        simulation.ice_floes[j].thickness)
 
         # Effective normal and tangential stiffness
         k_n = E*A_ij/R_ij
@@ -126,8 +127,27 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
         end
 
     else
-        error("unknown contact_normal_rheology (k_n = $k_n," *
-              " γ_n = $γ_n")
+        error("unknown contact_normal_rheology (k_n = $k_n, γ_n = $γ_n")
+    end
+
+    # Contact tensile strength increases linearly with contact age until tensile 
+    # stress exceeds tensile strength
+    if δ_n > 0.
+
+        # linearly increase tensile strength with time until max. value
+        tensile_strength = min(simulation.ice_floes[i].contact_age[ic]/
+                               (60.*60.*24.), 1.)*
+                               simulation.ice_floes[i].tensile_strength*
+                               simulation.ice_floes[i].thickness
+
+        # break bond
+        if abs(force_n) > tensile_strength*A_ij
+            force_n = 0.
+            force_t = 0.
+            simulation.ice_floes[i].contacts[ic] = 0  # remove contact
+            simulation.ice_floes[i].n_contacts -= 1
+            simulation.ice_floes[j].n_contacts -= 1
+        end
     end
 
     if k_t ≈ 0. && γ_t ≈ 0.
@@ -156,6 +176,7 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
     end
 
     simulation.ice_floes[i].contact_parallel_displacement[ic] = δ_t*t
+    simulation.ice_floes[i].contact_age[ic] += simulation.time_step
 
     simulation.ice_floes[i].force += force_n*n + force_t*t;
     simulation.ice_floes[j].force -= force_n*n + force_t*t;

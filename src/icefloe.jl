@@ -46,9 +46,10 @@ function addIceFloeCylindrical(simulation::Simulation,
                                n_contacts::Int = 0,
                                contacts::Array{Int, 1} = zeros(Int, Nc_max),
                                contact_parallel_displacement::
-                                   Array{Array{Float64, 1}, 1}
-                                   =
-                                   Array{Array{Float64, 1}, 1}(Nc_max))
+                                   Array{Array{Float64, 1}, 1} =
+                                   Array{Array{Float64, 1}, 1}(Nc_max),
+                               contact_age::Array{Float64, 1} =
+                                   zeros(Float64, Nc_max))
 
     # Check input values
     if length(lin_pos) != 2
@@ -126,7 +127,8 @@ function addIceFloeCylindrical(simulation::Simulation,
                                  n_contacts,
                                  ocean_grid_pos,
                                  contacts,
-                                 contact_parallel_displacement
+                                 contact_parallel_displacement,
+                                 contact_age
                                 )
 
     # Overwrite previous placeholder values

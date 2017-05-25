@@ -61,6 +61,7 @@ type IceFloeCylindrical
     ocean_grid_pos::Array{Int, 1}
     contacts::Array{Int, 1}
     contact_parallel_displacement::Array{Array{Float64, 1}, 1}
+    contact_age::Array{Float64, 1}
 end
 
 # Type for gathering data from ice floe objects into single arrays
