@@ -52,7 +52,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test E_kin_rot_init ≈ E_kin_rot_final  # no rotation before or after
 @test E_kin_lin_init < E_kin_lin_final  # linear vel. gained due to ocean drag
 
-info("Testing vortex interaction between (static ocean)")
+info("Testing vortex interaction (static ocean)")
 sim = deepcopy(sim_init)
 sim.ice_floes[1].ang_vel = 0.1
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
@@ -65,7 +65,7 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test sim.ice_floes[1].ang_pos > 0.     # check angular position orientation
 @test E_kin_lin_init ≈ E_kin_lin_final  # no linear velocity gained
 
-info("Testing vortex interaction between (static ice floe)")
+info("Testing vortex interaction (static ice floe)")
 sim = deepcopy(sim_init)
 sim.ocean = SeaIce.createRegularOceanGrid([1, 1, 1], [1., 1., 1.])
 sim.ice_floes[1].lin_pos[1] = 0.5

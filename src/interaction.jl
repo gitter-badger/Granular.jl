@@ -99,9 +99,8 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
         k_n = harmonicMean(simulation.ice_floes[i].contact_stiffness_normal,
                          simulation.ice_floes[j].contact_stiffness_normal)
 
-        k_t =
-          harmonicMean(simulation.ice_floes[i].contact_stiffness_tangential,
-                       simulation.ice_floes[j].contact_stiffness_tangential)
+        k_t = harmonicMean(simulation.ice_floes[i].contact_stiffness_tangential,
+                           simulation.ice_floes[j].contact_stiffness_tangential)
     end
 
     γ_n = harmonicMean(simulation.ice_floes[i].contact_viscosity_normal,
