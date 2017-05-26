@@ -47,6 +47,7 @@ type IceFloeCylindrical
     youngs_modulus::float
     poissons_ratio::float
     tensile_strength::float
+    tensile_heal_rate::float
     compressive_strength_prefactor::float
 
     # Ocean/atmosphere interaction parameters

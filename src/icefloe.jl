@@ -31,7 +31,8 @@ function addIceFloeCylindrical(simulation::Simulation,
                                #youngs_modulus::float = 2e9,  # Hopkins 2004
                                poissons_ratio::float = 0.185,  # Hopkins 2004
                                #tensile_strength::float = 500e3,  # Hopkins 2004
-                               tensile_strength::float = 0.,  # Hopkins 2004
+                               tensile_strength::float = 0.,
+                               tensile_heal_rate::float = 0.,
                                compressive_strength_prefactor::float = 1285e3,  
                                    # Hopkins 2004
                                ocean_drag_coeff_vert::float = 0.85, # H&C 2011
@@ -117,6 +118,7 @@ function addIceFloeCylindrical(simulation::Simulation,
                                  youngs_modulus,
                                  poissons_ratio,
                                  tensile_strength,
+                                 tensile_heal_rate,
                                  compressive_strength_prefactor,
 
                                  ocean_drag_coeff_vert,
