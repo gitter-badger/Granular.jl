@@ -8,8 +8,8 @@ info("#### $(basename(@__FILE__)) ####")
 verbose=false
 
 sim_init = SeaIce.createSimulation()
-SeaIce.addIceFloeCylindrical(sim_init, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim_init, [18., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim_init, [0., 0.], 10., 1.)
+SeaIce.addIceFloeCylindrical(sim_init, [18., 0.], 10., 1.)
 sim_init.ice_floes[1].youngs_modulus = 1e-5  # repulsion is negligible
 sim_init.ice_floes[2].youngs_modulus = 1e-5  # repulsion is negligible
 SeaIce.setTimeStep!(sim_init, verbose=verbose)
@@ -21,19 +21,17 @@ sim.time_step = 1.
 SeaIce.run!(sim, verbose=verbose)
 @test sim.ice_floes[1].contact_age[1] ≈ sim.time
 
-info("# Check if cohesion increases with time")
+info("# Check if bonds add tensile strength")
 sim = SeaIce.createSimulation(id="cohesion")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.5, 0.], 10., 1., verbose=verbose)
-sim.ice_floes[1].youngs_modulus = 1e-5  # repulsion is negligible
-sim.ice_floes[2].youngs_modulus = 1e-5  # repulsion is negligible
+SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., tensile_strength=500e3)
+SeaIce.addIceFloeCylindrical(sim, [20.1, 0.], 10., 1., tensile_strength=500e3)
+sim.ice_floes[1].lin_vel[1] = 0.1
 SeaIce.setTimeStep!(sim)
-SeaIce.setTotalTime!(sim, 24.*60.*60.)
-sim.file_time_step = 60.
-# let the contact age for a while
-while sim.time_total*.9 > sim.time
-    SeaIce.run!(sim, single_step=true, verbose=verbose)
-end
-#sim_init.ice_floes[1].youngs_modulus = 2e7
-#sim_init.ice_floes[2].youngs_modulus = 2e7
-#SeaIce.setTimeStep!(sim)
+SeaIce.setTotalTime!(sim, 10.)
+SeaIce.run!(sim, verbose=verbose)
+@test sim.ice_floes[1].lin_vel[1] > 0.
+@test sim.ice_floes[1].lin_vel[2] ≈ 0.
+@test sim.ice_floes[2].lin_vel[1] > 0.
+@test sim.ice_floes[2].lin_vel[2] ≈ 0.
+@test sim.ice_floes[1].ang_vel ≈ 0.
+@test sim.ice_floes[2].ang_vel ≈ 0.
