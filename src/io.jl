@@ -23,6 +23,10 @@ function writeVTK(simulation::Simulation;
                       simulation.file_number)
     writeIceFloeVTK(simulation, filename, verbose=verbose)
 
+    filename = string(folder, "/", simulation.id, ".icefloe-bonds.", 
+                      simulation.file_number)
+    writeIceFloeBondVTK(simulation, filename, verbose=verbose)
+
     if typeof(simulation.ocean.input_file) != Bool && ocean
         filename = string(folder, "/", simulation.id, ".ocean.", 
                         simulation.file_number)
@@ -125,6 +129,116 @@ function writeIceFloeVTK(simulation::Simulation,
     end
 end
 
+export writeIceFloeBondVTK
+function writeIceFloeBondVTK(simulation::Simulation,
+                             filename::String;
+                             verbose::Bool=false)
+
+    # Save ice-floe indexes and metrics for all interactions
+    i1 = []
+    i2 = []
+    force = []
+    shear_displacement_1 = []
+    shear_displacement_2 = []
+    contact_age = []
+    for i=1:length(simulation.ice_floes)
+        for ic=1:Nc_max
+            if simulation.ice_floes[i].contacts[ic] > 0
+                j = simulation.ice_floes[i].contacts[ic]
+                
+                append!(i1, i)
+                append!(i2, j)
+
+                append!(force, f_n)
+
+                append!(shear_displacement_1, simulation.ice_floes[i].
+                        contact_parallel_displacement[ic][1])
+                append!(shear_displacement_2, 
+                        simulation.ice_floes[i].
+                        contact_parallel_displacement[ic][2])
+
+                append!(contact_age, simulation.ice_floes[i].contact_age[ic])
+            end
+        end
+    end
+
+    # Insert a piece for each ice floe interaction using ice floe positions as 
+    # coordinates and connect them with lines by referencing their indexes.
+    open(filename * ".vtp", "w") do f
+        write(f, "<?xml version=\"1.0\"?>\n")
+        write(f, "<VTKFile type=\"PolyData\" version=\"0.1\" " *
+              "byte_order=\"LittleEndian\">\n")
+        write(f, "  <PolyData>\n")
+        write(f, "    <Piece " *
+              "NumberOfPoints=\"$(length(simulation.ice_floes))\" " *
+              "NumberOfVerts=\"0\" " *
+              "NumberOfLines=\"$(length(i1))\">\n")
+        write(f, "      <PointData>\n")
+        write(f, "      </PointData>\n")
+        write(f, "      <CellData>\n")
+
+        # Write values associated to each line
+        write(f, "        <DataArray name=\"Force [N]\" type=\"Float32\" " *
+              "NumberOfComponents=\"1\" format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(force[i]) ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+
+        write(f, "        <DataArray name=\"Contact age [s]\" " * 
+              "type=\"Float32\" NumberOfComponents=\"1\" format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(contact_age[i]) ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+
+        write(f, "      </CellData>\n")
+        write(f, "      <Points>\n")
+
+        # Write line endpoints (ice floe centers)
+        write(f, "        <DataArray name=\"Position [m]\" type=\"Float32\" " *
+              "NumberOfComponents=\"3\" format=\"ascii\">\n")
+        for i in simulation.ice_floes
+            write(f, "$(i.lin_pos[1]) $(i.lin_pos[2]) 0.0 ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+        write(f, "      </Points>\n")
+        write(f, "      <Verts>\n")
+        write(f, "      </Verts>\n")
+        write(f, "      <Lines>\n")
+
+        # Write contact connectivity by referring to point indexes
+        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+              "format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(i1[i]) $(i2[i]) ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+        
+        # Write 0-indexed offset for the connectivity array for the end of each 
+        # cell
+        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+              "format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$((i - 1)*2 + 2) ")
+        end
+        write(f, "        </DataArray>\n")
+
+        write(f, "      </Lines>\n")
+        write(f, "      <Strips>\n")
+        write(f, "      </Strips>\n")
+        write(f, "      <Polys>\n")
+        write(f, "      </Polys>\n")
+        write(f, "    </Piece>\n")
+        write(f, "  </PolyData>\n")
+        write(f, "</VTKFile>\n")
+    end
+end
+
 export writeOceanVTK
 """
 Write a VTK file to disk containing all ocean data in the `simulation` in a 
@@ -192,5 +306,6 @@ Remove all simulation output files from the specified folder.
 """
 function removeSimulationFiles(simulation::Simulation; folder::String=".")
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtu"`)
+    run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtp"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vts"`)
 end

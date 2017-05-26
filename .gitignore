@@ -9,4 +9,5 @@ deps/deps.jl
 
 # simulation output files
 *.vtu
+*.vtp
 *.vts
