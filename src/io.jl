@@ -157,9 +157,13 @@ function writeIceFloeBondVTK(simulation::Simulation,
                 if simulation.ice_floes[i].youngs_modulus > 0. &&
                     simulation.ice_floes[j].youngs_modulus > 0.
                     R_ij = harmonicMean(r_i, r_j)
-                    A_ij = R_ij*min(simulation.ice_floes[i].thickness, 
-                                    simulation.ice_floes[j].thickness)
-                    k_n = E*A_ij/R_ij
+                    E_ij = harmonicMean(simulation.ice_floes[i].
+                                        youngs_modulus,
+                                        simulation.ice_floes[j].
+                                        youngs_modulus)
+                    R_ij*min(simulation.ice_floes[i].thickness, 
+                             simulation.ice_floes[j].thickness)
+                    k_n = E_ij*A_ij/R_ij
                 else
                     k_n = harmonicMean(simulation.ice_floes[i].
                                        contact_stiffness_normal,
