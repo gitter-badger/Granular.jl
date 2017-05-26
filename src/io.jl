@@ -161,8 +161,8 @@ function writeIceFloeBondVTK(simulation::Simulation,
                                         youngs_modulus,
                                         simulation.ice_floes[j].
                                         youngs_modulus)
-                    R_ij*min(simulation.ice_floes[i].thickness, 
-                             simulation.ice_floes[j].thickness)
+                    A_ij = R_ij*min(simulation.ice_floes[i].thickness, 
+                                    simulation.ice_floes[j].thickness)
                     k_n = E_ij*A_ij/R_ij
                 else
                     k_n = harmonicMean(simulation.ice_floes[i].
