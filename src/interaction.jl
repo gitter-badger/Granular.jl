@@ -76,8 +76,8 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
     δ_t = dot(t, δ_t0 - (n*dot(n, δ_t0))) + vel_t*simulation.time_step
 
     # Effective radius
-    R_ij = harmonicMean(simulation.ice_floes[i].contact_radius,
-                        simulation.ice_floes[j].contact_radius) - abs(δ_n)/2.
+    R_ij = harmonicMean(r_i, r_j) - abs(δ_n)/2.
+
     # Contact area
     A_ij = R_ij*min(simulation.ice_floes[i].thickness, 
                     simulation.ice_floes[j].thickness)

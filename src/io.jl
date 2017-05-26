@@ -145,11 +145,33 @@ function writeIceFloeBondVTK(simulation::Simulation,
         for ic=1:Nc_max
             if simulation.ice_floes[i].contacts[ic] > 0
                 j = simulation.ice_floes[i].contacts[ic]
+
+                p = simulation.ice_floes[i].lin_pos -
+                    simulation.ice_floes[j].lin_pos
+                dist = norm(p)
+
+                r_i = simulation.ice_floes[i].contact_radius
+                r_j = simulation.ice_floes[j].contact_radius
+                δ_n = dist - (r_i + r_j)
+
+                if simulation.ice_floes[i].youngs_modulus > 0. &&
+                    simulation.ice_floes[j].youngs_modulus > 0.
+                    R_ij = harmonicMean(r_i, r_j)
+                    A_ij = R_ij*min(simulation.ice_floes[i].thickness, 
+                                    simulation.ice_floes[j].thickness)
+                    k_n = E*A_ij/R_ij
+                else
+                    k_n = harmonicMean(simulation.ice_floes[i].
+                                       contact_stiffness_normal,
+                                       simulation.ice_floes[j].
+                                       contact_stiffness_normal)
+                end
+
                 
                 append!(i1, i)
                 append!(i2, j)
 
-                append!(force, f_n)
+                append!(force, k_n*δ_n)
 
                 append!(shear_displacement_1, simulation.ice_floes[i].
                         contact_parallel_displacement[ic][1])
