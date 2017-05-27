@@ -46,6 +46,10 @@ Young's modulus and Poisson's ratio if Young's modulus is a positive value.
 """
 function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
 
+    if !simulation.ice_floes[i].enabled || !simulation.ice_floes[j].enabled
+        return
+    end
+
     force_n = 0.  # Contact-normal force
     force_t = 0.  # Contact-parallel (tangential) force
 
