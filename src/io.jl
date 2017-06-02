@@ -146,6 +146,10 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
     i2 = Int64[]
     inter_particle_vector = Array{float, 1}[]
     force = float[]
+    effective_radius = float[]
+    contact_area = float[]
+    contact_stiffness = float[]
+    tensile_stress = float[]
     shear_displacement = Array{float, 1}[]
     contact_age = float[]
     for i=1:length(simulation.ice_floes)
@@ -189,6 +193,10 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
                 push!(inter_particle_vector, p)
 
                 push!(force, k_n*δ_n)
+                push!(effective_radius, R_ij)
+                push!(contact_area, A_ij)
+                push!(contact_stiffness, k_n)
+                push!(tensile_stress, k_n*δ_n/A_ij)
 
                 push!(shear_displacement, simulation.ice_floes[i].
                       contact_parallel_displacement[ic])
@@ -241,6 +249,42 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
             write(f, "$(force[i]) ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+
+        write(f, "        <DataArray type=\"Float32\" " *
+              "Name=\"Effective radius [m]\" " *
+              "NumberOfComponents=\"1\" format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(effective_radius[i]) ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+
+        write(f, "        <DataArray type=\"Float32\" " *
+              "Name=\"Contact area [m^2]\" " *
+              "NumberOfComponents=\"1\" format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(contact_area[i]) ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+
+        write(f, "        <DataArray type=\"Float32\" " *
+              "Name=\"Contact stiffness [N/m]\" " *
+              "NumberOfComponents=\"1\" format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(contact_stiffness[i]) ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+
+        write(f, "        <DataArray type=\"Float32\" " *
+              "Name=\"Tensile stress [Pa]\" " *
+              "NumberOfComponents=\"1\" format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(tensile_stress[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
