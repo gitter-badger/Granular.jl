@@ -226,7 +226,8 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "      <Points>\n")
 
         # Write line endpoints (ice floe centers)
-        write(f, "        <DataArray name=\"Position [m]\" type=\"Float32\" " *
+        #write(f, "        <DataArray name=\"Position [m]\" type=\"Float32\" " *
+        write(f, "        <DataArray name=\"Points\" type=\"Float32\" " *
               "NumberOfComponents=\"3\" format=\"ascii\">\n")
         for i in simulation.ice_floes
             write(f, "$(i.lin_pos[1]) $(i.lin_pos[2]) 0.0 ")
@@ -235,6 +236,12 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        </DataArray>\n")
         write(f, "      </Points>\n")
         write(f, "      <Verts>\n")
+        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+              "format=\"ascii\">\n")
+        write(f, "        </DataArray>\n")
+        write(f, "        <DataArray name=\"offsets\" type=\"Int64\" " *
+              "format=\"ascii\">\n")
+        write(f, "        </DataArray>\n")
         write(f, "      </Verts>\n")
         write(f, "      <Lines>\n")
 
