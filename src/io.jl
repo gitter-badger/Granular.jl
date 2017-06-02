@@ -135,12 +135,13 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
                                     verbose::Bool=false)
 
     # Save ice-floe indexes and metrics for all interactions
-    i1 = []
-    i2 = []
-    force = []
-    shear_displacement_1 = []
-    shear_displacement_2 = []
-    contact_age = []
+    i1 = Int64[]
+    i2 = Int64[]
+    inter_particle_vector = Array{float, 1}[]
+    force = float[]
+    shear_displacement_1 = float[]
+    shear_displacement_2 = float[]
+    contact_age = float[]
     for i=1:length(simulation.ice_floes)
         for ic=1:Nc_max
             if simulation.ice_floes[i].contacts[ic] > 0
@@ -177,22 +178,23 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
                 end
 
                 
-                append!(i1, i)
-                append!(i2, j)
+                push!(i1, i)
+                push!(i2, j)
+                push!(inter_particle_vector, p)
 
-                append!(force, k_n*δ_n)
+                push!(force, k_n*δ_n)
 
-                append!(shear_displacement_1, simulation.ice_floes[i].
-                        contact_parallel_displacement[ic][1])
-                append!(shear_displacement_2, 
-                        simulation.ice_floes[i].
-                        contact_parallel_displacement[ic][2])
+                push!(shear_displacement_1, simulation.ice_floes[i].
+                      contact_parallel_displacement[ic][1])
+                push!(shear_displacement_2, simulation.ice_floes[i].
+                      contact_parallel_displacement[ic][2])
 
-                append!(contact_age, simulation.ice_floes[i].contact_age[ic])
+                push!(contact_age, simulation.ice_floes[i].contact_age[ic])
             end
         end
     end
 
+    println(inter_particle_vector)
     # Insert a piece for each ice floe interaction using ice floe positions as 
     # coordinates and connect them with lines by referencing their indexes.
     open(filename * ".vtp", "w") do f
@@ -211,6 +213,17 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "      <CellData>\n")
 
         # Write values associated to each line
+        write(f, "        <DataArray type=\"Float32\" " *
+              "Name=\"Inter-particle vector [m]\" " *
+              "NumberOfComponents=\"3\" format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(inter_particle_vector[i][1]) ")
+            write(f, "$(inter_particle_vector[i][2]) ")
+            write(f, "0.0 ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+
         write(f, "        <DataArray type=\"Float32\" Name=\"Force [N]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
