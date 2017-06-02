@@ -109,16 +109,32 @@ function run!(simulation::Simulation;
         end
 
         zeroForcesAndTorques!(simulation)
+
+        if typeof(simulation.atmosphere.input_file) != Bool
+            sortIceFloesInGrid!(sim, sim.atmosphere)
+        end
+
         if typeof(simulation.ocean.input_file) != Bool
-            sortIceFloesInOceanGrid!(simulation)
+            sortIceFloesInGrid!(simulation, simulation.ocean)
             findContacts!(simulation, method="ocean grid")
+
+        elseif typeof(simulation.atmosphere.input_file) != Bool
+            findContacts!(simulation, method="atmosphere grid")
+
         else
             findContacts!(simulation, method="all to all")
         end
+
         interact!(simulation)
+
         if typeof(simulation.ocean.input_file) != Bool
             addOceanDrag!(simulation)
         end
+
+        if typeof(simulation.atmosphere.input_file) != Bool
+            addAtmosphereDrag!(simulation)
+        end
+
         updateIceFloeKinematics!(simulation, method=temporal_integration_method)
 
         # Update time variables

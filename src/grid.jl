@@ -71,7 +71,7 @@ export sortIceFloesInGrid!
 """
 Find ice-floe positions in grid, based on their center positions.
 """
-function sortIceFloesInGrid!(grid::Any; verbose=false)
+function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
 
     grid.ice_floe_list =
         Array{Array{Int, 1}}(size(grid.xh, 1), size(grid.xh, 2))

@@ -22,8 +22,13 @@ function findContacts!(simulation::Simulation;
 
     if method == "all to all"
         findContactsAllToAll!(simulation)
+
     elseif method == "ocean grid"
         findContactsOceanGrid!(simulation)
+
+    elseif method == "atmosphere grid"
+        error("not yet implemented")
+
     else
         error("Unknown contact search method '$method'")
     end

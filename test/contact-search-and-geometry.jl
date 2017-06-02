@@ -122,10 +122,10 @@ end
 @test 1 == sim.ice_floes[2].n_contacts
 
 
-info("Testing findContactsOceanGrid(...)")
+info("Testing findContactsGrid(...)")
 sim = deepcopy(sim_copy)
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [80., 80., 2.])
-SeaIce.sortIceFloesInOceanGrid!(sim)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
 SeaIce.findContactsOceanGrid!(sim)
 
 @test 2 == sim.ice_floes[1].contacts[1]
@@ -144,7 +144,7 @@ end
 sim = deepcopy(sim_copy)
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [80., 80., 2.])
 sim.ice_floes[1].fixed = true
-SeaIce.sortIceFloesInOceanGrid!(sim)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
 SeaIce.findContactsOceanGrid!(sim)
 
 @test 2 == sim.ice_floes[1].contacts[1]
@@ -164,7 +164,7 @@ sim = deepcopy(sim_copy)
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [80., 80., 2.])
 sim.ice_floes[1].fixed = true
 sim.ice_floes[2].fixed = true
-SeaIce.sortIceFloesInOceanGrid!(sim)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
 SeaIce.findContactsOceanGrid!(sim)
 
 for ic=1:32
@@ -181,7 +181,7 @@ end
 info("Testing findContacts(...)")
 sim = deepcopy(sim_copy)
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [80., 80., 2.])
-SeaIce.sortIceFloesInOceanGrid!(sim)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
 SeaIce.findContacts!(sim)
 
 @test 2 == sim.ice_floes[1].contacts[1]

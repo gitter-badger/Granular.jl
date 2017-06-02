@@ -106,7 +106,7 @@ sim.ocean = SeaIce.readOceanNetCDF("Baltic/00010101.ocean_month.nc",
 SeaIce.addIceFloeCylindrical(sim, [6.5, 53.5], 10., 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [6.6, 53.5], 10., 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [7.5, 53.5], 10., 1., verbose=verbose)
-SeaIce.sortIceFloesInOceanGrid!(sim, verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
 @test sim.ice_floes[1].ocean_grid_pos == [1, 1]
 @test sim.ice_floes[2].ocean_grid_pos == [1, 1]
 @test sim.ice_floes[3].ocean_grid_pos == [2, 1]
@@ -119,7 +119,7 @@ sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
 sim.ocean.u[:,:,1,1] = 5.
 SeaIce.addIceFloeCylindrical(sim, [2.5, 3.5], 1., 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [2.6, 2.5], 1., 1., verbose=verbose)
-SeaIce.sortIceFloesInOceanGrid!(sim, verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
 sim.time = ocean.time[1]
 SeaIce.addOceanDrag!(sim)
 @test sim.ice_floes[1].force[1] > 0.
@@ -130,7 +130,7 @@ sim.ocean.u[:,:,1,1] = -5.
 sim.ocean.v[:,:,1,1] = 5.
 SeaIce.addIceFloeCylindrical(sim, [2.5, 3.5], 1., 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [2.6, 2.5], 1., 1., verbose=verbose)
-SeaIce.sortIceFloesInOceanGrid!(sim, verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
 sim.time = ocean.time[1]
 SeaIce.addOceanDrag!(sim)
 @test sim.ice_floes[1].force[1] < 0.
