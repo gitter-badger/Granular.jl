@@ -53,13 +53,14 @@ type IceFloeCylindrical
     # Ocean/atmosphere interaction parameters
     ocean_drag_coeff_vert::float
     ocean_drag_coeff_horiz::float
-    atmos_drag_coeff_vert::float
-    atmos_drag_coeff_horiz::float
+    atmosphere_drag_coeff_vert::float
+    atmosphere_drag_coeff_horiz::float
 
     # Interaction
     pressure::float
     n_contacts::Int
     ocean_grid_pos::Array{Int, 1}
+    atmosphere_grid_pos::Array{Int, 1}
     contacts::Array{Int, 1}
     contact_parallel_displacement::Array{Array{Float64, 1}, 1}
     contact_age::Array{Float64, 1}
@@ -114,8 +115,8 @@ type IceFloeArrays
 
     ocean_drag_coeff_vert
     ocean_drag_coeff_horiz
-    atmos_drag_coeff_vert
-    atmos_drag_coeff_horiz
+    atmosphere_drag_coeff_vert
+    atmosphere_drag_coeff_horiz
 
     pressure
     n_contacts
@@ -123,7 +124,7 @@ end
 
 #=
 Type containing all relevant data from MOM6 NetCDF files.  The ocean grid is a 
-staggered of Arakawa-C type, with south-west convention centered on the 
+staggered of Arakawa-B type, with south-west convention centered on the 
 h-points.  During read, the velocities are interpolated to the cell corners 
 (q-points).
 
@@ -156,8 +157,8 @@ h-points.  During read, the velocities are interpolated to the cell corners
     placement in `[xh, yh, zl, time]`.
 * `e::Array{Float64, Int}`: interface height relative to mean sea level [m],  
     dimensions correspond to placement in `[xh, yh, zi, time]`.
-* `ice_floe_list::Array{Float64, Int}`: interface height relative to mean sea 
-    level [m],  dimensions correspond to placement in `[xh, yh, zi, time]`.
+* `ice_floe_list::Array{Float64, Int}`: indexes of ice floes contained in the 
+    ocean grid cells.
 =#
 type Ocean
     input_file::Any
@@ -185,6 +186,61 @@ type Ocean
     ice_floe_list::Array{Array{Int, 1}, 2}
 end
 
+#=
+The atmosphere grid is a staggered of Arakawa-B type, with south-west convention 
+centered on the h-points.  During read, the velocities are interpolated to the 
+cell corners (q-points).
+
+    q(  i,j+1) ------------------ q(i+1,j+1)
+         |                             |
+         |                             |
+         |                             |
+         |                             |
+         |         h(  i,  j)          |
+         |                             |
+         |                             |
+         |                             |
+         |                             |
+    q(  i,  j) ------------------ q(i+1,  j)
+
+# Fields
+* `input_file::String`: path to input NetCDF file
+* `time::Array{Float64, 1}`: time in days
+* `xq::Array{Float64, 1}`: nominal longitude of q-points [degrees_E]
+* `yq::Array{Float64, 1}`: nominal latitude of q-points [degrees_N]
+* `xh::Array{Float64, 1}`: nominal longitude of h-points [degrees_E]
+* `yh::Array{Float64, 1}`: nominal latitude of h-points [degrees_N]
+* `zl::Array{Float64, 1}`: vertical position [m]
+* `u::Array{Float64, Int}`: zonal velocity (positive towards west) [m/s], 
+    dimensions correspond to placement in `[xq, yq, zl, time]`.
+* `v::Array{Float64, Int}`: meridional velocity (positive towards north) [m/s], 
+    dimensions correspond to placement in `[xq, yq, zl, time]`.
+* `ice_floe_list::Array{Float64, Int}`: interface height relative to mean sea 
+    level [m],  dimensions correspond to placement in `[xh, yh, zi, time]`.
+=#
+type Atmosphere
+    input_file::Any
+
+    time::Array{Float64, 1}
+
+    # q-point (cell corner) positions
+    xq::Array{Float64, 2}
+    yq::Array{Float64, 2}
+
+    # h-point (cell center) positions
+    xh::Array{Float64, 2}
+    yh::Array{Float64, 2}
+
+    # Vertical positions
+    zl::Array{Float64, 1}
+    
+    # Field values
+    u::Array{Float64, 4}
+    v::Array{Float64, 4}
+
+    ice_floe_list::Array{Array{Int, 1}, 2}
+end
+
 # Top-level simulation type
 type Simulation
     id::String
@@ -200,4 +256,5 @@ type Simulation
     ice_floes::Array{IceFloeCylindrical, 1}
 
     ocean::Ocean
+    atmosphere::Atmosphere
 end

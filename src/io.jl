@@ -11,12 +11,13 @@ can be visualized by applying a *Glyph* filter.
 
 If the simulation contains an `Ocean` data structure, it's contents will be 
 written to separate `.vtu` files.  This can be disabled by setting the argument 
-`ocean=false`.
+`ocean=false`.  The same is true for the atmosphere.
 """
 function writeVTK(simulation::Simulation;
                   folder::String=".",
                   verbose::Bool=true,
-                  ocean::Bool=true)
+                  ocean::Bool=true,
+                  atmosphere::Bool=true)
 
     simulation.file_number += 1
     filename = string(folder, "/", simulation.id, ".icefloes.", 
@@ -31,6 +32,12 @@ function writeVTK(simulation::Simulation;
         filename = string(folder, "/", simulation.id, ".ocean.", 
                         simulation.file_number)
         writeOceanVTK(simulation.ocean, filename, verbose=verbose)
+    end
+
+    if typeof(simulation.atmosphere.input_file) != Bool && atmosphere
+        filename = string(folder, "/", simulation.id, ".atmosphere.", 
+                        simulation.file_number)
+        writeOceanVTK(simulation.atmosphere, filename, verbose=verbose)
     end
 end
 
@@ -110,9 +117,9 @@ function writeIceFloeVTK(simulation::Simulation,
                             "Ocean drag coefficient (vertical) [-]")
     WriteVTK.vtk_point_data(vtkfile, ifarr.ocean_drag_coeff_horiz,
                             "Ocean drag coefficient (horizontal) [-]")
-    WriteVTK.vtk_point_data(vtkfile, ifarr.atmos_drag_coeff_vert,
+    WriteVTK.vtk_point_data(vtkfile, ifarr.atmosphere_drag_coeff_vert,
                             "Atmosphere drag coefficient (vertical) [-]")
-    WriteVTK.vtk_point_data(vtkfile, ifarr.atmos_drag_coeff_horiz,
+    WriteVTK.vtk_point_data(vtkfile, ifarr.atmosphere_drag_coeff_horiz,
                             "Atmosphere drag coefficient (horizontal) [-]")
 
     WriteVTK.vtk_point_data(vtkfile, ifarr.pressure,
@@ -413,6 +420,60 @@ function writeOceanVTK(ocean::Ocean,
                             "h: Layer thickness [m]")
     WriteVTK.vtk_point_data(vtkfile, ocean.e[:, :, :, 1],
                             "e: Relative interface height [m]")
+
+    outfiles = WriteVTK.vtk_save(vtkfile)
+    if verbose
+        info("Output file: " * outfiles[1])
+    else
+        return nothing
+    end
+end
+
+export writeAtmosphereVTK
+"""
+Write a VTK file to disk containing all atmosphere data in the `simulation` in a 
+structured grid (file type `.vts`).  These files can be read by ParaView and can 
+be visualized by applying a *Glyph* filter.  This function is called by 
+`writeVTK()`.
+"""
+function writeAtmosphereVTK(atmosphere::Atmosphere,
+                            filename::String;
+                            verbose::Bool=false)
+    
+    # make each coordinate array three-dimensional
+    xq = similar(atmosphere.u[:,:,:,1])
+    yq = similar(atmosphere.u[:,:,:,1])
+    zq = similar(atmosphere.u[:,:,:,1])
+
+    for iz=1:size(xq, 3)
+        xq[:,:,iz] = atmosphere.xq
+        yq[:,:,iz] = atmosphere.yq
+    end
+    for ix=1:size(xq, 1)
+        for iy=1:size(xq, 2)
+            zq[ix,iy,:] = atmosphere.zl
+        end
+    end
+
+    # add arrays to VTK file
+    vtkfile = WriteVTK.vtk_grid(filename, xq, yq, zq)
+
+    WriteVTK.vtk_point_data(vtkfile, atmosphere.u[:, :, :, 1],
+                            "u: Zonal velocity [m/s]")
+    WriteVTK.vtk_point_data(vtkfile, atmosphere.v[:, :, :, 1],
+                            "v: Meridional velocity [m/s]")
+    # write velocities as 3d vector
+    vel = zeros(3, size(xq, 1), size(xq, 2), size(xq, 3))
+    for ix=1:size(xq, 1)
+        for iy=1:size(xq, 2)
+            for iz=1:size(xq, 3)
+                vel[1, ix, iy, iz] = atmosphere.u[ix, iy, iz, 1]
+                vel[2, ix, iy, iz] = atmosphere.v[ix, iy, iz, 1]
+            end
+        end
+    end
+    
+    WriteVTK.vtk_point_data(vtkfile, vel, "Velocity vector [m/s]")
 
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose

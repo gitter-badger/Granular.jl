@@ -9,7 +9,9 @@ export createSimulation
                       time_step::Float64=-1.,
                       file_time_step::Float64=-1.,
                       file_number::Int=0,
-                      ice_floes=Array{IceFloeCylindrical, 1}[])
+                      ice_floes=Array{IceFloeCylindrical, 1}[],
+                      ocean::Ocean,
+                      atmosphere::Atmosphere)
 
 Create a simulation object containing all relevant variables such as temporal 
 parameters, and lists of ice floes and contacts.
@@ -26,7 +28,8 @@ function createSimulation(;id::String="unnamed",
                           file_number::Int=0,
                           file_time_since_output_file::Float64=0.,
                           ice_floes=Array{IceFloeCylindrical, 1}[],
-                          ocean::Ocean=createEmptyOcean())
+                          ocean::Ocean=createEmptyOcean(),
+                          atmosphere::Atmosphere=createEmptyAtmosphere())
 
     return Simulation(id,
                       time_iteration,
@@ -37,7 +40,8 @@ function createSimulation(;id::String="unnamed",
                       file_number,
                       file_time_since_output_file,
                       ice_floes,
-                      ocean)
+                      ocean,
+                      atmosphere)
 end
 
 export run!

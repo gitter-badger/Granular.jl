@@ -18,5 +18,6 @@ include("temporal.jl")
 include("temporal_integration.jl")
 include("io.jl")
 include("ocean.jl")
+include("atmosphere.jl")
 
 end # module end

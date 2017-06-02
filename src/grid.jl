@@ -32,21 +32,21 @@ function bilinearInterpolation(field::Array{Float64, 4},
 end
 
 """
-    curl(ocean, x_tilde, y_tilde, i, j, k, it)
+    curl(grid, x_tilde, y_tilde, i, j, k, it)
 
 Use bilinear interpolation to interpolate curl value for a staggered velocity 
 grid to an arbitrary position in a cell.  Assumes south-west convention, i.e.  
 (i,j) is located at the south-west (-x, -y)-facing corner.
 
 # Arguments
-* `ocean::Ocean`: grid for which to determine curl
+* `grid::Any`: grid for which to determine curl
 * `x_tilde::float`: x point position [0;1]
 * `y_tilde::float`: y point position [0;1]
 * `i::Int`: i-index of cell containing point
 * `j::Int`: j-index of scalar field to interpolate from
 * `it::Int`: time step from scalar field to interpolate from
 """
-function curl(ocean::Ocean,
+function curl(grid::Any,
               x_tilde::Float64,
               y_tilde::Float64,
               i::Int,
@@ -54,22 +54,22 @@ function curl(ocean::Ocean,
               k::Int,
               it::Int)
 
-    sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
+    sw, se, ne, nw = getCellCornerCoordinates(grid, i, j)
     sw_se = norm(sw - se)
     se_ne = norm(se - ne)
     nw_ne = norm(nw - ne)
     sw_nw = norm(sw - nw)
 
     return (
-    ((ocean.v[i+1, j  , k,it] - ocean.v[i  , j  , k,it])/sw_se*(1. - y_tilde) +
-     ((ocean.v[i+1, j+1, k,it] - ocean.v[i  , j+1, k,it])/nw_ne)*y_tilde) -
-    ((ocean.u[i  , j+1, k,it] - ocean.u[i  , j  , k,it])/sw_nw*(1. - x_tilde) +
-     ((ocean.u[i+1, j+1, k,it] - ocean.u[i+1, j  , k,it])/se_ne)*x_tilde))
+    ((grid.v[i+1, j  , k,it] - grid.v[i  , j  , k,it])/sw_se*(1. - y_tilde) +
+     ((grid.v[i+1, j+1, k,it] - grid.v[i  , j+1, k,it])/nw_ne)*y_tilde) -
+    ((grid.u[i  , j+1, k,it] - grid.u[i  , j  , k,it])/sw_nw*(1. - x_tilde) +
+     ((grid.u[i+1, j+1, k,it] - grid.u[i+1, j  , k,it])/se_ne)*x_tilde))
 end
 
 export sortIceFloesInOceanGrid!
 """
-Find ice-floe positions in ocean grid, based on their center positions.
+Find ice-floe positions in grid, based on their center positions.
 """
 function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
 
@@ -234,31 +234,31 @@ Returns ocean-grid corner coordinates in the following order (south-west corner,
 south-east corner, north-east corner, north-west corner).
 
 # Arguments
-* `ocean::Ocean`: ocean object containing grid.
+* `grid::Any`: grid object (Ocean or Atmosphere) containing grid.
 * `i::Int`: x-index of cell.
 * `j::Int`: y-index of cell.
 """
-function getCellCornerCoordinates(ocean::Ocean, i::Int, j::Int)
-    sw = [ocean.xq[  i,   j], ocean.yq[  i,   j]]
-    se = [ocean.xq[i+1,   j], ocean.yq[i+1,   j]]
-    ne = [ocean.xq[i+1, j+1], ocean.yq[i+1, j+1]]
-    nw = [ocean.xq[  i, j+1], ocean.yq[  i, j+1]]
+function getCellCornerCoordinates(grid::Any, i::Int, j::Int)
+    sw = [grid.xq[  i,   j], grid.yq[  i,   j]]
+    se = [grid.xq[i+1,   j], grid.yq[i+1,   j]]
+    ne = [grid.xq[i+1, j+1], grid.yq[i+1, j+1]]
+    nw = [grid.xq[  i, j+1], grid.yq[  i, j+1]]
     return sw, se, ne, nw
 end
 
 export getCellCenterCoordinates
 """
-    getCellCenterCoordinates(ocean, i, j)
+    getCellCenterCoordinates(grid, i, j)
 
-Returns ocean-grid center coordinates (h-point).
+Returns grid center coordinates (h-point).
 
 # Arguments
-* `ocean::Ocean`: ocean object containing grid.
+* `grid::Any`: grid object containing grid.
 * `i::Int`: x-index of cell.
 * `j::Int`: y-index of cell.
 """
-function getCellCenterCoordinates(ocean::Ocean, i::Int, j::Int)
-    return [ocean.xh[i, j], ocean.yh[i, j]]
+function getCellCenterCoordinates(grid::Any, i::Int, j::Int)
+    return [grid.xh[i, j], grid.yh[i, j]]
 end
 
 export areaOfTriangle

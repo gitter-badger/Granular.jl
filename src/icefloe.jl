@@ -37,14 +37,17 @@ function addIceFloeCylindrical(simulation::Simulation,
                                    # Hopkins 2004
                                ocean_drag_coeff_vert::float = 0.85, # H&C 2011
                                ocean_drag_coeff_horiz::float = 5e-4, # H&C 2011
-                               atmos_drag_coeff_vert::float = 0.4, # H&C 2011
-                               atmos_drag_coeff_horiz::float = 2.5e-4, # H&C2011
+                               atmosphere_drag_coeff_vert::float = 0.4,
+                                   # H&C 2011
+                               atmosphere_drag_coeff_horiz::float = 2.5e-4,
+                                   # H&C2011
                                pressure::float = 0.,
                                fixed::Bool = false,
                                rotating::Bool = true,
                                enabled::Bool = true,
                                verbose::Bool = true,
                                ocean_grid_pos::Array{Int, 1} = [0, 0],
+                               atmosphere_grid_pos::Array{Int, 1} = [0, 0],
                                n_contacts::Int = 0,
                                contacts::Array{Int, 1} = zeros(Int, Nc_max),
                                contact_parallel_displacement::
@@ -123,12 +126,13 @@ function addIceFloeCylindrical(simulation::Simulation,
 
                                  ocean_drag_coeff_vert,
                                  ocean_drag_coeff_horiz,
-                                 atmos_drag_coeff_vert,
-                                 atmos_drag_coeff_horiz,
+                                 atmosphere_drag_coeff_vert,
+                                 atmosphere_drag_coeff_horiz,
 
                                  pressure,
                                  n_contacts,
                                  ocean_grid_pos,
+                                 atmosphere_grid_pos,
                                  contacts,
                                  contact_parallel_displacement,
                                  contact_age
@@ -289,10 +293,10 @@ function convertIceFloeDataToArrays(simulation::Simulation)
             simulation.ice_floes[i].ocean_drag_coeff_vert
         ifarr.ocean_drag_coeff_horiz[i] = 
             simulation.ice_floes[i].ocean_drag_coeff_horiz
-        ifarr.atmos_drag_coeff_vert[i] = 
-            simulation.ice_floes[i].atmos_drag_coeff_vert
-        ifarr.atmos_drag_coeff_horiz[i] = 
-            simulation.ice_floes[i].atmos_drag_coeff_horiz
+        ifarr.atmosphere_drag_coeff_vert[i] = 
+            simulation.ice_floes[i].atmosphere_drag_coeff_vert
+        ifarr.atmosphere_drag_coeff_horiz[i] = 
+            simulation.ice_floes[i].atmosphere_drag_coeff_horiz
 
         ifarr.pressure[i] = simulation.ice_floes[i].pressure
 
@@ -348,8 +352,8 @@ function printIceFloeInfo(f::IceFloeCylindrical)
 
     println("  c_o_v:  $(f.ocean_drag_coeff_vert)")
     println("  c_o_h:  $(f.ocean_drag_coeff_horiz)")
-    println("  c_a_v:  $(f.atmos_drag_coeff_vert)")
-    println("  c_a_h:  $(f.atmos_drag_coeff_horiz)\n")
+    println("  c_a_v:  $(f.atmosphere_drag_coeff_vert)")
+    println("  c_a_h:  $(f.atmosphere_drag_coeff_horiz)\n")
 
     println("  pressure:   $(f.pressure) Pa")
     println("  n_contacts: $(f.n_contacts)")
