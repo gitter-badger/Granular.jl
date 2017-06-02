@@ -130,17 +130,23 @@ function writeIceFloeVTK(simulation::Simulation,
 end
 
 export writeIceFloeInteractionVTK
+"""
+    writeIceFloeInteractionVTK(simulation::Simulation,
+                               filename::String;
+                               verbose::Bool=false)
+
+Saves ice-floe interactions to `.vtp` files for visualization with VTK, for 
+example in Paraview.  Convert Cell Data to Point Data and use with Tube filter.
+"""
 function writeIceFloeInteractionVTK(simulation::Simulation,
                                     filename::String;
                                     verbose::Bool=false)
 
-    # Save ice-floe indexes and metrics for all interactions
     i1 = Int64[]
     i2 = Int64[]
     inter_particle_vector = Array{float, 1}[]
     force = float[]
-    shear_displacement_1 = float[]
-    shear_displacement_2 = float[]
+    shear_displacement = Array{float, 1}[]
     contact_age = float[]
     for i=1:length(simulation.ice_floes)
         for ic=1:Nc_max
@@ -184,17 +190,14 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
 
                 push!(force, k_n*δ_n)
 
-                push!(shear_displacement_1, simulation.ice_floes[i].
-                      contact_parallel_displacement[ic][1])
-                push!(shear_displacement_2, simulation.ice_floes[i].
-                      contact_parallel_displacement[ic][2])
+                push!(shear_displacement, simulation.ice_floes[i].
+                      contact_parallel_displacement[ic])
 
                 push!(contact_age, simulation.ice_floes[i].contact_age[ic])
             end
         end
     end
 
-    println(inter_particle_vector)
     # Insert a piece for each ice floe interaction using ice floe positions as 
     # coordinates and connect them with lines by referencing their indexes.
     open(filename * ".vtp", "w") do f
@@ -219,6 +222,16 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         for i=1:length(i1)
             write(f, "$(inter_particle_vector[i][1]) ")
             write(f, "$(inter_particle_vector[i][2]) ")
+            write(f, "0.0 ")
+        end
+        write(f, "\n")
+        write(f, "        </DataArray>\n")
+        write(f, "        <DataArray type=\"Float32\" " *
+              "Name=\"Shear displacement [m]\" " *
+              "NumberOfComponents=\"3\" format=\"ascii\">\n")
+        for i=1:length(i1)
+            write(f, "$(shear_displacement[i][1]) ")
+            write(f, "$(shear_displacement[i][2]) ")
             write(f, "0.0 ")
         end
         write(f, "\n")
