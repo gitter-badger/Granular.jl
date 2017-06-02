@@ -247,11 +247,12 @@ function writeIceFloeBondVTK(simulation::Simulation,
         
         # Write 0-indexed offset for the connectivity array for the end of each 
         # cell
-        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+        write(f, "        <DataArray name=\"offsets\" type=\"Int64\" " *
               "format=\"ascii\">\n")
         for i=1:length(i1)
             write(f, "$((i - 1)*2 + 2) ")
         end
+        write(f, "\n")
         write(f, "        </DataArray>\n")
 
         write(f, "      </Lines>\n")

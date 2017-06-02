@@ -9,6 +9,7 @@ sim = SeaIce.createSimulation(id="test")
 SeaIce.addIceFloeCylindrical(sim, [ 0., 0.], 10., 1., verbose=false)
 SeaIce.addIceFloeCylindrical(sim, [18., 0.], 10., 1., verbose=false)
 sim.ocean = SeaIce.createRegularOceanGrid([10, 20, 5], [10., 25., 2.])  
+SeaIce.findContacts!(sim, method="all to all")
 SeaIce.writeVTK(sim, verbose=false)
 
 cmd_post = ""
@@ -26,7 +27,7 @@ else
 end
 
 icefloechecksum = 
-"b34352d9fc151411d7cd60fcdfdfc29c5f6876928248b5e6916e8668d58b0887  " *
+"cbce00877a96d6ec778ae6a9eabce8c18344e0b57f846c34a2777d0882376aeb  " *
 "test.icefloes.1.vtu\n"
 
 oceanchecksum =
@@ -44,9 +45,8 @@ SeaIce.setTotalTime!(sim, 1.5)
 SeaIce.setTimeStep!(sim)
 sim.file_number = 0
 SeaIce.run!(sim, single_step=true)
-SeaIce.run!(sim, single_step=true)
 
 @test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == icefloechecksum
 @test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == oceanchecksum
 
-SeaIce.removeSimulationFiles(sim)
+#SeaIce.removeSimulationFiles(sim)
