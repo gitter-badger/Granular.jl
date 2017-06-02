@@ -67,18 +67,17 @@ function curl(grid::Any,
      ((grid.u[i+1, j+1, k,it] - grid.u[i+1, j  , k,it])/se_ne)*x_tilde))
 end
 
-export sortIceFloesInOceanGrid!
+export sortIceFloesInGrid!
 """
 Find ice-floe positions in grid, based on their center positions.
 """
-function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
+function sortIceFloesInGrid!(grid::Any; verbose=false)
 
-    simulation.ocean.ice_floe_list =
-        Array{Array{Int, 1}}(size(simulation.ocean.xh, 1), 
-                             size(simulation.ocean.xh, 2))
-    for i=1:size(simulation.ocean.xh, 1)
-        for j=1:size(simulation.ocean.xh, 2)
-            simulation.ocean.ice_floe_list[i, j] = Int[]
+    grid.ice_floe_list =
+        Array{Array{Int, 1}}(size(grid.xh, 1), size(grid.xh, 2))
+    for i=1:size(grid.xh, 1)
+        for j=1:size(grid.xh, 2)
+            grid.ice_floe_list[i, j] = Int[]
         end
     end
 
@@ -90,10 +89,16 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
 
         # After first iteration, check if ice floe is in same cell before 
         # traversing entire grid
-        i_old, j_old = simulation.ice_floes[idx].ocean_grid_pos
+        if typeof(grid) == Ocean
+            i_old, j_old = simulation.ice_floes[idx].ocean_grid_pos
+        elseif typeof(grid) == Atmosphere
+            i_old, j_old = simulation.ice_floes[idx].atmosphere_grid_pos
+        else
+            error("grid type not understood.")
+        end
         if simulation.time > 0. &&
             i_old > 0 && j_old > 0 &&
-            isPointInCell(simulation.ocean, i_old, j_old,
+            isPointInCell(grid, i_old, j_old,
                          simulation.ice_floes[idx].lin_pos)
             i = i_old
             j = j_old
@@ -101,8 +106,8 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
         else
 
             # Search for point in 8 neighboring cells
-            nx = size(simulation.ocean.xh, 1)
-            ny = size(simulation.ocean.xh, 2)
+            nx = size(grid.xh, 1)
+            ny = size(grid.xh, 2)
             found = false
             for i_rel=-1:1
                 for j_rel=-1:1
@@ -112,8 +117,8 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
                     i_t = max(min(i_old + i_rel, nx), 1)
                     j_t = max(min(j_old + j_rel, ny), 1)
                     
-                    if isPointInCell(simulation.ocean, i_t, j_t,
-                                  simulation.ice_floes[idx].lin_pos)
+                    if isPointInCell(grid, i_t, j_t,
+                                     simulation.ice_floes[idx].lin_pos)
                         i = i_t
                         j = j_t
                         found = true
@@ -126,7 +131,7 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
             end
 
             if !found
-                i, j = findCellContainingPoint(simulation.ocean,
+                i, j = findCellContainingPoint(grid,
                                                simulation.ice_floes[idx].lin_pos)
             end
 
@@ -137,11 +142,17 @@ function sortIceFloesInOceanGrid!(simulation::Simulation; verbose=false)
             end
 
             # add cell to ice floe
-            simulation.ice_floes[idx].ocean_grid_pos = [i, j]
+            if typeof(grid) == Ocean
+                simulation.ice_floes[idx].ocean_grid_pos = [i, j]
+            elseif typeof(grid) == Atmosphere
+                simulation.ice_floes[idx].atmosphere_grid_pos = [i, j]
+            else
+                error("grid type not understood.")
+            end
         end
 
         # add ice floe to cell
-        push!(simulation.ocean.ice_floe_list[i, j], idx)
+        push!(grid.ice_floe_list[i, j], idx)
     end
 end
 
@@ -197,10 +208,10 @@ The function uses either an area-based approach (`method = "Area"`), or a
 conformal mapping approach (`method = "Conformal"`).  The area-based approach is 
 more robust.  This function returns `true` or `false`.
 """
-function isPointInCell(ocean::Ocean, i::Int, j::Int, point::Array{float, 1};
+function isPointInCell(grid::Any, i::Int, j::Int, point::Array{float, 1};
                        method::String="Conformal")
 
-    sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
+    sw, se, ne, nw = getCellCornerCoordinates(grid, i, j)
 
     if method == "Area"
         if areaOfQuadrilateral(sw, se, ne, nw) ≈
@@ -228,9 +239,9 @@ end
 
 export getCellCornerCoordinates
 """
-    getCellCornerCoordinates(ocean, i, j)
+    getCellCornerCoordinates(grid, i, j)
 
-Returns ocean-grid corner coordinates in the following order (south-west corner, 
+Returns grid corner coordinates in the following order (south-west corner, 
 south-east corner, north-east corner, north-west corner).
 
 # Arguments
