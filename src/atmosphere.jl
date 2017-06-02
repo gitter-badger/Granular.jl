@@ -181,13 +181,12 @@ ice floe.
 function applyAtmosphereDragToIceFloe!(ice_floe::IceFloeCylindrical,
                                   u::float, v::float)
     freeboard = .1*ice_floe.thickness  # height above water
-    rho_a = 1000.   # atmosphere density
-    draft = ice_floe.thickness - freeboard  # height of submerged thickness
+    rho_a = 1.2754   # atmosphere density
     length = ice_floe.areal_radius*2.
     width = ice_floe.areal_radius*2.
 
     ice_floe.force +=
-        rho_a * (.5*ice_floe.ocean_drag_coeff_vert*width*draft + 
+        rho_a * (.5*ice_floe.ocean_drag_coeff_vert*width*freeboard + 
         ice_floe.atmosphere_drag_coeff_horiz*length*width) *
         ([u, v] - ice_floe.lin_vel)*norm([u, v] - ice_floe.lin_vel)
 end
@@ -201,13 +200,12 @@ and Boucher, 1999.
 function applyAtmosphereVorticityToIceFloe!(ice_floe::IceFloeCylindrical, 
                                             atmosphere_curl::float)
     freeboard = .1*ice_floe.thickness  # height above water
-    rho_a = 1000.   # atmosphere density
-    draft = ice_floe.thickness - freeboard  # height of submerged thickness
+    rho_a = 1.2754   # atmosphere density
 
     ice_floe.torque +=
         pi*ice_floe.areal_radius^4.*rho_o*
         (ice_floe.areal_radius/5.*ice_floe.atmosphere_drag_coeff_horiz + 
-        draft*ice_floe.atmosphere_drag_coeff_vert)*
+        freeboard*ice_floe.atmosphere_drag_coeff_vert)*
         abs(.5*atmosphere_curl - ice_floe.ang_vel)*
         (.5*atmosphere_curl - ice_floe.ang_vel)
 end
