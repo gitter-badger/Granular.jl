@@ -146,6 +146,11 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
             if simulation.ice_floes[i].contacts[ic] > 0
                 j = simulation.ice_floes[i].contacts[ic]
 
+                if !simulation.ice_floes[i].enabled ||
+                    !simulation.ice_floes[j].enabled
+                    continue
+                end
+
                 p = simulation.ice_floes[i].lin_pos -
                     simulation.ice_floes[j].lin_pos
                 dist = norm(p)
