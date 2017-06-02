@@ -206,7 +206,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "      <CellData>\n")
 
         # Write values associated to each line
-        write(f, "        <DataArray name=\"Force [N]\" type=\"Float32\" " *
+        write(f, "        <DataArray type=\"Float32\" name=\"Force [N]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
             write(f, "$(force[i]) ")
@@ -214,8 +214,9 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "\n")
         write(f, "        </DataArray>\n")
 
-        write(f, "        <DataArray name=\"Contact age [s]\" " * 
-              "type=\"Float32\" NumberOfComponents=\"1\" format=\"ascii\">\n")
+        write(f, "        <DataArray type=\"Float32\" " *
+              "name=\"Contact age [s]\" NumberOfComponents=\"1\" 
+        format=\"ascii\">\n")
         for i=1:length(i1)
             write(f, "$(contact_age[i]) ")
         end
@@ -227,7 +228,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
 
         # Write line endpoints (ice floe centers)
         #write(f, "        <DataArray name=\"Position [m]\" type=\"Float32\" " *
-        write(f, "        <DataArray name=\"Points\" type=\"Float32\" " *
+        write(f, "        <DataArray type=\"Float32\" name=\"Points\" " *
               "NumberOfComponents=\"3\" format=\"ascii\">\n")
         for i in simulation.ice_floes
             write(f, "$(i.lin_pos[1]) $(i.lin_pos[2]) 0.0 ")
@@ -236,17 +237,17 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        </DataArray>\n")
         write(f, "      </Points>\n")
         write(f, "      <Verts>\n")
-        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+        write(f, "        <DataArray type=\"Int64\" name=\"connectivity\" " *
               "format=\"ascii\">\n")
         write(f, "        </DataArray>\n")
-        write(f, "        <DataArray name=\"offsets\" type=\"Int64\" " *
+        write(f, "        <DataArray type=\"Int64\" name=\"offsets\" " *
               "format=\"ascii\">\n")
         write(f, "        </DataArray>\n")
         write(f, "      </Verts>\n")
         write(f, "      <Lines>\n")
 
         # Write contact connectivity by referring to point indexes
-        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+        write(f, "        <DataArray type=\"Int64\" name=\"connectivity\" " *
               "format=\"ascii\">\n")
         for i=1:length(i1)
             write(f, "$(i1[i] - 1) $(i2[i] - 1) ")
@@ -256,7 +257,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         
         # Write 0-indexed offset for the connectivity array for the end of each 
         # cell
-        write(f, "        <DataArray name=\"offsets\" type=\"Int64\" " *
+        write(f, "        <DataArray type=\"Int64\" name=\"offsets\" " *
               "format=\"ascii\">\n")
         for i=1:length(i1)
             write(f, "$((i - 1)*2 + 2) ")
@@ -266,18 +267,18 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
 
         write(f, "      </Lines>\n")
         write(f, "      <Strips>\n")
-        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+        write(f, "        <DataArray type=\"Int64\" name=\"connectivity\" " *
               "format=\"ascii\">\n")
         write(f, "        </DataArray>\n")
-        write(f, "        <DataArray name=\"offsets\" type=\"Int64\" " *
+        write(f, "        <DataArray type=\"Int64\" name=\"offsets\" " *
               "format=\"ascii\">\n")
         write(f, "        </DataArray>\n")
         write(f, "      </Strips>\n")
         write(f, "      <Polys>\n")
-        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+        write(f, "        <DataArray type=\"Int64\" name=\"connectivity\" " *
               "format=\"ascii\">\n")
         write(f, "        </DataArray>\n")
-        write(f, "        <DataArray name=\"offsets\" type=\"Int64\" " *
+        write(f, "        <DataArray type=\"Int64\" name=\"offsets\" " *
               "format=\"ascii\">\n")
         write(f, "        </DataArray>\n")
         write(f, "      </Polys>\n")
