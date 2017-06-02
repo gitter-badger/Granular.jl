@@ -23,9 +23,9 @@ function writeVTK(simulation::Simulation;
                       simulation.file_number)
     writeIceFloeVTK(simulation, filename, verbose=verbose)
 
-    filename = string(folder, "/", simulation.id, ".icefloe-bonds.", 
+    filename = string(folder, "/", simulation.id, ".icefloe-interaction.", 
                       simulation.file_number)
-    writeIceFloeBondVTK(simulation, filename, verbose=verbose)
+    writeIceFloeInteractionVTK(simulation, filename, verbose=verbose)
 
     if typeof(simulation.ocean.input_file) != Bool && ocean
         filename = string(folder, "/", simulation.id, ".ocean.", 
@@ -129,10 +129,10 @@ function writeIceFloeVTK(simulation::Simulation,
     end
 end
 
-export writeIceFloeBondVTK
-function writeIceFloeBondVTK(simulation::Simulation,
-                             filename::String;
-                             verbose::Bool=false)
+export writeIceFloeInteractionVTK
+function writeIceFloeInteractionVTK(simulation::Simulation,
+                                    filename::String;
+                                    verbose::Bool=false)
 
     # Save ice-floe indexes and metrics for all interactions
     i1 = []
@@ -198,7 +198,9 @@ function writeIceFloeBondVTK(simulation::Simulation,
         write(f, "    <Piece " *
               "NumberOfPoints=\"$(length(simulation.ice_floes))\" " *
               "NumberOfVerts=\"0\" " *
-              "NumberOfLines=\"$(length(i1))\">\n")
+              "NumberOfLines=\"$(length(i1))\" " *
+              "NumberOfStrips=\"0\" " *
+              "NumberOfPolys=\"0\">\n")
         write(f, "      <PointData>\n")
         write(f, "      </PointData>\n")
         write(f, "      <CellData>\n")
@@ -240,7 +242,7 @@ function writeIceFloeBondVTK(simulation::Simulation,
         write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
               "format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(i1[i]) $(i2[i]) ")
+            write(f, "$(i1[i] - 1) $(i2[i] - 1) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -257,8 +259,20 @@ function writeIceFloeBondVTK(simulation::Simulation,
 
         write(f, "      </Lines>\n")
         write(f, "      <Strips>\n")
+        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+              "format=\"ascii\">\n")
+        write(f, "        </DataArray>\n")
+        write(f, "        <DataArray name=\"offsets\" type=\"Int64\" " *
+              "format=\"ascii\">\n")
+        write(f, "        </DataArray>\n")
         write(f, "      </Strips>\n")
         write(f, "      <Polys>\n")
+        write(f, "        <DataArray name=\"connectivity\" type=\"Int64\" " *
+              "format=\"ascii\">\n")
+        write(f, "        </DataArray>\n")
+        write(f, "        <DataArray name=\"offsets\" type=\"Int64\" " *
+              "format=\"ascii\">\n")
+        write(f, "        </DataArray>\n")
         write(f, "      </Polys>\n")
         write(f, "    </Piece>\n")
         write(f, "  </PolyData>\n")
