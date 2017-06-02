@@ -49,4 +49,4 @@ SeaIce.run!(sim, single_step=true)
 @test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == icefloechecksum
 @test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == oceanchecksum
 
-#SeaIce.removeSimulationFiles(sim)
+SeaIce.removeSimulationFiles(sim)
