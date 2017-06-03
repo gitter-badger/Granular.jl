@@ -158,26 +158,26 @@ end
 
 export findCellContainingPoint
 """
-    findCellContainingPoint(ocean, point[, method])
+    findCellContainingPoint(grid, point[, method])
 
-Returns the `i`, `j` index of the ocean grid cell containing the `point`.
+Returns the `i`, `j` index of the grid cell containing the `point`.
 The function uses either an area-based approach (`method = "Area"`), or a 
 conformal mapping approach (`method = "Conformal"`).  The area-based approach is 
 more robust.  This function returns the coordinates of the cell.  If no match is 
 found the function returns `(0,0)`.
 
 # Arguments
-* `ocean::Ocean`: object containing ocean data.
+* `grid::Any`: grid object containing ocean or atmosphere data.
 * `point::Array{float, 1}`: two-dimensional vector of point to check.
 * `method::String`: approach to use for determining if point is inside cell or 
     not, can be "Conformal" (default) or "Areal".
 """
-function findCellContainingPoint(ocean::Ocean, point::Array{float, 1};
+function findCellContainingPoint(grid::Any, point::Array{float, 1};
                                  method::String="Conformal")
 
-    for i=1:size(ocean.xh, 1)
-        for j=1:size(ocean.yh, 2)
-            if isPointInCell(ocean, i, j, point, method=method)
+    for i=1:size(grid.xh, 1)
+        for j=1:size(grid.yh, 2)
+            if isPointInCell(grid, i, j, point, method=method)
                 return i, j
             end
         end
@@ -188,22 +188,22 @@ end
 export getNonDimensionalCellCoordinates
 """
 Returns the non-dimensional conformal mapped coordinates for point `point` in 
-cell `i,j`, based off the coordinates in the `ocean` grid.
+cell `i,j`, based off the coordinates in the grid.
 
 This function is a wrapper for `getCellCornerCoordinates()` and 
 `conformalQuadrilateralCoordinates()`.
 """
-function getNonDimensionalCellCoordinates(ocean::Ocean, i::Int, j::Int,
+function getNonDimensionalCellCoordinates(grid::Any, i::Int, j::Int,
                                           point::Array{float, 1})
 
-    sw, se, ne, nw = getCellCornerCoordinates(ocean, i, j)
+    sw, se, ne, nw = getCellCornerCoordinates(grid, i, j)
     x_tilde, y_tilde = conformalQuadrilateralCoordinates(sw, se, ne, nw, point)
     return [x_tilde, y_tilde]
 end
 
 export isPointInCell
 """
-Check if a 2d point is contained inside a cell from the ocean grid.
+Check if a 2d point is contained inside a cell from the supplied grid.
 The function uses either an area-based approach (`method = "Area"`), or a 
 conformal mapping approach (`method = "Conformal"`).  The area-based approach is 
 more robust.  This function returns `true` or `false`.

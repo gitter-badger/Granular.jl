@@ -152,3 +152,44 @@ ocean.u[2, 2, 1, 1] = 1.0
 ocean.u[1, 2, 1, 1] = 1.0
 ocean.v[:, :, 1, 1] = 0.0
 @test SeaIce.curl(ocean, .5, .5, 1, 1, 1, 1) < 0.
+
+info("Testing atmosphere drag")
+sim = SeaIce.createSimulation()
+sim.atmosphere = SeaIce.createRegularAtmosphereGrid([4, 4, 2], [4., 4., 2.])
+atmosphere = SeaIce.createRegularAtmosphereGrid([4, 4, 2], [4., 4., 2.])
+sim.atmosphere.u[:,:,1,1] = 5.
+SeaIce.addIceFloeCylindrical(sim, [2.5, 3.5], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [2.6, 2.5], 1., 1., verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.atmosphere, verbose=verbose)
+sim.time = ocean.time[1]
+SeaIce.addAtmosphereDrag!(sim)
+@test sim.ice_floes[1].force[1] > 0.
+@test sim.ice_floes[1].force[2] ≈ 0.
+@test sim.ice_floes[2].force[1] > 0.
+@test sim.ice_floes[2].force[2] ≈ 0.
+sim.atmosphere.u[:,:,1,1] = -5.
+sim.atmosphere.v[:,:,1,1] = 5.
+SeaIce.addIceFloeCylindrical(sim, [2.5, 3.5], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [2.6, 2.5], 1., 1., verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.atmosphere, verbose=verbose)
+sim.time = ocean.time[1]
+SeaIce.addAtmosphereDrag!(sim)
+@test sim.ice_floes[1].force[1] < 0.
+@test sim.ice_floes[1].force[2] > 0.
+@test sim.ice_floes[2].force[1] < 0.
+@test sim.ice_floes[2].force[2] > 0.
+
+info("Testing curl function")
+atmosphere.u[1, 1, 1, 1] = 1.0
+atmosphere.u[2, 1, 1, 1] = 1.0
+atmosphere.u[2, 2, 1, 1] = 0.0
+atmosphere.u[1, 2, 1, 1] = 0.0
+atmosphere.v[:, :, 1, 1] = 0.0
+@test SeaIce.curl(atmosphere, .5, .5, 1, 1, 1, 1) > 0.
+
+atmosphere.u[1, 1, 1, 1] = 0.0
+atmosphere.u[2, 1, 1, 1] = 0.0
+atmosphere.u[2, 2, 1, 1] = 1.0
+atmosphere.u[1, 2, 1, 1] = 1.0
+atmosphere.v[:, :, 1, 1] = 0.0
+@test SeaIce.curl(atmosphere, .5, .5, 1, 1, 1, 1) < 0.

@@ -24,10 +24,10 @@ function findContacts!(simulation::Simulation;
         findContactsAllToAll!(simulation)
 
     elseif method == "ocean grid"
-        findContactsOceanGrid!(simulation)
+        findContactsInGrid!(simulation, simulation.ocean)
 
     elseif method == "atmosphere grid"
-        error("not yet implemented")
+        findContactsInGrid!(simulation, simulation.atmosphere)
 
     else
         error("Unknown contact search method '$method'")
@@ -79,19 +79,25 @@ function findContactsAllToAll!(simulation::Simulation)
     end
 end
 
-export findContactsOceanGrid!
+export findContactsInGrid!
 """
-    findContactsOceanGrid!(simulation)
+    findContactsInGrid!(simulation)
 
 Perform an O(n*log(n)) cell-based contact search between all ice floes in the 
-`simulation` object.  Contacts between fixed ice floes are ignored.
+`simulation` object.  Contacts between fixed or disabled ice floes are ignored.
 """
-function findContactsOceanGrid!(simulation::Simulation)
+function findContactsInGrid!(simulation::Simulation, grid::Any)
 
     for idx_i = 1:length(simulation.ice_floes)
 
-        grid_pos = simulation.ice_floes[idx_i].ocean_grid_pos
-        nx, ny = size(simulation.ocean.xh)
+        if typeof(grid) == Ocean
+            grid_pos = simulation.ice_floes[idx_i].ocean_grid_pos
+        elseif typeof(grid) == Atmosphere
+            grid_pos = simulation.ice_floes[idx_i].atmosphere_grid_pos
+        else
+            error("grid type not understood")
+        end
+        nx, ny = size(grid.xh)
 
         for i=(grid_pos[1] - 1):(grid_pos[1] + 1)
             for j=(grid_pos[2] - 1):(grid_pos[2] + 1)
@@ -101,7 +107,7 @@ function findContactsOceanGrid!(simulation::Simulation)
                     continue
                 end
 
-                for idx_j in simulation.ocean.ice_floe_list[i, j]
+                for idx_j in grid.ice_floe_list[i, j]
                     checkAndAddContact!(simulation, idx_i, idx_j)
                 end
             end
@@ -109,7 +115,7 @@ function findContactsOceanGrid!(simulation::Simulation)
     end
 end
 
-export addContact!
+export checkAndAddContact!
 """
     checkAndAddContact!(simulation, i, j)
 

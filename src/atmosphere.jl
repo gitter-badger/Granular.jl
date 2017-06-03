@@ -114,19 +114,16 @@ function createRegularAtmosphereGrid(n::Array{Int, 1},
     yh = repmat(linspace(origo[2] + .5*dx[2], L[2] - .5*dx[2], n[2])', n[1], 1)
 
     zl = -linspace(.5*dx[3], L[3] - .5*dx[3], n[3])
-    zi = -linspace(0., L[3], n[3] + 1)
 
     u = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
     v = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
-    h = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
-    e = zeros(n[1] + 1, n[2] + 1, n[3], length(time))
 
     return Atmosphere(name,
                  time,
                  xq, yq,
                  xh, yh,
-                 zl, zi,
-                 u, v, h, e,
+                 zl,
+                 u, v,
                  Array{Array{Int, 1}}(size(xh, 1), size(xh, 2)))
 end
 
@@ -140,8 +137,7 @@ function addAtmosphereDrag!(simulation::Simulation)
         error("no atmosphere data read")
     end
 
-    u, v, h, e = interpolateAtmosphereState(simulation.atmosphere, 
-                                            simulation.time)
+    u, v = interpolateAtmosphereState(simulation.atmosphere, simulation.time)
 
     for ice_floe in simulation.ice_floes
 
@@ -203,7 +199,7 @@ function applyAtmosphereVorticityToIceFloe!(ice_floe::IceFloeCylindrical,
     rho_a = 1.2754   # atmosphere density
 
     ice_floe.torque +=
-        pi*ice_floe.areal_radius^4.*rho_o*
+        pi*ice_floe.areal_radius^4.*rho_a*
         (ice_floe.areal_radius/5.*ice_floe.atmosphere_drag_coeff_horiz + 
         freeboard*ice_floe.atmosphere_drag_coeff_vert)*
         abs(.5*atmosphere_curl - ice_floe.ang_vel)*

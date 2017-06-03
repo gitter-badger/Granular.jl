@@ -111,7 +111,7 @@ function run!(simulation::Simulation;
         zeroForcesAndTorques!(simulation)
 
         if typeof(simulation.atmosphere.input_file) != Bool
-            sortIceFloesInGrid!(sim, sim.atmosphere)
+            sortIceFloesInGrid!(simulation, simulation.atmosphere)
         end
 
         if typeof(simulation.ocean.input_file) != Bool
