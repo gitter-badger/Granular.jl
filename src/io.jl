@@ -31,13 +31,13 @@ function writeVTK(simulation::Simulation;
     if typeof(simulation.ocean.input_file) != Bool && ocean
         filename = string(folder, "/", simulation.id, ".ocean.", 
                         simulation.file_number)
-        writeOceanVTK(simulation.ocean, filename, verbose=verbose)
+        writeGridVTK(simulation.ocean, filename, verbose=verbose)
     end
 
     if typeof(simulation.atmosphere.input_file) != Bool && atmosphere
         filename = string(folder, "/", simulation.id, ".atmosphere.", 
                         simulation.file_number)
-        writeOceanVTK(simulation.atmosphere, filename, verbose=verbose)
+        writeGridVTK(simulation.atmosphere, filename, verbose=verbose)
     end
 end
 
@@ -377,103 +377,51 @@ structured grid (file type `.vts`).  These files can be read by ParaView and can
 be visualized by applying a *Glyph* filter.  This function is called by 
 `writeVTK()`.
 """
-function writeOceanVTK(ocean::Ocean,
-                       filename::String;
-                       verbose::Bool=false)
+function writeGridVTK(grid::Any,
+                      filename::String;
+                      verbose::Bool=false)
     
     # make each coordinate array three-dimensional
-    xq = similar(ocean.u[:,:,:,1])
-    yq = similar(ocean.u[:,:,:,1])
-    zq = similar(ocean.u[:,:,:,1])
+    xq = similar(grid.u[:,:,:,1])
+    yq = similar(grid.u[:,:,:,1])
+    zq = similar(grid.u[:,:,:,1])
 
     for iz=1:size(xq, 3)
-        xq[:,:,iz] = ocean.xq
-        yq[:,:,iz] = ocean.yq
+        xq[:,:,iz] = grid.xq
+        yq[:,:,iz] = grid.yq
     end
     for ix=1:size(xq, 1)
         for iy=1:size(xq, 2)
-            zq[ix,iy,:] = ocean.zl
+            zq[ix,iy,:] = grid.zl
         end
     end
 
     # add arrays to VTK file
     vtkfile = WriteVTK.vtk_grid(filename, xq, yq, zq)
 
-    WriteVTK.vtk_point_data(vtkfile, ocean.u[:, :, :, 1],
+    WriteVTK.vtk_point_data(vtkfile, grid.u[:, :, :, 1],
                             "u: Zonal velocity [m/s]")
-    WriteVTK.vtk_point_data(vtkfile, ocean.v[:, :, :, 1],
+    WriteVTK.vtk_point_data(vtkfile, grid.v[:, :, :, 1],
                             "v: Meridional velocity [m/s]")
     # write velocities as 3d vector
     vel = zeros(3, size(xq, 1), size(xq, 2), size(xq, 3))
     for ix=1:size(xq, 1)
         for iy=1:size(xq, 2)
             for iz=1:size(xq, 3)
-                vel[1, ix, iy, iz] = ocean.u[ix, iy, iz, 1]
-                vel[2, ix, iy, iz] = ocean.v[ix, iy, iz, 1]
+                vel[1, ix, iy, iz] = grid.u[ix, iy, iz, 1]
+                vel[2, ix, iy, iz] = grid.v[ix, iy, iz, 1]
             end
         end
     end
     
     WriteVTK.vtk_point_data(vtkfile, vel, "Velocity vector [m/s]")
 
-    WriteVTK.vtk_point_data(vtkfile, ocean.h[:, :, :, 1],
-                            "h: Layer thickness [m]")
-    WriteVTK.vtk_point_data(vtkfile, ocean.e[:, :, :, 1],
-                            "e: Relative interface height [m]")
-
-    outfiles = WriteVTK.vtk_save(vtkfile)
-    if verbose
-        info("Output file: " * outfiles[1])
-    else
-        return nothing
+    if typeof(grid) == Ocean
+        WriteVTK.vtk_point_data(vtkfile, grid.h[:, :, :, 1],
+                                "h: Layer thickness [m]")
+        WriteVTK.vtk_point_data(vtkfile, grid.e[:, :, :, 1],
+                                "e: Relative interface height [m]")
     end
-end
-
-export writeAtmosphereVTK
-"""
-Write a VTK file to disk containing all atmosphere data in the `simulation` in a 
-structured grid (file type `.vts`).  These files can be read by ParaView and can 
-be visualized by applying a *Glyph* filter.  This function is called by 
-`writeVTK()`.
-"""
-function writeAtmosphereVTK(atmosphere::Atmosphere,
-                            filename::String;
-                            verbose::Bool=false)
-    
-    # make each coordinate array three-dimensional
-    xq = similar(atmosphere.u[:,:,:,1])
-    yq = similar(atmosphere.u[:,:,:,1])
-    zq = similar(atmosphere.u[:,:,:,1])
-
-    for iz=1:size(xq, 3)
-        xq[:,:,iz] = atmosphere.xq
-        yq[:,:,iz] = atmosphere.yq
-    end
-    for ix=1:size(xq, 1)
-        for iy=1:size(xq, 2)
-            zq[ix,iy,:] = atmosphere.zl
-        end
-    end
-
-    # add arrays to VTK file
-    vtkfile = WriteVTK.vtk_grid(filename, xq, yq, zq)
-
-    WriteVTK.vtk_point_data(vtkfile, atmosphere.u[:, :, :, 1],
-                            "u: Zonal velocity [m/s]")
-    WriteVTK.vtk_point_data(vtkfile, atmosphere.v[:, :, :, 1],
-                            "v: Meridional velocity [m/s]")
-    # write velocities as 3d vector
-    vel = zeros(3, size(xq, 1), size(xq, 2), size(xq, 3))
-    for ix=1:size(xq, 1)
-        for iy=1:size(xq, 2)
-            for iz=1:size(xq, 3)
-                vel[1, ix, iy, iz] = atmosphere.u[ix, iy, iz, 1]
-                vel[2, ix, iy, iz] = atmosphere.v[ix, iy, iz, 1]
-            end
-        end
-    end
-    
-    WriteVTK.vtk_point_data(vtkfile, vel, "Velocity vector [m/s]")
 
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
