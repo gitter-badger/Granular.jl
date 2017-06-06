@@ -54,7 +54,10 @@ function addIceFloeCylindrical(simulation::Simulation,
                                    Array{Array{Float64, 1}, 1} =
                                    Array{Array{Float64, 1}, 1}(Nc_max),
                                contact_age::Array{Float64, 1} =
-                                   zeros(Float64, Nc_max))
+                                   zeros(Float64, Nc_max),
+                               granular_stress::vector = [0., 0.],
+                               ocean_stress::vector = [0., 0.],
+                               atmosphere_stress::vector = [0., 0.])
 
     # Check input values
     if length(lin_pos) != 2
@@ -135,7 +138,11 @@ function addIceFloeCylindrical(simulation::Simulation,
                                  atmosphere_grid_pos,
                                  contacts,
                                  contact_parallel_displacement,
-                                 contact_age
+                                 contact_age,
+
+                                 granular_stress,
+                                 ocean_stress,
+                                 atmosphere_stress
                                 )
 
     # Overwrite previous placeholder values
@@ -238,7 +245,11 @@ function convertIceFloeDataToArrays(simulation::Simulation)
                           Array(Float64, length(simulation.ice_floes)),
 
                           Array(Float64, length(simulation.ice_floes)),
-                          Array(Int, length(simulation.ice_floes))
+                          Array(Int, length(simulation.ice_floes)),
+
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.ice_floes)),
                          )
 
     # fill arrays
@@ -299,8 +310,12 @@ function convertIceFloeDataToArrays(simulation::Simulation)
             simulation.ice_floes[i].atmosphere_drag_coeff_horiz
 
         ifarr.pressure[i] = simulation.ice_floes[i].pressure
-
         ifarr.n_contacts[i] = simulation.ice_floes[i].n_contacts
+
+        ifarr.granular_stress[1:2, i] = simulation.ice_floes[i].granular_stress
+        ifarr.ocean_stress[1:2, i] = simulation.ice_floes[i].ocean_stress
+        ifarr.atmosphere_stress[1:2, i] =
+            simulation.ice_floes[i].atmosphere_stress
     end
 
     return ifarr
@@ -358,7 +373,11 @@ function printIceFloeInfo(f::IceFloeCylindrical)
     println("  pressure:   $(f.pressure) Pa")
     println("  n_contacts: $(f.n_contacts)")
     println("  contacts:   $(f.contacts)")
-    println("  delta_t:    $(f.contact_parallel_displacement)")
+    println("  delta_t:    $(f.contact_parallel_displacement)\n")
+
+    println("  granular_stress:   $(f.granular_stress) Pa")
+    println("  ocean_stress:      $(f.ocean_stress) Pa")
+    println("  atmosphere_stress: $(f.atmosphere_stress) Pa")
 end
 
 export iceFloeKineticTranslationalEnergy

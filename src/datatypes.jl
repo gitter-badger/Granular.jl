@@ -64,6 +64,10 @@ type IceFloeCylindrical
     contacts::Array{Int, 1}
     contact_parallel_displacement::Array{Array{Float64, 1}, 1}
     contact_age::Array{Float64, 1}
+
+    granular_stress::vector
+    ocean_stress::vector
+    atmosphere_stress::vector
 end
 
 # Type for gathering data from ice floe objects into single arrays
@@ -120,6 +124,10 @@ type IceFloeArrays
 
     pressure
     n_contacts
+
+    granular_stress
+    ocean_stress
+    atmosphere_stress
 end
 
 #=

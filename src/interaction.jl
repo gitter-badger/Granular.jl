@@ -31,6 +31,11 @@ function interact!(simulation::Simulation)
             #end
         end
     end
+
+    for i=1:length(simulation.ice_floes)
+        simulation.ice_floes[i].granular_stress = simulation.ice_floes[i].force/
+            simulation.ice_floes[i].horizontal_surface_area
+    end
 end
 
 export interactIceFloes!

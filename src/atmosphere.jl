@@ -181,10 +181,12 @@ function applyAtmosphereDragToIceFloe!(ice_floe::IceFloeCylindrical,
     length = ice_floe.areal_radius*2.
     width = ice_floe.areal_radius*2.
 
-    ice_floe.force +=
-        rho_a * (.5*ice_floe.ocean_drag_coeff_vert*width*freeboard + 
+    drag_force = rho_a * (.5*ice_floe.ocean_drag_coeff_vert*width*freeboard + 
         ice_floe.atmosphere_drag_coeff_horiz*length*width) *
         ([u, v] - ice_floe.lin_vel)*norm([u, v] - ice_floe.lin_vel)
+
+    ice_floe.force += drag_force
+    ice_floe.atmosphere_stress = drag_force/ice_floe.horizontal_surface_area
 end
 
 export applyAtmosphereVorticityToIceFloe!

@@ -36,6 +36,8 @@ E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test E_kin_rot_init ≈ E_kin_rot_final  # no rotation before or after
 @test E_kin_lin_init > E_kin_lin_final  # linear velocity lost due to atmos drag
+@test sim.ice_floes[1].atmosphere_stress[1] < 0.
+@test sim.ice_floes[1].atmosphere_stress[2] ≈ 0.
 
 info("Testing velocity drag interaction (static ice floe)")
 sim = deepcopy(sim_init)
@@ -47,6 +49,8 @@ E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test E_kin_rot_init ≈ E_kin_rot_final  # no rotation before or after
 @test E_kin_lin_init < E_kin_lin_final  # linear vel. gained due to atmos drag
+@test sim.ice_floes[1].atmosphere_stress[1] ≈ 0.
+@test sim.ice_floes[1].atmosphere_stress[2] > 0.
 
 info("Testing vortex interaction (static atmosphere)")
 sim = deepcopy(sim_init)
