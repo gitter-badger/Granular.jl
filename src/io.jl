@@ -12,6 +12,8 @@ can be visualized by applying a *Glyph* filter.
 If the simulation contains an `Ocean` data structure, it's contents will be 
 written to separate `.vtu` files.  This can be disabled by setting the argument 
 `ocean=false`.  The same is true for the atmosphere.
+
+The VTK files will be saved in a subfolder named after the simulation.
 """
 function writeVTK(simulation::Simulation;
                   folder::String=".",
@@ -20,6 +22,9 @@ function writeVTK(simulation::Simulation;
                   atmosphere::Bool=true)
 
     simulation.file_number += 1
+    folder = folder * "/" * simulation.id
+    mkpath(folder)
+
     filename = string(folder, "/", simulation.id, ".icefloes.", 
                       simulation.file_number)
     writeIceFloeVTK(simulation, filename, verbose=verbose)
@@ -445,7 +450,9 @@ export removeSimulationFiles
 Remove all simulation output files from the specified folder.
 """
 function removeSimulationFiles(simulation::Simulation; folder::String=".")
+    folder = folder * "/" * simulation.id
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtu"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtp"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vts"`)
+    run(`bash -c "rmdir $(folder)"`)
 end

@@ -26,16 +26,18 @@ else
     error("checksum verification of VTK file not supported on this platform")
 end
 
+icefloepath = "test/test.icefloes.1.vtu"
 icefloechecksum = 
 "c75ffde29fbdd80161dafd524e690fbcbae2136d4f68c29f725d2d2454c6a162  " *
-"test.icefloes.1.vtu\n"
+icefloepath * "\n"
 
+oceanpath = "test/test.ocean.1.vts"
 oceanchecksum =
 "d56ffb109841a803f2b2b94c74c87f7a497237204841d557d2b1043694d51f0d  " *
-"test.ocean.1.vts\n"
+oceanpath * "\n"
 
-@test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == icefloechecksum
-@test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == oceanchecksum
+@test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
+@test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
 SeaIce.removeSimulationFiles(sim)
 
@@ -46,7 +48,7 @@ SeaIce.setTimeStep!(sim)
 sim.file_number = 0
 SeaIce.run!(sim, single_step=true)
 
-@test readstring(`$(cmd) test.icefloes.1.vtu$(cmd_post)`) == icefloechecksum
-@test readstring(`$(cmd) test.ocean.1.vts$(cmd_post)`) == oceanchecksum
+@test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
+@test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
 SeaIce.removeSimulationFiles(sim)
