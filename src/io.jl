@@ -454,5 +454,5 @@ function removeSimulationFiles(simulation::Simulation; folder::String=".")
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtu"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtp"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vts"`)
-    run(`bash -c "rmdir $(folder)"`)
+    run(`bash -c "rm -rf $(folder)"`)
 end
