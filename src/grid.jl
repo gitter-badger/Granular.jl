@@ -30,6 +30,19 @@ function bilinearInterpolation(field::Array{Float64, 4},
            (field[i+1, j, k, it]*x_tilde +
             field[i, j, k, it]*(1. - x_tilde))*(1. - y_tilde)
 end
+function bilinearInterpolation(field::Array{Float64, 2},
+                               x_tilde::Float64,
+                               y_tilde::Float64,
+                               i::Int,
+                               j::Int)
+
+    if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
+        error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
+    end
+
+    return (field[i+1, j+1]*x_tilde + field[i, j+1]*(1. - x_tilde))*y_tilde +
+           (field[i+1, j]*x_tilde + field[i, j]*(1. - x_tilde))*(1. - y_tilde)
+end
 
 """
     curl(grid, x_tilde, y_tilde, i, j, k, it)
@@ -362,4 +375,91 @@ function conformalQuadrilateralCoordinates(A::Array{float, 1},
               "delta = $(delta), epsilon = $(epsilon), kappa = $(kappa)")
     end
     return [x_tilde, y_tilde]
+end
+
+export findEmptyPositionInGridCell
+"""
+Attempt locate an empty spot for an ice floe with radius `r` with center 
+coordinates in a specified grid cell (`i`, `j`) without overlapping any other 
+ice floes in that cell or the neighboring cells.  This function will stop 
+attempting after `n_iter` iterations, each with randomly generated positions.
+
+This function assumes that existing ice floes have been binned according to the 
+grid (e.g., using `sortIceFloesInGrid()`).
+"""
+function findEmptyPositionInGridCell(simulation::Simulation,
+                                     grid::Any,
+                                     i::Int,
+                                     j::Int,
+                                     r::float;
+                                     n_iter::Int = 10,
+                                     seed::Int = 1,
+                                     verbose::Bool = false)
+    Base.Random.srand(i*j*seed)
+    overlap_found = false
+    i_iter = 0
+    pos = [NaN NaN]
+
+    nx, ny = size(grid.xh)
+
+    for i_iter=1:n_iter
+
+        # generate random candidate position
+        x_tilde = Base.Random.rand()
+        y_tilde = Base.Random.rand()
+        pos = [bilinearInterpolation(grid.xq, x_tilde, y_tilde, i, j)
+               bilinearInterpolation(grid.yq, x_tilde, y_tilde, i, j)]
+
+        # search for contacts in current and eight neighboring cells
+        for i_neighbor_corr=[0 -1 1]
+            for j_neighbor_corr=[0 -1 1]
+
+                # target cell index
+                it = i + i_neighbor_corr
+                jt = j + j_neighbor_corr
+
+                # do not search outside grid boundaries
+                if it < 1 || it > nx || jt < 1 || jt > ny
+                    continue
+                end
+
+                # traverse list of ice floes in the target cell and check 
+                # for overlaps
+                for icefloe_idx in grid.ice_floe_list[it, jt]
+                    overlap = norm(simulation.ice_floes[icefloe_idx].lin_pos - 
+                                   pos) -
+                        (simulation.ice_floes[icefloe_idx].contact_radius + r)
+
+                    if overlap < 0.
+                        overlap_found = true
+                        break
+                    end
+                end
+            end
+            if overlap_found == true
+                break
+            end
+        end
+        if overlap_found == false
+            break
+        end
+    end
+    if verbose && overlap_found == false
+        info("Found position $pos in cell $i,$j after $i_iter iterations")
+    elseif verbose && overlap_found
+        info("Free position not found in cell $i,$j")
+    end
+
+    if overlap_found == false
+        if isnan(pos[1]) || isnan(pos[2])
+            error("fatal error: could not determine free position in cell")
+        end
+        return pos
+    else
+        if verbose
+            warn("could not insert an ice floe into " *
+                 "$(typeof(grid)) grid cell ($i, $j)")
+        end
+        return false
+    end
 end

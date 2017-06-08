@@ -193,3 +193,43 @@ atmosphere.u[2, 2, 1, 1] = 1.0
 atmosphere.u[1, 2, 1, 1] = 1.0
 atmosphere.v[:, :, 1, 1] = 0.0
 @test SeaIce.curl(atmosphere, .5, .5, 1, 1, 1, 1) < 0.
+
+
+info("Testing findEmptyPositionInGridCell")
+sim = SeaIce.createSimulation()
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
+pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 1, 1, 0.5, 
+                                         verbose=true)
+@test pos != false
+@test SeaIce.isPointInCell(sim.ocean, 1, 1, pos) == true
+
+sim = SeaIce.createSimulation()
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
+SeaIce.addIceFloeCylindrical(sim, [.5, .5], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [.75, .5], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [.5, .75], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [.75, .75], 1., 1., verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
+pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 1, 1, 0.5,
+                                         verbose=false)
+@test pos == false
+
+sim = SeaIce.createSimulation()
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
+pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 2, 2, 0.5, 
+                                         verbose=true)
+@test pos != false
+@test SeaIce.isPointInCell(sim.ocean, 2, 2, pos) == true
+
+sim = SeaIce.createSimulation()
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
+SeaIce.addIceFloeCylindrical(sim, [1.5, 1.5], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [1.75, 1.5], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [1.5, 1.75], 1., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [1.75, 1.75], 1., 1., verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
+pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 2, 2, 0.5,
+                                         verbose=false)
+@test pos == false
