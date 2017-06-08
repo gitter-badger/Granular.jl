@@ -395,7 +395,6 @@ function findEmptyPositionInGridCell(simulation::Simulation,
                                      n_iter::Int = 10,
                                      seed::Int = 1,
                                      verbose::Bool = false)
-    Base.Random.srand(i*j*seed)
     overlap_found = false
     i_iter = 0
     pos = [NaN NaN]
@@ -404,11 +403,16 @@ function findEmptyPositionInGridCell(simulation::Simulation,
 
     for i_iter=1:n_iter
 
+        overlap_found = false
+        Base.Random.srand(i*j*seed*i_iter)
         # generate random candidate position
         x_tilde = Base.Random.rand()
         y_tilde = Base.Random.rand()
         pos = [bilinearInterpolation(grid.xq, x_tilde, y_tilde, i, j)
                bilinearInterpolation(grid.yq, x_tilde, y_tilde, i, j)]
+        if verbose
+            info("trying poisition $pos in cell $i,$j")
+        end
 
         # search for contacts in current and eight neighboring cells
         for i_neighbor_corr=[0 -1 1]
@@ -431,6 +435,9 @@ function findEmptyPositionInGridCell(simulation::Simulation,
                         (simulation.ice_floes[icefloe_idx].contact_radius + r)
 
                     if overlap < 0.
+                        if verbose
+                            info("overlap with $icefloe_idx in cell $i,$j")
+                        end
                         overlap_found = true
                         break
                     end

@@ -196,6 +196,7 @@ atmosphere.v[:, :, 1, 1] = 0.0
 
 
 info("Testing findEmptyPositionInGridCell")
+info("# Insert into empty cell")
 sim = SeaIce.createSimulation()
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
 SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
@@ -204,6 +205,28 @@ pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 1, 1, 0.5,
 @test pos != false
 @test SeaIce.isPointInCell(sim.ocean, 1, 1, pos) == true
 
+info("# Insert into cell with one other ice floe")
+sim = SeaIce.createSimulation()
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
+SeaIce.addIceFloeCylindrical(sim, [.25, .25], .25, 1., verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
+pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 1, 1, .25, 
+                                         verbose=true)
+@test pos != false
+@test SeaIce.isPointInCell(sim.ocean, 1, 1, pos) == true
+
+info("# Insert into cell with two other ice floes")
+sim = SeaIce.createSimulation()
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
+SeaIce.addIceFloeCylindrical(sim, [.25, .25], .25, 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical(sim, [.75, .75], .25, 1., verbose=verbose)
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
+pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 1, 1, .25, 
+                                         verbose=true)
+@test pos != false
+@test SeaIce.isPointInCell(sim.ocean, 1, 1, pos) == true
+
+info("# Insert into full cell")
 sim = SeaIce.createSimulation()
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
 SeaIce.addIceFloeCylindrical(sim, [.5, .5], 1., 1., verbose=verbose)
@@ -215,6 +238,7 @@ pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 1, 1, 0.5,
                                          verbose=false)
 @test pos == false
 
+info("# Insert into empty cell")
 sim = SeaIce.createSimulation()
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
 SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
@@ -223,6 +247,7 @@ pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 2, 2, 0.5,
 @test pos != false
 @test SeaIce.isPointInCell(sim.ocean, 2, 2, pos) == true
 
+info("# Insert into full cell")
 sim = SeaIce.createSimulation()
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
 SeaIce.addIceFloeCylindrical(sim, [1.5, 1.5], 1., 1., verbose=verbose)
