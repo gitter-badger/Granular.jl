@@ -10,7 +10,7 @@ import JLD
                          folder::String=".",
                          verbose::Bool=true)
 
-Write all content from `Simulation` to disk in HDF5 format.  If the `filename` 
+Write all content from `Simulation` to disk in JDL format.  If the `filename` 
 parameter is not specified, it will be saved to a subdirectory under the current 
 directory named after the simulation identifier `simulation.id`.
 """
@@ -32,6 +32,12 @@ function writeSimulation(simulation::Simulation;
     end
 end
 
+"""
+    readSimulation(filename::String="";
+                   verbose::Bool=true)
+
+Read all content from `Simulation` from disk in JDL format.
+"""
 function readSimulation(filename::String="";
                          verbose::Bool=true)
     if verbose
