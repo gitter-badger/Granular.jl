@@ -51,4 +51,6 @@ SeaIce.run!(sim, single_step=true)
 @test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
 @test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
+@test SeaIce.readSimulationStatus(sim.id) == 1
+
 SeaIce.removeSimulationFiles(sim)

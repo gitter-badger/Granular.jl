@@ -100,7 +100,9 @@ function run!(simulation::Simulation;
             if show_file_output
                 println()
             end
+            writeSimulation(simulation, verbose=show_file_output)
             writeVTK(simulation, verbose=show_file_output)
+            writeSimulationStatus(simulation, verbose=show_file_output)
             simulation.file_time_since_output_file = 0.0
         end
 

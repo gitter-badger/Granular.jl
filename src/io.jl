@@ -4,6 +4,7 @@ import JLD
 
 ## IO functions
 
+export writeSimulation
 """
     writeSimulation(simulation::Simulation;
                          filename::String="",
@@ -32,6 +33,7 @@ function writeSimulation(simulation::Simulation;
     end
 end
 
+export readSimulation
 """
     readSimulation(filename::String="";
                    verbose::Bool=true)
@@ -44,6 +46,54 @@ function readSimulation(filename::String="";
         info("reading simulation from $filename")
     end
     return JLD.load(filename, "simulation")
+end
+
+export writeSimulationStatus
+"""
+    writeSimulationStatus(simulation::Simulation;
+                          folder::String=".",
+                          verbose::Bool=false)
+
+Write current simulation status to disk in a minimal txt file.
+"""
+function writeSimulationStatus(simulation::Simulation;
+                               folder::String=".",
+                               verbose::Bool=false)
+    folder = folder * "/" * simulation.id
+    mkpath(folder)
+    filename = string(folder, "/", simulation.id, ".status.txt")
+
+    writedlm(filename, [simulation.time
+                        simulation.time/simulation.time_total*100.
+                        float(simulation.file_number)])
+    if verbose
+        info("wrote status to $filename")
+    end
+end
+
+export readSimulationStatus
+"""
+    readSimulationStatus(filename::String;
+                         folder::String=".",
+                         verbose::Bool=false)
+
+Write current simulation status to disk in a minimal txt file.
+"""
+function readSimulationStatus(simulation_id::String;
+                              folder::String=".",
+                              verbose::Bool=true)
+
+    folder = folder * "/" * simulation_id
+    filename = string(folder, "/", simulation_id, ".status.txt")
+
+    data = readdlm(filename)
+    if verbose
+        info("$simulation_id:\n" *
+             "  time:             $(data[1]) s\n" *
+             "  complete:         $(data[2])%\n" *
+             "  last output file: $(Int(round(data[3])))\n")
+    end
+    return data[3]
 end
 
 export writeVTK
@@ -497,5 +547,7 @@ function removeSimulationFiles(simulation::Simulation; folder::String=".")
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtu"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vtp"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.vts"`)
+    run(`bash -c "rm -rf $(folder)/$(simulation.id).status.txt"`)
+    run(`bash -c "rm -rf $(folder)/$(simulation.id).*.jld"`)
     run(`bash -c "rm -rf $(folder)"`)
 end
