@@ -1,7 +1,44 @@
 import WriteVTK
 import NetCDF
+import JLD
 
 ## IO functions
+
+"""
+    writeSimulation(simulation::Simulation;
+                         filename::String="",
+                         folder::String=".",
+                         verbose::Bool=true)
+
+Write all content from `Simulation` to disk in HDF5 format.  If the `filename` 
+parameter is not specified, it will be saved to a subdirectory under the current 
+directory named after the simulation identifier `simulation.id`.
+"""
+function writeSimulation(simulation::Simulation;
+                         filename::String="",
+                         folder::String=".",
+                         verbose::Bool=true)
+    if filename == ""
+        folder = folder * "/" * simulation.id
+        mkpath(folder)
+        filename = string(folder, "/", simulation.id, ".",
+                          simulation.file_number, ".jld")
+    end
+
+    JLD.save(filename, "simulation", simulation)
+
+    if verbose
+        info("simulation written to $filename")
+    end
+end
+
+function readSimulation(filename::String="";
+                         verbose::Bool=true)
+    if verbose
+        info("reading simulation from $filename")
+    end
+    return JLD.load(filename, "simulation")
+end
 
 export writeVTK
 """

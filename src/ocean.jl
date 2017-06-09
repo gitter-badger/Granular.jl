@@ -323,3 +323,33 @@ function applyOceanVorticityToIceFloe!(ice_floe::IceFloeCylindrical,
         draft*ice_floe.ocean_drag_coeff_vert)*
         abs(.5*ocean_curl - ice_floe.ang_vel)*(.5*ocean_curl - ice_floe.ang_vel)
 end
+
+export compareOceans
+"""
+    compareOceans(ocean1::Ocean, ocean2::Ocean)
+
+Compare values of two `Ocean` objects using the `Base.Test` framework.
+"""
+function compareOceans(ocean1::Ocean, ocean2::Ocean)
+
+    Base.Test.@test ocean1.input_file == ocean2.input_file
+    Base.Test.@test ocean1.time ≈ ocean2.time
+
+    Base.Test.@test ocean1.xq ≈ ocean2.xq
+    Base.Test.@test ocean1.yq ≈ ocean2.yq
+
+    Base.Test.@test ocean1.xh ≈ ocean2.xh
+    Base.Test.@test ocean1.yh ≈ ocean2.yh
+
+    Base.Test.@test ocean1.zl ≈ ocean2.zl
+    Base.Test.@test ocean1.zi ≈ ocean2.zi
+
+    Base.Test.@test ocean1.u ≈ ocean2.u
+    Base.Test.@test ocean1.v ≈ ocean2.v
+    Base.Test.@test ocean1.h ≈ ocean2.h
+    Base.Test.@test ocean1.e ≈ ocean2.e
+
+    if isdefined(ocean1.ice_floe_list, 1)
+        Base.Test.@test ocean1.ice_floe_list == ocean2.ice_floe_list
+    end
+end

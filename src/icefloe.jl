@@ -416,3 +416,74 @@ function totalIceFloeKineticRotationalEnergy(simulation::Simulation)
     end
     return E_sum
 end
+
+export compareIceFloes
+"""
+    compareIceFloes(if1::IceFloeCylindrical, if2::IceFloeCylindrical)
+
+Compare values of two ice floe objects using the `Base.Test` framework.
+"""
+function compareIceFloes(if1::IceFloeCylindrical, if2::IceFloeCylindrical)
+
+    Base.Test.@test if1.density ≈ if2.density
+    Base.Test.@test if1.thickness ≈ if2.thickness
+    Base.Test.@test if1.contact_radius ≈
+        if2.contact_radius
+    Base.Test.@test if1.areal_radius ≈ if2.areal_radius
+    Base.Test.@test if1.circumreference ≈
+        if2.circumreference
+    Base.Test.@test if1.horizontal_surface_area ≈ if2.horizontal_surface_area
+    Base.Test.@test if1.side_surface_area ≈ if2.side_surface_area
+    Base.Test.@test if1.volume ≈ if2.volume
+    Base.Test.@test if1.mass ≈ if2.mass
+    Base.Test.@test if1.moment_of_inertia ≈ if2.moment_of_inertia
+
+    Base.Test.@test if1.lin_pos ≈ if2.lin_pos
+    Base.Test.@test if1.lin_vel ≈ if2.lin_vel
+    Base.Test.@test if1.lin_acc ≈ if2.lin_acc
+    Base.Test.@test if1.force ≈ if2.force
+
+    Base.Test.@test if1.ang_pos ≈ if2.ang_pos
+    Base.Test.@test if1.ang_vel ≈ if2.ang_vel
+    Base.Test.@test if1.ang_acc ≈ if2.ang_acc
+    Base.Test.@test if1.torque ≈ if2.torque
+
+    Base.Test.@test if1.fixed == if2.fixed
+    Base.Test.@test if1.rotating == if2.rotating
+    Base.Test.@test if1.enabled == if2.enabled
+
+    Base.Test.@test if1.contact_stiffness_normal ≈ if2.contact_stiffness_normal
+    Base.Test.@test if1.contact_stiffness_tangential ≈ 
+        if2.contact_stiffness_tangential
+    Base.Test.@test if1.contact_viscosity_normal ≈ if2.contact_viscosity_normal
+    Base.Test.@test if1.contact_viscosity_tangential ≈ 
+        if2.contact_viscosity_tangential
+    Base.Test.@test if1.contact_static_friction ≈ if2.contact_static_friction
+    Base.Test.@test if1.contact_dynamic_friction ≈ if2.contact_dynamic_friction
+
+    Base.Test.@test if1.youngs_modulus ≈ if2.youngs_modulus
+    Base.Test.@test if1.poissons_ratio ≈ if2.poissons_ratio
+    Base.Test.@test if1.tensile_strength ≈ if2.tensile_strength
+    Base.Test.@test if1.tensile_heal_rate ≈ if2.tensile_heal_rate
+    Base.Test.@test if1.compressive_strength_prefactor ≈
+        if2.compressive_strength_prefactor
+
+    Base.Test.@test if1.ocean_drag_coeff_vert ≈ if2.ocean_drag_coeff_vert
+    Base.Test.@test if1.ocean_drag_coeff_horiz ≈ if2.ocean_drag_coeff_horiz
+    Base.Test.@test if1.atmosphere_drag_coeff_vert ≈ 
+        if2.atmosphere_drag_coeff_vert
+    Base.Test.@test if1.atmosphere_drag_coeff_horiz ≈ 
+        if2.atmosphere_drag_coeff_horiz
+
+    Base.Test.@test if1.pressure ≈ if2.pressure
+    Base.Test.@test if1.n_contacts == if2.n_contacts
+    Base.Test.@test if1.ocean_grid_pos == if2.ocean_grid_pos
+    Base.Test.@test if1.contacts == if2.contacts
+    Base.Test.@test if1.contact_parallel_displacement == 
+        if2.contact_parallel_displacement
+    Base.Test.@test if1.contact_age ≈ if2.contact_age
+
+    Base.Test.@test if1.granular_stress ≈ if2.granular_stress
+    Base.Test.@test if1.ocean_stress ≈ if2.ocean_stress
+    Base.Test.@test if1.atmosphere_stress ≈ if2.atmosphere_stress
+end

@@ -207,3 +207,30 @@ function applyAtmosphereVorticityToIceFloe!(ice_floe::IceFloeCylindrical,
         abs(.5*atmosphere_curl - ice_floe.ang_vel)*
         (.5*atmosphere_curl - ice_floe.ang_vel)
 end
+
+export compareAtmospheres
+"""
+    compareAtmospheres(atmosphere1::atmosphere, atmosphere2::atmosphere)
+
+Compare values of two `atmosphere` objects using the `Base.Test` framework.
+"""
+function compareAtmospheres(atmosphere1::Atmosphere, atmosphere2::Atmosphere)
+
+    Base.Test.@test atmosphere1.input_file == atmosphere2.input_file
+    Base.Test.@test atmosphere1.time ≈ atmosphere2.time
+
+    Base.Test.@test atmosphere1.xq ≈ atmosphere2.xq
+    Base.Test.@test atmosphere1.yq ≈ atmosphere2.yq
+
+    Base.Test.@test atmosphere1.xh ≈ atmosphere2.xh
+    Base.Test.@test atmosphere1.yh ≈ atmosphere2.yh
+
+    Base.Test.@test atmosphere1.zl ≈ atmosphere2.zl
+
+    Base.Test.@test atmosphere1.u ≈ atmosphere2.u
+    Base.Test.@test atmosphere1.v ≈ atmosphere2.v
+
+    if isdefined(atmosphere1.ice_floe_list, 1)
+        Base.Test.@test atmosphere1.ice_floe_list == atmosphere2.ice_floe_list
+    end
+end
