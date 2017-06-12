@@ -1,6 +1,10 @@
 import WriteVTK
 import NetCDF
-import JLD
+hasJLD = false
+if typeof(Pkg.installed("JLD")) == VersionNumber
+    import JLD
+    hasJLD = true
+end
 
 ## IO functions
 
@@ -19,17 +23,23 @@ function writeSimulation(simulation::Simulation;
                          filename::String="",
                          folder::String=".",
                          verbose::Bool=true)
-    if filename == ""
-        folder = folder * "/" * simulation.id
-        mkpath(folder)
-        filename = string(folder, "/", simulation.id, ".",
-                          simulation.file_number, ".jld")
-    end
+    if !hasJLD
+        warn("Package JLD not found. Simulation save/read not supported. " * 
+             "Please install JLD and its " *
+             "requirements with `Pkg.add(\"JLD\")`.")
+    else
+        if filename == ""
+            folder = folder * "/" * simulation.id
+            mkpath(folder)
+            filename = string(folder, "/", simulation.id, ".",
+                              simulation.file_number, ".jld")
+        end
 
-    JLD.save(filename, "simulation", simulation)
+        JLD.save(filename, "simulation", simulation)
 
-    if verbose
-        info("simulation written to $filename")
+        if verbose
+            info("simulation written to $filename")
+        end
     end
 end
 
@@ -42,10 +52,16 @@ Read all content from `Simulation` from disk in JDL format.
 """
 function readSimulation(filename::String="";
                          verbose::Bool=true)
-    if verbose
-        info("reading simulation from $filename")
+    if !hasJLD
+        warn("Package JLD not found. Simulation save/read not supported. " * 
+             "Please install JLD and its " *
+             "requirements with `Pkg.add(\"JLD\")`.")
+    else
+        if verbose
+            info("reading simulation from $filename")
+        end
+        return JLD.load(filename, "simulation")
     end
-    return JLD.load(filename, "simulation")
 end
 
 export writeSimulationStatus
