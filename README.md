@@ -17,8 +17,11 @@ the Julia shell by:
 
 This will install the contents of this repository in the folder 
 `~/.julia/v$(JULIA_VERSION)/SeaIce`, and install the packages specified as 
-[requirements](REQUIRE).  Import the package contents into the current Julia 
-session with:
+[requirements](REQUIRE).  The package [JLD](https://github.com/JuliaIO/JLD.jl) 
+is used for model restarts and is recommended but not required, and thus is not 
+automatically installed.
+
+Import the package contents into the current Julia session with:
 
     import SeaIce
 
