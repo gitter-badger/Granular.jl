@@ -1,5 +1,7 @@
 #!/usr/bin/env julia
 import Plots
+import SeaIce
+using Base.Test
 
 info("#### $(basename(@__FILE__)) ####")
 
@@ -40,18 +42,22 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
     SeaIce.setTotalTime!(sim, 1.0)
     SeaIce.setTimeStep!(sim)
     SeaIce.run!(sim, single_step=true, verbose=true)
-    SeaIce.run!(sim, single_step=true, verbose=true)
-    SeaIce.run!(sim, single_step=true, verbose=true)
     if profile
         @profile SeaIce.run!(sim, single_step=true, verbose=true)
         if verbose
             Profile.print()
-            #@time SeaIce.run!(sim, single_step=true, verbose=true)
         end
     end
-    tic()
-    SeaIce.run!(sim, single_step=true, verbose=true)
-    t_elapsed = toc()
+    n_runs = 4
+    t_elapsed = 1e12
+    for i=1:n_runs
+        tic()
+        SeaIce.run!(sim, single_step=true, verbose=true)
+        t = toc()
+        if t < t_elapsed
+            t_elapsed = t
+        end
+    end
 
     #SeaIce.writeVTK(sim)
 
@@ -64,20 +70,32 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
     return t_elapsed
 end
 
-#nx = Int[4 8 16 32 64 128]
-nx = Int[4 8 16 32 64]
+#nx = Int[4 8 10 12 16 19 24 28 32 36 42 50 64]
+nx = round(logspace(1, 2, 16))
+elements = zeros(length(nx))
 t_elapsed = zeros(length(nx))
+t_elapsed_all_to_all = zeros(length(nx))
+t_elapsed_cell_sorting = zeros(length(nx))
 for i=1:length(nx)
     info("nx = $(nx[i])")
-    t_elapsed[i] = timeSingleStepInDenseSimulation(nx[i])
+    t_elapsed_all_to_all[i] =
+        timeSingleStepInDenseSimulation(Int(nx[i]), grid_sorting=false)
+    t_elapsed_cell_sorting[i] =
+        timeSingleStepInDenseSimulation(Int(nx[i]), grid_sorting=true)
+    elements[i] = nx[i]*nx[i]
 end
 
 #Plots.gr()
 Plots.pyplot()
-Plots.title!("Performance analysis of dense granular system")
-Plots.plot(nx.*nx, t_elapsed,
-           xscale=:log10,
-           yscale=:log10)
+Plots.scatter(elements, t_elapsed_all_to_all,
+              xscale=:log10,
+              yscale=:log10,
+              label="All to all")
+Plots.scatter!(elements, t_elapsed_cell_sorting,
+               xscale=:log10,
+               yscale=:log10,
+               label="Cell-based spatial decomposition")
+Plots.title!("Dense granular system " * "(host: $(gethostname())")
 Plots.xaxis!("Number of ice floes")
 Plots.yaxis!("Elapsed time")
 Plots.savefig("profiling.pdf")
