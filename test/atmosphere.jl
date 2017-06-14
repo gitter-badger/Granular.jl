@@ -129,3 +129,9 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test sim.ice_floes[1].ang_pos > 0.     # check angular position orientation
 @test E_kin_rot_init < E_kin_rot_final  # rotation after due to atm vortex
 @test E_kin_lin_init ≈ E_kin_lin_final  # no linear velocity gained
+
+sim = SeaIce.createSimulation()
+sim.atmosphere = SeaIce.createRegularAtmosphereGrid([6, 6, 6], [1., 1., 1.])
+sim2 = SeaIce.createSimulation()
+sim2.atmosphere = SeaIce.createRegularAtmosphereGrid([6, 6, 6], [1., 1., 1.])
+SeaIce.compareAtmospheres(sim.atmosphere, sim2.atmosphere)
