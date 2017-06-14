@@ -97,5 +97,5 @@ Plots.scatter!(elements, t_elapsed_cell_sorting,
                label="Cell-based spatial decomposition")
 Plots.title!("Dense granular system " * "(host: $(gethostname())")
 Plots.xaxis!("Number of ice floes")
-Plots.yaxis!("Elapsed time")
+Plots.yaxis!("Wall time per time step [s]")
 Plots.savefig("profiling.pdf")
