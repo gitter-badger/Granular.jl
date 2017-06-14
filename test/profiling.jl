@@ -38,6 +38,11 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
         end
     end
     info("number of ice floes: $(length(sim.ice_floes))")
+    if grid_sorting
+        info("using cell-based spatial decomposition")
+    else
+        info("using all-to-all contact search")
+    end
 
     SeaIce.setTotalTime!(sim, 1.0)
     SeaIce.setTimeStep!(sim)
@@ -47,12 +52,13 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
         if verbose
             Profile.print()
         end
+        SeaIce.run!(sim, single_step=true, verbose=true)
     end
     n_runs = 4
     t_elapsed = 1e12
     for i=1:n_runs
         tic()
-        SeaIce.run!(sim, single_step=true, verbose=true)
+        @time SeaIce.run!(sim, single_step=true, verbose=true)
         t = toc()
         if t < t_elapsed
             t_elapsed = t
@@ -95,7 +101,7 @@ Plots.scatter!(elements, t_elapsed_cell_sorting,
                xscale=:log10,
                yscale=:log10,
                label="Cell-based spatial decomposition")
-Plots.title!("Dense granular system " * "(host: $(gethostname())")
+Plots.title!("Dense granular system " * "(host: $(gethostname()))")
 Plots.xaxis!("Number of ice floes")
 Plots.yaxis!("Wall time per time step [s]")
 Plots.savefig("profiling.pdf")

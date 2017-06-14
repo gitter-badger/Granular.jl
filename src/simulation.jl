@@ -50,8 +50,9 @@ export run!
          verbose::Bool = true,
          status_interval = 100.,
          show_file_output = true,
-         single_step=false,
-         temporal_integration_method="Three-term Taylor"])
+         single_step = false,
+         temporal_integration_method = "Three-term Taylor"],
+         write_jld = false)
 
 Run the `simulation` through time until `simulation.time` equals or exceeds 
 `simulatim.time_total`.  This function requires that all ice floes are added to 
@@ -75,13 +76,16 @@ to disk.
     is increased accordingly.
 * `temporal_integration_method::String="Three-term Taylor"`: type of integration 
     method to use.  See `updateIceFloeKinematics` for details.
+* `write_jld::Bool=false`: write simulation state to disk as JLD files (see 
+    `SeaIce.writeSimulation(...)` whenever saving VTK output.
 """
 function run!(simulation::Simulation;
               verbose::Bool=true,
               status_interval::Int=100,
               show_file_output::Bool=true,
               single_step::Bool=false,
-              temporal_integration_method::String="Three-term Taylor")
+              temporal_integration_method::String="Three-term Taylor",
+              write_jld::Bool=false)
 
     if single_step && simulation.time >= simulation.time_total
         simulation.time_total += simulation.time_step
@@ -100,7 +104,9 @@ function run!(simulation::Simulation;
             if show_file_output
                 println()
             end
-            writeSimulation(simulation, verbose=show_file_output)
+            if write_jld
+                writeSimulation(simulation, verbose=show_file_output)
+            end
             writeVTK(simulation, verbose=show_file_output)
             writeSimulationStatus(simulation, verbose=show_file_output)
             simulation.file_time_since_output_file = 0.0
