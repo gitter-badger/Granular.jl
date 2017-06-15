@@ -147,6 +147,14 @@ function run!(simulation::Simulation;
             return
         end
     end
+
+    if simulation.file_time_step > 0.0
+        if show_file_output
+            println()
+        end
+        writeParaviewStateFile(simulation, verbose=show_file_output)
+    end
+
     if verbose
         reportSimulationTimeToStdout(simulation)
         println()
