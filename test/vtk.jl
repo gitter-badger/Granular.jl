@@ -54,12 +54,13 @@ SeaIce.setTotalTime!(sim, 1.5)
 SeaIce.setTimeStep!(sim)
 sim.file_number = 0
 SeaIce.run!(sim, single_step=true)
+@test SeaIce.readSimulationStatus(sim.id) == 1
+SeaIce.setOutputFileInterval!(sim, 0.1)
+SeaIce.run!(sim)
 
 @test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
 @test readstring(`$(cmd) $(icefloeinteractionpath)$(cmd_post)`) == 
     icefloeinteractionchecksum
 @test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
-
-@test SeaIce.readSimulationStatus(sim.id) == 1
 
 SeaIce.removeSimulationFiles(sim)

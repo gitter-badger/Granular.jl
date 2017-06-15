@@ -560,12 +560,15 @@ output VTK files and applies appropriate glyph filters to the data.
 function writeParaviewStateFile(simulation::Simulation;
                                 filename::String="",
                                 folder::String=".",
-                                vtk_folder::String=".",  # maybe expand to full path?
+                                vtk_folder::String="",
                                 verbose::Bool=true)
     if filename == ""
         folder = folder * "/" * simulation.id
         mkpath(folder)
         filename = string(folder, "/", simulation.id, ".pvsm")
+    end
+    if vtk_folder == ""
+        vtk_folder = pwd() * "/" * simulation.id
     end
 
     open(filename, "w") do f
