@@ -16,3 +16,6 @@ SeaIce.addIceFloeCylindrical(sim, [.1,.1], 2., 2.)
 sim.ice_floes[1].mass = 0.
 @test_throws ErrorException SeaIce.setTimeStep!(sim)
 
+sim = SeaIce.createSimulation()
+sim2 = SeaIce.createSimulation()
+SeaIce.compareSimulations(sim, sim2)

@@ -31,12 +31,19 @@ icefloechecksum =
 "c75ffde29fbdd80161dafd524e690fbcbae2136d4f68c29f725d2d2454c6a162  " *
 icefloepath * "\n"
 
+icefloeinteractionpath = "test/test.icefloe-interaction.1.vtp"
+icefloeinteractionchecksum = 
+"881598f8f7279ece4301f6c94cb8f9146eb695f8c710edb446f49c1f7a061b84  " *
+icefloeinteractionpath * "\n"
+
 oceanpath = "test/test.ocean.1.vts"
 oceanchecksum =
 "d56ffb109841a803f2b2b94c74c87f7a497237204841d557d2b1043694d51f0d  " *
 oceanpath * "\n"
 
 @test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
+@test readstring(`$(cmd) $(icefloeinteractionpath)$(cmd_post)`) == 
+    icefloeinteractionchecksum
 @test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
 SeaIce.removeSimulationFiles(sim)
@@ -49,6 +56,8 @@ sim.file_number = 0
 SeaIce.run!(sim, single_step=true)
 
 @test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
+@test readstring(`$(cmd) $(icefloeinteractionpath)$(cmd_post)`) == 
+    icefloeinteractionchecksum
 @test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
 @test SeaIce.readSimulationStatus(sim.id) == 1
