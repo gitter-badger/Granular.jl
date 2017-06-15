@@ -112,6 +112,77 @@ function readSimulationStatus(simulation_id::String;
     return data[3]
 end
 
+export status
+"""
+Shows the status of all simulations with output files written under the 
+specified `folder`, which is the current working directory by default.
+"""
+function status(folder::String=".", colored_output::Bool=true, 
+                write_header::Bool=true)
+
+    status_files = String[]
+
+    if colored_output
+        id_color_complete = :green
+        id_color_in_progress = :yellow
+        time_color = :white
+        percentage_color = :blue
+        lastfile_color = :cyan
+    else
+        id_color_complete = :default
+        id_color_in_progress = :default
+        time_color = :default
+        percentage_color = :default
+        lastfile_color = :default
+    end
+
+    for (root, dirs, files) in walkdir(folder, follow_symlinks=false)
+
+        for file in files
+            if contains(file, ".status.txt")
+                push!(status_files, joinpath(root, file))
+            end
+        end
+    end
+
+    if length(status_files) > 0
+        if write_header
+            println("--------------------------------------" * 
+                    "--------------------------------------")
+            print_with_color(:default, "simulation folder \t")
+            print_with_color(time_color, "      time \t")
+            print_with_color(percentage_color, "      completed  ")
+            print_with_color(lastfile_color, "last file \n")
+            println("--------------------------------------" * 
+                    "--------------------------------------")
+        end
+
+        for file in status_files
+            data = readdlm(file)
+            id = replace(file, ".status.txt", "")
+            id = replace(id, "./", "") * "*"
+            time_s = @sprintf "%6.2fs" data[1]
+            time_h = @sprintf "%5.1fh" data[1]/(60.*60.)
+            percentage = @sprintf "%3.0f%%" data[2]
+            lastfile = @sprintf "%5d" data[3]
+            if data[2] < 99.
+                print_with_color(id_color_in_progress, "$id \t")
+            else
+                print_with_color(id_color_complete, "$id \t")
+            end
+            print_with_color(time_color, "$time_s ($time_h) \t")
+            print_with_color(percentage_color, "$percentage \t")
+            print_with_color(lastfile_color, "$lastfile \n")
+        end
+        if write_header
+            println("--------------------------------------" * 
+                    "--------------------------------------")
+        end
+    else
+        warn("no simulations found in $pwd/$folder")
+    end
+end
+
 export writeVTK
 """
 Write a VTK file to disk containing all ice floes in the `simulation` in an 

@@ -58,6 +58,8 @@ SeaIce.run!(sim, single_step=true)
 SeaIce.setOutputFileInterval!(sim, 0.1)
 SeaIce.run!(sim)
 
+SeaIce.status()
+
 @test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
 @test readstring(`$(cmd) $(icefloeinteractionpath)$(cmd_post)`) == 
     icefloeinteractionchecksum
