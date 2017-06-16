@@ -160,7 +160,8 @@ function status(folder::String=".", colored_output::Bool=true,
         for file in status_files
             data = readdlm(file)
             id = replace(file, ".status.txt", "")
-            id = replace(id, "./", "") * "*"
+            id = replace(id, "./", "")
+            id = replace(id, r".*/", "")
             time_s = @sprintf "%6.2fs" data[1]
             time_h = @sprintf "%5.1fh" data[1]/(60.*60.)
             percentage = @sprintf "%3.0f%%" data[2]
