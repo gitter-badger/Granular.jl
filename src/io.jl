@@ -179,7 +179,7 @@ function status(folder::String=".", colored_output::Bool=true,
                     "--------------------------------------")
         end
     else
-        warn("no simulations found in $pwd/$folder")
+        warn("no simulations found in $(pwd())/$folder")
     end
 end
 
