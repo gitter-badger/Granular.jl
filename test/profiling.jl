@@ -1,6 +1,7 @@
 #!/usr/bin/env julia
 import Plots
 import SeaIce
+import CurveFit
 using Base.Test
 
 info("#### $(basename(@__FILE__)) ####")
@@ -76,7 +77,7 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
     return t_elapsed
 end
 
-#nx = Int[4 8 10 12 16 19 24 28 32 36 42 50 64]
+#nx = Int[4 8 16 32 64 96]
 nx = round(logspace(1, 2, 16))
 elements = zeros(length(nx))
 t_elapsed = zeros(length(nx))
@@ -97,10 +98,25 @@ Plots.scatter(elements, t_elapsed_all_to_all,
               xscale=:log10,
               yscale=:log10,
               label="All to all")
+fit_all_to_all = CurveFit.curve_fit(CurveFit.PowerFit,
+                                    elements, t_elapsed_all_to_all)
+label_all_to_all = @sprintf "%1.3g n^%3.2f" fit_all_to_all.coefs[1] fit_all_to_all.coefs[2]
+
+Plots.plot!(elements, fit_all_to_all(elements),
+            xscale=:log10,
+            yscale=:log10,
+            label=label_all_to_all)
 Plots.scatter!(elements, t_elapsed_cell_sorting,
                xscale=:log10,
                yscale=:log10,
                label="Cell-based spatial decomposition")
+fit_cell_sorting = CurveFit.curve_fit(CurveFit.PowerFit,
+                                    elements, t_elapsed_cell_sorting)
+label_cell_sorting = @sprintf "%1.3g n^%3.2f" fit_cell_sorting.coefs[1] fit_cell_sorting.coefs[2]
+Plots.plot!(elements, fit_cell_sorting(elements),
+            xscale=:log10,
+            yscale=:log10,
+            label=label_cell_sorting)
 Plots.title!("Dense granular system " * "(host: $(gethostname()))")
 Plots.xaxis!("Number of ice floes")
 Plots.yaxis!("Wall time per time step [s]")
