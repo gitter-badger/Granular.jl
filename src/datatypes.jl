@@ -247,6 +247,9 @@ type Atmosphere
     v::Array{Float64, 4}
 
     ice_floe_list::Array{Array{Int, 1}, 2}
+
+    # If true the grid positions are identical to the ocean grid
+    collocated_with_ocean_grid::Bool
 end
 
 # Top-level simulation type

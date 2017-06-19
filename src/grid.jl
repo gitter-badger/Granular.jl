@@ -470,3 +470,17 @@ function findEmptyPositionInGridCell(simulation::Simulation,
         return false
     end
 end
+
+"""
+Copy ice floe related information from ocean to atmosphere grid.  This is useful 
+when the two grids are of identical geometry, meaning only only one sorting 
+phase is necessary.
+"""
+function copyGridSortingInfo!(ocean::Ocean, atmosphere::Atmosphere,
+                              icefloes::Array{IceFloeCylindrical, 1})
+
+    for icefloe in icefloes
+        icefloe.atmosphere_grid_pos = deepcopy(icefloe.ocean_grid_pos)
+    end
+    atmosphere.ice_floe_list = deepcopy(ocean.ice_floe_list)
+end

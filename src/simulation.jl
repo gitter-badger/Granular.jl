@@ -118,13 +118,19 @@ function run!(simulation::Simulation;
 
         zeroForcesAndTorques!(simulation)
 
-        if typeof(simulation.atmosphere.input_file) != Bool
+        if typeof(simulation.atmosphere.input_file) != Bool && 
+            !simulation.atmosphere.collocated_with_ocean_grid
             sortIceFloesInGrid!(simulation, simulation.atmosphere)
         end
 
         if typeof(simulation.ocean.input_file) != Bool
             sortIceFloesInGrid!(simulation, simulation.ocean)
             findContacts!(simulation, method="ocean grid")
+
+            if simulation.atmosphere.collocated_with_ocean_grid
+                copyGridSortingInfo!(simulation.ocean, simulation.atmosphere,
+                                     simulation.ice_floes)
+            end
 
         elseif typeof(simulation.atmosphere.input_file) != Bool
             findContacts!(simulation, method="atmosphere grid")

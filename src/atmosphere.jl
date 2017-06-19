@@ -15,7 +15,9 @@ function createEmptyAtmosphere()
                       zeros(1,1,1,1),
                       zeros(1,1,1,1),
 
-                      Array{Array{Int, 1}}(1, 1))
+                      Array{Array{Int, 1}}(1, 1),
+
+                      false)
 end
 
 export interpolateAtmosphereVelocitiesToCorners
@@ -124,7 +126,8 @@ function createRegularAtmosphereGrid(n::Array{Int, 1},
                  xh, yh,
                  zl,
                  u, v,
-                 Array{Array{Int, 1}}(size(xh, 1), size(xh, 2)))
+                 Array{Array{Int, 1}}(size(xh, 1), size(xh, 2)),
+                 false)
 end
 
 export addAtmosphereDrag!
