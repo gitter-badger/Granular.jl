@@ -262,7 +262,7 @@ pos = SeaIce.findEmptyPositionInGridCell(sim, sim.ocean, 2, 2, 0.5,
 info("Test default sorting with ocean/atmosphere grids")
 sim = SeaIce.createSimulation()
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
-sim.atmosphere = SeaIce.createRegularAtmosphereGrid([4, 4, 2], [4., 4., 2.])
+sim.atmosphere = SeaIce.createRegularAtmosphereGrid([4, 4, 2], [4., 4.000001, 2.])
 SeaIce.addIceFloeCylindrical(sim, [0.5, 0.5], .1, 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [0.7, 0.7], .1, 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [2.6, 2.5], .1, 1., verbose=verbose)
@@ -270,6 +270,7 @@ SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
 SeaIce.setTimeStep!(sim)
 SeaIce.setTotalTime!(sim, 1.0)
 SeaIce.run!(sim, single_step=true, verbose=verbose)
+@test sim.atmosphere.collocated_with_ocean_grid == false
 @test sim.ice_floes[1].ocean_grid_pos == [1, 1]
 @test sim.ice_floes[2].ocean_grid_pos == [1, 1]
 @test sim.ice_floes[3].ocean_grid_pos == [3, 3]
@@ -287,7 +288,6 @@ info("Test optimization when ocean/atmosphere grids are collocated")
 sim = SeaIce.createSimulation()
 sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [4., 4., 2.])
 sim.atmosphere = SeaIce.createRegularAtmosphereGrid([4, 4, 2], [4., 4., 2.])
-sim.atmosphere.collocated_with_ocean_grid = true
 SeaIce.addIceFloeCylindrical(sim, [0.5, 0.5], .1, 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [0.7, 0.7], .1, 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical(sim, [2.6, 2.5], .1, 1., verbose=verbose)
@@ -295,6 +295,7 @@ SeaIce.sortIceFloesInGrid!(sim, sim.ocean, verbose=verbose)
 SeaIce.setTimeStep!(sim)
 SeaIce.setTotalTime!(sim, 1.0)
 SeaIce.run!(sim, single_step=true, verbose=verbose)
+@test sim.atmosphere.collocated_with_ocean_grid == true
 @test sim.ice_floes[1].ocean_grid_pos == [1, 1]
 @test sim.ice_floes[2].ocean_grid_pos == [1, 1]
 @test sim.ice_floes[3].ocean_grid_pos == [3, 3]

@@ -93,6 +93,23 @@ function run!(simulation::Simulation;
 
     checkTimeParameters(simulation)
 
+    # if both are enabled, check if the atmosphere grid spatial geometry is 
+    # identical to the ocean grid
+    if simulation.time_iteration == 0 &&
+        typeof(simulation.atmosphere.input_file) != Bool &&  
+        typeof(simulation.ocean.input_file) != Bool
+
+        if simulation.ocean.xq ≈ simulation.atmosphere.xq &&
+            simulation.ocean.yq ≈ simulation.atmosphere.yq
+            if verbose
+                info("identical ocean and atmosphere grids, turning on " * 
+                     "optimizations")
+            end
+            simulation.atmosphere.collocated_with_ocean_grid = true
+        end
+    end
+
+
     # number of time steps between output files
     n_file_time_step = Int(ceil(simulation.file_time_step/simulation.time_step))
 
