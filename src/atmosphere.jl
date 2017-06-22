@@ -233,7 +233,7 @@ function compareAtmospheres(atmosphere1::Atmosphere, atmosphere2::Atmosphere)
     Base.Test.@test atmosphere1.u ≈ atmosphere2.u
     Base.Test.@test atmosphere1.v ≈ atmosphere2.v
 
-    if isdefined(atmosphere1.ice_floe_list, 1)
+    if isassigned(atmosphere1.ice_floe_list, 1)
         Base.Test.@test atmosphere1.ice_floe_list == atmosphere2.ice_floe_list
     end
 end

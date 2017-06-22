@@ -349,7 +349,7 @@ function compareOceans(ocean1::Ocean, ocean2::Ocean)
     Base.Test.@test ocean1.h ≈ ocean2.h
     Base.Test.@test ocean1.e ≈ ocean2.e
 
-    if isdefined(ocean1.ice_floe_list, 1)
+    if isassigned(ocean1.ice_floe_list, 1)
         Base.Test.@test ocean1.ice_floe_list == ocean2.ice_floe_list
     end
 end
