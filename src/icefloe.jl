@@ -1,6 +1,6 @@
 ## Manage icefloes in the model
 
-Nc_max = 32  # max. no. of contacts per ice floe
+const Nc_max = 32  # max. no. of contacts per ice floe
 
 export addIceFloeCylindrical
 """
