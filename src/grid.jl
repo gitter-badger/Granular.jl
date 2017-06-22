@@ -88,6 +88,7 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
 
     grid.ice_floe_list =
         Array{Array{Int, 1}}(size(grid.xh, 1), size(grid.xh, 2))
+    #fill!(grid.ice_floe_list, Int[])
     for i=1:size(grid.xh, 1)
         for j=1:size(grid.xh, 2)
             grid.ice_floe_list[i, j] = Int[]

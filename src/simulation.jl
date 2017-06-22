@@ -223,7 +223,7 @@ export zeroForcesAndTorques!
 "Sets the `force` and `torque` values of all ice floes to zero."
 function zeroForcesAndTorques!(simulation::Simulation)
     for icefloe in simulation.ice_floes
-        icefloe.force = zeros(2)
+        fill!(icefloe.force, 0.)
         icefloe.torque = 0.
         icefloe.pressure = 0.
     end

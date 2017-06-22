@@ -49,7 +49,7 @@ function updateIceFloeKinematicsTwoTermTaylor!(icefloe::IceFloeCylindrical,
     icefloe.ang_acc = icefloe.torque/icefloe.moment_of_inertia
 
     if icefloe.fixed
-        icefloe.lin_acc = zeros(2)
+        fill!(icefloe.lin_acc, 0.)
         icefloe.ang_acc = 0.
     elseif !icefloe.rotating
         icefloe.ang_acc = 0.
@@ -86,7 +86,7 @@ function updateIceFloeKinematicsThreeTermTaylor!(icefloe::IceFloeCylindrical,
     icefloe.ang_acc = icefloe.torque/icefloe.moment_of_inertia
 
     if icefloe.fixed
-        icefloe.lin_acc = zeros(2)
+        fill!(icefloe.lin_acc, 0.)
         icefloe.ang_acc = 0.
     elseif !icefloe.rotating
         icefloe.ang_acc = 0.
