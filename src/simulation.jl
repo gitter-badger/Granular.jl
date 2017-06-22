@@ -182,6 +182,7 @@ function run!(simulation::Simulation;
             println()
         end
         writeParaviewStateFile(simulation, verbose=show_file_output)
+        writeSimulationStatus(simulation, verbose=show_file_output)
     end
 
     if verbose
