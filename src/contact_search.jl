@@ -158,8 +158,8 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
                         sim.ice_floes[i].n_contacts += 1  # register new contact
                         sim.ice_floes[j].n_contacts += 1
                         sim.ice_floes[i].contacts[ic] = j
-                        sim.ice_floes[i].contact_parallel_displacement[ic] =
-                            zeros(2)
+                        fill!(sim.ice_floes[i].
+                              contact_parallel_displacement[ic] , 0.)
                         sim.ice_floes[i].contact_age[ic] = 0.
                         break
                     end
