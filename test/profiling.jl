@@ -43,14 +43,17 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
                                          fixed=fixed, verbose=false)
         end
     end
-    info("number of ice floes: $(length(sim.ice_floes))")
+    print_with_color(:green, "number of ice floes: $(length(sim.ice_floes))\n")
     if grid_sorting
-        info("using cell-based spatial decomposition (ocean)")
         if include_atmosphere
-            info("using cell-based spatial decomposition (ocean + atmosphere)")
+            print_with_color(:green, "using cell-based spatial decomposition " *
+                             " (ocean + atmosphere)\n")
+        else
+            print_with_color(:green, "using cell-based spatial " * 
+                             "decomposition (ocean)\n")
         end
     else
-        info("using all-to-all contact search")
+        print_with_color(:green, "using all-to-all contact search\n")
     end
 
     SeaIce.setTotalTime!(sim, 1.0)
@@ -86,7 +89,7 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
 end
 
 #nx = Int[4 8 16 32 64 96]
-nx = round(logspace(1, 2, 16))
+nx = round.(logspace(1, 2, 16))
 elements = zeros(length(nx))
 t_elapsed = zeros(length(nx))
 t_elapsed_all_to_all = zeros(length(nx))
