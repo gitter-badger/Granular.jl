@@ -45,9 +45,10 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
     end
     info("number of ice floes: $(length(sim.ice_floes))")
     if grid_sorting
-        info("using cell-based spatial decomposition (ocean)")
         if include_atmosphere
             info("using cell-based spatial decomposition (ocean + atmosphere)")
+        else
+            info("using cell-based spatial decomposition (ocean)")
         end
     else
         info("using all-to-all contact search")
