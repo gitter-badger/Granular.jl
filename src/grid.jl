@@ -67,7 +67,7 @@ function curl(grid::Any,
               k::Int,
               it::Int)
 
-    sw, se, ne, nw = getCellCornerCoordinates(grid, i, j)
+    sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
     sw_se = norm(sw - se)
     se_ne = norm(se - ne)
     nw_ne = norm(nw - ne)
@@ -209,7 +209,7 @@ This function is a wrapper for `getCellCornerCoordinates()` and
 function getNonDimensionalCellCoordinates(grid::Any, i::Int, j::Int,
                                           point::Array{float, 1})
 
-    sw, se, ne, nw = getCellCornerCoordinates(grid, i, j)
+    sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
     x_tilde, y_tilde = conformalQuadrilateralCoordinates(sw, se, ne, nw, point)
     return [x_tilde, y_tilde]
 end
@@ -224,7 +224,7 @@ more robust.  This function returns `true` or `false`.
 function isPointInCell(grid::Any, i::Int, j::Int, point::Array{float, 1};
                        method::String="Conformal")
 
-    sw, se, ne, nw = getCellCornerCoordinates(grid, i, j)
+    sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
 
     if method == "Area"
         if areaOfQuadrilateral(sw, se, ne, nw) ≈
@@ -252,21 +252,23 @@ end
 
 export getCellCornerCoordinates
 """
-    getCellCornerCoordinates(grid, i, j)
+    getCellCornerCoordinates(xq, yq, i, j)
 
 Returns grid corner coordinates in the following order (south-west corner, 
 south-east corner, north-east corner, north-west corner).
 
 # Arguments
-* `grid::Any`: grid object (Ocean or Atmosphere) containing grid.
+* `xq::Array{Float64, 2}`: nominal longitude of q-points [degrees_E]
+* `yq::Array{Float64, 2}`: nominal latitude of q-points [degrees_N]
 * `i::Int`: x-index of cell.
 * `j::Int`: y-index of cell.
 """
-function getCellCornerCoordinates(grid::Any, i::Int, j::Int)
-    sw = [grid.xq[  i,   j], grid.yq[  i,   j]]
-    se = [grid.xq[i+1,   j], grid.yq[i+1,   j]]
-    ne = [grid.xq[i+1, j+1], grid.yq[i+1, j+1]]
-    nw = [grid.xq[  i, j+1], grid.yq[  i, j+1]]
+function getCellCornerCoordinates(xq::Array{Float64, 2}, yq::Array{Float64, 2},
+                                  i::Int, j::Int)
+    sw = [xq[  i,   j], yq[  i,   j]]
+    se = [xq[i+1,   j], yq[i+1,   j]]
+    ne = [xq[i+1, j+1], yq[i+1, j+1]]
+    nw = [xq[  i, j+1], yq[  i, j+1]]
     return sw, se, ne, nw
 end
 
@@ -277,12 +279,14 @@ export getCellCenterCoordinates
 Returns grid center coordinates (h-point).
 
 # Arguments
-* `grid::Any`: grid object containing grid.
+* `xh::Array{Float64, 2}`: nominal longitude of h-points [degrees_E]
+* `yh::Array{Float64, 2}`: nominal latitude of h-points [degrees_N]
 * `i::Int`: x-index of cell.
 * `j::Int`: y-index of cell.
 """
-function getCellCenterCoordinates(grid::Any, i::Int, j::Int)
-    return [grid.xh[i, j], grid.yh[i, j]]
+function getCellCenterCoordinates(xh::Array{Float64, 2}, yh::Array{Float64, 2}, 
+                                  i::Int, j::Int)
+    return [xh[i, j], yh[i, j]]
 end
 
 export areaOfTriangle

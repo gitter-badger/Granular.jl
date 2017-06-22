@@ -151,10 +151,10 @@ h-points.  During read, the velocities are interpolated to the cell corners
 # Fields
 * `input_file::String`: path to input NetCDF file
 * `time::Array{Float64, 1}`: time in days
-* `xq::Array{Float64, 1}`: nominal longitude of q-points [degrees_E]
-* `yq::Array{Float64, 1}`: nominal latitude of q-points [degrees_N]
-* `xh::Array{Float64, 1}`: nominal longitude of h-points [degrees_E]
-* `yh::Array{Float64, 1}`: nominal latitude of h-points [degrees_N]
+* `xq::Array{Float64, 2}`: nominal longitude of q-points [degrees_E]
+* `yq::Array{Float64, 2}`: nominal latitude of q-points [degrees_N]
+* `xh::Array{Float64, 2}`: nominal longitude of h-points [degrees_E]
+* `yh::Array{Float64, 2}`: nominal latitude of h-points [degrees_N]
 * `zl::Array{Float64, 1}`: layer target potential density [kg m^-3]
 * `zi::Array{Float64, 1}`: interface target potential density [kg m^-3]
 * `u::Array{Float64, Int}`: zonal velocity (positive towards west) [m/s], 
