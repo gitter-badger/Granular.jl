@@ -37,8 +37,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 @test 0. < norm(sim.ice_floes[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
@@ -55,8 +55,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 @test 0. < norm(sim.ice_floes[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
@@ -74,8 +74,8 @@ SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 @test 0. < norm(sim.ice_floes[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
@@ -110,8 +110,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
     @test 0. < norm(sim.ice_floes[i].lin_vel)
@@ -127,8 +127,8 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
     @test 0. < norm(sim.ice_floes[i].lin_vel)
@@ -145,8 +145,8 @@ SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
-@test_approx_eq_eps E_kin_lin_init E_kin_lin_final E_kin_lin_init*tol
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
     @test 0. < norm(sim.ice_floes[i].lin_vel)
@@ -192,7 +192,7 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test E_kin_lin_init > E_kin_lin_final
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 @test 0. < norm(sim.ice_floes[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
@@ -211,7 +211,7 @@ SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test E_kin_lin_init > E_kin_lin_final
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 @test 0. < norm(sim.ice_floes[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
@@ -253,7 +253,7 @@ SeaIce.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbose)
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test E_kin_lin_init > E_kin_lin_final
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
     @test 0. < norm(sim.ice_floes[i].lin_vel)
@@ -271,7 +271,7 @@ SeaIce.run!(sim, temporal_integration_method="Three-term Taylor",
 E_kin_lin_final = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
 E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 @test E_kin_lin_init > E_kin_lin_final
-@test_approx_eq E_kin_rot_init E_kin_rot_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
     @test 0. < norm(sim.ice_floes[i].lin_vel)
