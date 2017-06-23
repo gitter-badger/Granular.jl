@@ -4,14 +4,11 @@
 # simulations.  You may want to add this to your shell's PATH variable.
 
 set -e
-cmd='julia --color=yes -e "import SeaIce; SeaIce.status()"'
+cmd_sing='julia --color=yes -e "import SeaIce; SeaIce.status()"'
+cmd_loop='julia --color=yes -e "import SeaIce; SeaIce.status(loop=true, t_int=10)"'
 
 if [[ "$1" == "loop" ]]; then
-    while true; do
-        date
-        eval $cmd
-        sleep 10
-    done
+    eval $cmd_loop
 else
-    eval $cmd
+    eval $cmd_sing
 fi
