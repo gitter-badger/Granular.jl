@@ -274,12 +274,14 @@ function addOceanDrag!(simulation::Simulation)
                  """)
         end
 
-        u_local = bilinearInterpolation(u, x_tilde, y_tilde, i, j, k, 1)
-        v_local = bilinearInterpolation(v, x_tilde, y_tilde, i, j, k, 1)
-        vel_curl = curl(simulation.ocean, x_tilde, y_tilde, i, j, k, 1)
-
-        applyOceanDragToIceFloe!(ice_floe, u_local, v_local)
-        applyOceanVorticityToIceFloe!(ice_floe, vel_curl)
+        applyOceanDragToIceFloe!(ice_floe,
+                                 bilinearInterpolation(u, x_tilde, y_tilde,
+                                                       i, j, k, 1),
+                                 bilinearInterpolation(v, x_tilde, y_tilde,
+                                                       i, j, k, 1))
+        applyOceanVorticityToIceFloe!(ice_floe,
+                                      curl(simulation.ocean, x_tilde, y_tilde,
+                                           i, j, k, 1))
     end
 end
 

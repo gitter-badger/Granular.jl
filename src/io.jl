@@ -336,6 +336,10 @@ function writeIceFloeVTK(simulation::Simulation,
     WriteVTK.vtk_point_data(vtkfile, ifarr.atmosphere_stress,
                             "Atmosphere stress [Pa]")
 
+    deleteIceFloeArrays!(ifarr)
+    ifarr = 0
+    gc()
+
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
         info("Output file: " * outfiles[1])

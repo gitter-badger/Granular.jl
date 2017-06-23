@@ -21,9 +21,9 @@ function bilinearInterpolation(field::Array{Float64, 4},
                                k::Int,
                                it::Int)
 
-    if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
-        error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
-    end
+    #if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
+        #error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
+    #end
 
     return (field[i+1, j+1, k, it]*x_tilde +
             field[i, j+1, k, it]*(1. - x_tilde))*y_tilde +
@@ -86,12 +86,20 @@ Find ice-floe positions in grid, based on their center positions.
 """
 function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
 
-    grid.ice_floe_list =
-        Array{Array{Int, 1}}(size(grid.xh, 1), size(grid.xh, 2))
-    #fill!(grid.ice_floe_list, Int[])
-    for i=1:size(grid.xh, 1)
-        for j=1:size(grid.xh, 2)
-            grid.ice_floe_list[i, j] = Int[]
+    if simulation.time_iteration == 0
+        grid.ice_floe_list =
+            Array{Array{Int, 1}}(size(grid.xh, 1), size(grid.xh, 2))
+
+        for i=1:size(grid.xh, 1)
+            for j=1:size(grid.xh, 2)
+                grid.ice_floe_list[i, j] = Int[]
+            end
+        end
+    else
+        for i=1:size(grid.xh, 1)
+            for j=1:size(grid.xh, 2)
+                empty!(grid.ice_floe_list[i, j])
+            end
         end
     end
 
@@ -146,7 +154,8 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
 
             if !found
                 i, j = findCellContainingPoint(grid,
-                                               simulation.ice_floes[idx].lin_pos)
+                                               simulation.ice_floes[idx].
+                                               lin_pos)
             end
 
             # remove ice floe if it is outside of the grid
@@ -211,8 +220,7 @@ function getNonDimensionalCellCoordinates(grid::Any, i::Int, j::Int,
                                           point::Array{float, 1})
 
     sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
-    x_tilde, y_tilde = conformalQuadrilateralCoordinates(sw, se, ne, nw, point)
-    return [x_tilde, y_tilde]
+    return conformalQuadrilateralCoordinates(sw, se, ne, nw, point)
 end
 
 export isPointInCell
@@ -264,13 +272,13 @@ south-east corner, north-east corner, north-west corner).
 * `i::Int`: x-index of cell.
 * `j::Int`: y-index of cell.
 """
-function getCellCornerCoordinates(xq::Array{Float64, 2}, yq::Array{Float64, 2},
-                                  i::Int, j::Int)
-    sw = [xq[  i,   j], yq[  i,   j]]
-    se = [xq[i+1,   j], yq[i+1,   j]]
-    ne = [xq[i+1, j+1], yq[i+1, j+1]]
-    nw = [xq[  i, j+1], yq[  i, j+1]]
-    return sw, se, ne, nw
+@inline function getCellCornerCoordinates(xq::Array{Float64, 2}, 
+                                          yq::Array{Float64, 2},
+                                          i::Int, j::Int)
+    return Float64[xq[  i,   j], yq[  i,   j]],
+        Float64[xq[i+1,   j], yq[i+1,   j]],
+        Float64[xq[i+1, j+1], yq[i+1, j+1]],
+        Float64[xq[  i, j+1], yq[  i, j+1]]
 end
 
 export getCellCenterCoordinates
@@ -379,7 +387,7 @@ function conformalQuadrilateralCoordinates(A::Array{float, 1},
               "alpha = $(alpha), beta = $(beta), gamma = $(gamma), ",
               "delta = $(delta), epsilon = $(epsilon), kappa = $(kappa)")
     end
-    return [x_tilde, y_tilde]
+    return Float64[x_tilde, y_tilde]
 end
 
 export findEmptyPositionInGridCell

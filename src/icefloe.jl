@@ -317,6 +317,59 @@ function convertIceFloeDataToArrays(simulation::Simulation)
     return ifarr
 end
 
+function deleteIceFloeArrays!(ifarr::IceFloeArrays)
+    ifarr.density = 0
+
+    ifarr.thickness = 0
+    ifarr.contact_radius = 0
+    ifarr.areal_radius = 0
+    ifarr.circumreference = 0
+    ifarr.horizontal_surface_area = 0
+    ifarr.side_surface_area = 0
+    ifarr.volume = 0
+    ifarr.mass = 0
+    ifarr.moment_of_inertia = 0
+
+    ifarr.lin_pos = 0
+    ifarr.lin_vel = 0
+    ifarr.lin_acc = 0
+    ifarr.force = 0
+
+    ifarr.ang_pos = 0
+    ifarr.ang_vel = 0
+    ifarr.ang_acc = 0
+    ifarr.torque = 0
+
+    ifarr.fixed = 0
+    ifarr.rotating = 0
+    ifarr.enabled = 0
+
+    ifarr.contact_stiffness_normal = 0
+    ifarr.contact_stiffness_tangential = 0
+    ifarr.contact_viscosity_normal = 0
+    ifarr.contact_viscosity_tangential = 0
+    ifarr.contact_static_friction = 0
+    ifarr.contact_dynamic_friction = 0
+
+    ifarr.youngs_modulus = 0
+    ifarr.poissons_ratio = 0
+    ifarr.tensile_strength = 0
+    ifarr.compressive_strength_prefactor = 0
+
+    ifarr.ocean_drag_coeff_vert = 0
+    ifarr.ocean_drag_coeff_horiz = 0
+    ifarr.atmosphere_drag_coeff_vert = 0
+    ifarr.atmosphere_drag_coeff_horiz = 0
+
+    ifarr.pressure = 0
+    ifarr.n_contacts = 0
+
+    ifarr.granular_stress = 0
+    ifarr.ocean_stress = 0
+    ifarr.atmosphere_stress = 0
+    gc()
+end
+
 export printIceFloeInfo
 """
     printIceFloeInfo(icefloe::IceFloeCylindrical)
