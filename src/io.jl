@@ -384,10 +384,10 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
                 r_i = simulation.ice_floes[i].contact_radius
                 r_j = simulation.ice_floes[j].contact_radius
                 δ_n = dist - (r_i + r_j)
+                R_ij = harmonicMean(r_i, r_j)
 
                 if simulation.ice_floes[i].youngs_modulus > 0. &&
                     simulation.ice_floes[j].youngs_modulus > 0.
-                    R_ij = harmonicMean(r_i, r_j)
                     E_ij = harmonicMean(simulation.ice_floes[i].
                                         youngs_modulus,
                                         simulation.ice_floes[j].
