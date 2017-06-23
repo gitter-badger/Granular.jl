@@ -141,8 +141,7 @@ function status(folder::String=".";
     while repeat
 
         status_files = String[]
-        println(Dates.format(round(DateTime(now()), Dates.Minute(15)), 
-                             Dates.RFC1123Format))
+        println(Dates.format(DateTime(now()), Dates.RFC1123Format))
 
         for (root, dirs, files) in walkdir(folder, follow_symlinks=false)
 
