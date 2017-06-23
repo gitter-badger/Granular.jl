@@ -24,7 +24,7 @@ sim.atmosphere = SeaIce.createRegularAtmosphereGrid([6, 6, 6], [1., 1., 1.])
 @test sim.atmosphere.v ≈ zeros(7, 7, 6, 1)
 
 info("Testing velocity drag interaction (static atmosphere)")
-SeaIce.addIceFloeCylindrical(sim, [.5, .5], .25, .1)
+SeaIce.addIceFloeCylindrical!(sim, [.5, .5], .25, .1)
 SeaIce.setTotalTime!(sim, 5.)
 SeaIce.setTimeStep!(sim)
 sim_init = deepcopy(sim)

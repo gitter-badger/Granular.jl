@@ -39,8 +39,8 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
             if ix == 1 || iy == 1 || ix == nx || iy == ny
                 fixed = true
             end
-            SeaIce.addIceFloeCylindrical(sim, [x, y], r*1.1, 1.,
-                                         fixed=fixed, verbose=false)
+            SeaIce.addIceFloeCylindrical!(sim, [x, y], r*1.1, 1.,
+                                          fixed=fixed, verbose=false)
         end
     end
     print_with_color(:green, "number of ice floes: $(length(sim.ice_floes))\n")

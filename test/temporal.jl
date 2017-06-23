@@ -12,7 +12,7 @@ SeaIce.setCurrentTime!(sim, 1.)
 SeaIce.setOutputFileInterval!(sim, 0.)
 SeaIce.disableOutputFiles!(sim)
 @test_throws ErrorException SeaIce.checkTimeParameters(sim)
-SeaIce.addIceFloeCylindrical(sim, [.1,.1], 2., 2.)
+SeaIce.addIceFloeCylindrical!(sim, [.1,.1], 2., 2.)
 sim.ice_floes[1].mass = 0.
 @test_throws ErrorException SeaIce.setTimeStep!(sim)
 

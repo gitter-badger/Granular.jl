@@ -25,15 +25,16 @@ r_walls = r_min
 for y in linspace((L[2] - Ly_constriction)/2.,
                   Ly_constriction + (L[2] - Ly_constriction)/2., 
                   Int(round(Ly_constriction/(r_walls*2))))
-    SeaIce.addIceFloeCylindrical(sim, [(Lx - Lx_constriction)/2., y], r_walls, 
-                                 h, fixed=true, verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [(Lx - Lx_constriction)/2., y], r_walls, 
+                                  h, fixed=true, verbose=false)
 end
 for y in linspace((L[2] - Ly_constriction)/2.,
                   Ly_constriction + (L[2] - Ly_constriction)/2., 
                   Int(round(Ly_constriction/(r_walls*2))))
-    SeaIce.addIceFloeCylindrical(sim,
-                                 [Lx_constriction + (L[1] - Lx_constriction)/2., 
-                                  y], r_walls, h, fixed=true, verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim,
+                                  [Lx_constriction +
+                                   (L[1] - Lx_constriction)/2., y], r_walls, h, 
+                                   fixed=true, verbose=false)
 end
 
 dx = 2.*r_walls*sin(atan((Lx - Lx_constriction)/(L[2] - Ly_constriction)))
@@ -43,8 +44,8 @@ x = r_walls:dx:((Lx - Lx_constriction)/2.)
 y = linspace(L[2] - r_walls, (L[2] - Ly_constriction)/2. + Ly_constriction + 
              r_walls, length(x))
 for i in 1:length(x)
-    SeaIce.addIceFloeCylindrical(sim, [x[i], y[i]], r_walls, h, fixed=true, 
-                                 verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [x[i], y[i]], r_walls, h, fixed=true, 
+                                  verbose=false)
 end
 
 ## NE diagonal
@@ -52,24 +53,24 @@ x = (L[1] - r_walls):(-dx):((Lx - Lx_constriction)/2. + Lx_constriction)
 y = linspace(L[2] - r_walls, (L[2] - Ly_constriction)/2. + Ly_constriction + 
              r_walls, length(x))
 for i in 1:length(x)
-    SeaIce.addIceFloeCylindrical(sim, [x[i], y[i]], r_walls, h, fixed=true, 
-                                 verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [x[i], y[i]], r_walls, h, fixed=true, 
+                                  verbose=false)
 end
 
 ## SW diagonal
 x = r_walls:dx:((Lx - Lx_constriction)/2.)
 y = linspace(r, (L[2] - Ly_constriction)/2. - r_walls, length(x))
 for i in 1:length(x)
-    SeaIce.addIceFloeCylindrical(sim, [x[i], y[i]], r_walls, h, fixed=true, 
-                                 verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [x[i], y[i]], r_walls, h, fixed=true, 
+                                  verbose=false)
 end
 
 ## SE diagonal
 x = (L[1] - r_walls):(-dx):((Lx - Lx_constriction)/2. + Lx_constriction)
 y = linspace(r_walls, (L[2] - Ly_constriction)/2. - r_walls, length(x))
 for i in 1:length(x)
-    SeaIce.addIceFloeCylindrical(sim, [x[i], y[i]], r_walls, h, fixed=true, 
-                                 verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [x[i], y[i]], r_walls, h, fixed=true, 
+                                  verbose=false)
 end
 
 n_walls = length(sim.ice_floes)
@@ -102,7 +103,7 @@ for y in (L[2] - r - noise_amplitude):(-(2.*r + floe_padding)):((L[2] -
         end
             
         r_rand = r_min + Base.Random.rand()*(r - r_min)
-        SeaIce.addIceFloeCylindrical(sim, [x_, y_], r_rand, h, verbose=false)
+        SeaIce.addIceFloeCylindrical!(sim, [x_, y_], r_rand, h, verbose=false)
     end
     iy += 1
 end
@@ -144,7 +145,7 @@ while sim.time < sim.time_total
 
             # Enable for high mass flux
             r_rand = r_min + Base.Random.rand()*(r - r_min)
-            SeaIce.addIceFloeCylindrical(sim, [x-r, y-r], r_rand, h, 
+            SeaIce.addIceFloeCylindrical!(sim, [x-r, y-r], r_rand, h, 
                     verbose=false,
                     contact_stiffness_normal=k_n,
                     contact_stiffness_tangential=k_t,
@@ -152,7 +153,7 @@ while sim.time < sim.time_total
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
             r_rand = r_min + Base.Random.rand()*(r - r_min)
-            SeaIce.addIceFloeCylindrical(sim, [x+r, y-r], r_rand, h, 
+            SeaIce.addIceFloeCylindrical!(sim, [x+r, y-r], r_rand, h, 
                     verbose=false,
                     contact_stiffness_normal=k_n,
                     contact_stiffness_tangential=k_t,
@@ -160,7 +161,7 @@ while sim.time < sim.time_total
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
             r_rand = r_min + Base.Random.rand()*(r - r_min)
-            SeaIce.addIceFloeCylindrical(sim, [x+r, y+r], r_rand, h, 
+            SeaIce.addIceFloeCylindrical!(sim, [x+r, y+r], r_rand, h, 
                     verbose=false,
                     contact_stiffness_normal=k_n,
                     contact_stiffness_tangential=k_t,
@@ -168,7 +169,7 @@ while sim.time < sim.time_total
                     contact_dynamic_friction = mu_d,
                     rotating=rotating)
             r_rand = r_min + Base.Random.rand()*(r - r_min)
-            SeaIce.addIceFloeCylindrical(sim, [x-r, y+r], r_rand, h, 
+            SeaIce.addIceFloeCylindrical!(sim, [x-r, y+r], r_rand, h, 
                     verbose=false,
                     contact_stiffness_normal=k_n,
                     contact_stiffness_tangential=k_t,
@@ -179,7 +180,7 @@ while sim.time < sim.time_total
             # Enable for low mass flux
             #x += noise_amplitude*(0.5 - Base.Random.rand())
             #y += noise_amplitude*(0.5 - Base.Random.rand())
-            #SeaIce.addIceFloeCylindrical(sim, [x, y], r, h, verbose=false)
+            #SeaIce.addIceFloeCylindrical!(sim, [x, y], r, h, verbose=false)
         end
     end
 end

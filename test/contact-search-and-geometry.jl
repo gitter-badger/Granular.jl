@@ -6,8 +6,8 @@ info("#### $(basename(@__FILE__)) ####")
 
 info("Testing interIceFloePositionVector(...) and findOverlap(...)")
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [ 0., 0.], 10., 1., verbose=false)
-SeaIce.addIceFloeCylindrical(sim, [18., 0.], 10., 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [18., 0.], 10., 1., verbose=false)
 
 position_ij = SeaIce.interIceFloePositionVector(sim, 1, 2)
 overlap_ij = SeaIce.findOverlap(sim, 1, 2, position_ij)
@@ -28,11 +28,11 @@ SeaIce.findContacts!(sim)
 sim.ice_floes[1].fixed = true
 # The contact should be registered in ice floe 1, but not ice floe 2
 @test 2 == sim.ice_floes[1].contacts[1]
-for ic=2:32
+for ic=2:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -44,11 +44,11 @@ sim = deepcopy(sim_copy)
 SeaIce.findContacts!(sim)
 
 @test 2 == sim.ice_floes[1].contacts[1]
-for ic=2:32
+for ic=2:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -61,11 +61,11 @@ sim = deepcopy(sim_copy)
 sim.ice_floes[1].fixed = true
 sim.ice_floes[2].fixed = true
 SeaIce.findContacts!(sim)
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -76,11 +76,11 @@ end
 sim = deepcopy(sim_copy)
 SeaIce.disableIceFloe!(sim, 1)
 SeaIce.findContacts!(sim)
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -92,11 +92,11 @@ sim = deepcopy(sim_copy)
 SeaIce.disableIceFloe!(sim, 1)
 SeaIce.disableIceFloe!(sim, 2)
 SeaIce.findContacts!(sim)
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -110,11 +110,11 @@ SeaIce.interact!(sim)
 SeaIce.findContacts!(sim)
 
 @test 2 == sim.ice_floes[1].contacts[1]
-for ic=2:32
+for ic=2:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -129,11 +129,11 @@ SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
 SeaIce.findContactsInGrid!(sim, sim.ocean)
 
 @test 2 == sim.ice_floes[1].contacts[1]
-for ic=2:32
+for ic=2:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -148,11 +148,11 @@ SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
 SeaIce.findContactsInGrid!(sim, sim.ocean)
 
 @test 2 == sim.ice_floes[1].contacts[1]
-for ic=2:32
+for ic=2:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -167,11 +167,11 @@ sim.ice_floes[2].fixed = true
 SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
 SeaIce.findContactsInGrid!(sim, sim.ocean)
 
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end
@@ -185,11 +185,11 @@ SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
 SeaIce.findContacts!(sim)
 
 @test 2 == sim.ice_floes[1].contacts[1]
-for ic=2:32
+for ic=2:sim.Nc_max
     @test 0 == sim.ice_floes[1].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[1].contact_parallel_displacement[ic]
 end
-for ic=1:32
+for ic=1:sim.Nc_max
     @test 0 == sim.ice_floes[2].contacts[ic]
     @test [0., 0.] ≈ sim.ice_floes[2].contact_parallel_displacement[ic]
 end

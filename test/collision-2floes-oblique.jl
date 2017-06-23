@@ -10,8 +10,8 @@ verbose=false
 info("## Contact-normal elasticity only")
 info("# One ice floe fixed")
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 10.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19., 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[1].contact_dynamic_friction = 0.
 sim.ice_floes[2].contact_dynamic_friction = 0.
@@ -67,8 +67,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Ice floes free to move")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 10.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.0, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19.0, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[1].contact_dynamic_friction = 0.
 sim.ice_floes[2].contact_dynamic_friction = 0.
@@ -200,8 +200,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Ice floes free to move")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 10.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.0, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19.0, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[1].contact_viscosity_tangential = 1e4
 sim.ice_floes[2].contact_viscosity_tangential = 1e4
@@ -263,8 +263,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Ice floes free to move, mirrored")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.0, 10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19.0, 10.], 10., 1., verbose=verbose)
 sim.ice_floes[2].lin_vel[1] = -0.1
 sim.ice_floes[1].contact_viscosity_tangential = 1e4
 sim.ice_floes[2].contact_viscosity_tangential = 1e4
@@ -326,8 +326,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Ice floes free to move, mirrored #2")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.0, -10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19.0, -10.], 10., 1., verbose=verbose)
 sim.ice_floes[2].lin_vel[1] = -0.1
 
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
@@ -387,8 +387,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Tangential elasticity, no tangential viscosity, no Coulomb slip")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.0, -10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19.0, -10.], 10., 1., verbose=verbose)
 sim.ice_floes[2].lin_vel[1] = -0.1
 sim.ice_floes[1].contact_dynamic_friction = 1e3  # disable Coulomb slip
 sim.ice_floes[2].contact_dynamic_friction = 1e3  # disable Coulomb slip
@@ -456,8 +456,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Tangential elasticity, no tangential viscosity, Coulomb slip")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.0, -10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19.0, -10.], 10., 1., verbose=verbose)
 sim.ice_floes[2].lin_vel[1] = -0.1
 sim.ice_floes[1].contact_dynamic_friction = 0.1  # enable Coulomb slip
 sim.ice_floes[2].contact_dynamic_friction = 0.1  # enable Coulomb slip
@@ -509,8 +509,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Tangential elasticity, tangential viscosity, no Coulomb slip")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.0, -10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19.0, -10.], 10., 1., verbose=verbose)
 sim.ice_floes[2].lin_vel[1] = -0.1
 sim.ice_floes[1].contact_dynamic_friction = 1e3  # disable Coulomb slip
 sim.ice_floes[2].contact_dynamic_friction = 1e3  # disable Coulomb slip
@@ -562,8 +562,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Tangential elasticity, tangential viscosity, Coulomb slip")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [19.0, -10.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [19.0, -10.], 10., 1., verbose=verbose)
 sim.ice_floes[2].lin_vel[1] = -0.1
 sim.ice_floes[1].contact_dynamic_friction = 0.1  # enable Coulomb slip
 sim.ice_floes[2].contact_dynamic_friction = 0.1  # enable Coulomb slip

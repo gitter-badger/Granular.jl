@@ -268,4 +268,6 @@ type Simulation
 
     ocean::Ocean
     atmosphere::Atmosphere
+
+    Nc_max::Int
 end

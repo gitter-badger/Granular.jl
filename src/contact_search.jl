@@ -145,10 +145,10 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
 
         # Check if grains overlap (overlap when negative)
         if overlap_ij < 0.
-            for ic=1:(Nc_max + 1)
-                if ic == (Nc_max + 1)
+            for ic=1:(sim.Nc_max + 1)
+                if ic == (sim.Nc_max + 1)
                     error("contact $i-$j exceeds max. number of contacts " *
-                          "(Nc_max = $Nc_max) for ice floe $i")
+                          "(sim.Nc_max = $(sim.Nc_max)) for ice floe $i")
 
                 else
                     if sim.ice_floes[i].contacts[ic] == j

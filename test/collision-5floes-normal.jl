@@ -9,11 +9,11 @@ verbose=false
 
 info("# One ice floe fixed")
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [20.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [40.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [60.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [80.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [40.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [60.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [80.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[2].fixed = true
 sim.ice_floes[3].fixed = true
@@ -86,11 +86,11 @@ end
 info("# Ice floes free to move")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [20.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [40.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [60.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [80.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [40.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [60.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [80.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
@@ -156,11 +156,11 @@ end
 info("# Adding contact-normal viscosity")
 info("# One ice floe fixed")
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [20.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [40.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [60.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [80.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [40.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [60.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [80.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[1].contact_viscosity_normal = 1e4
 sim.ice_floes[2].contact_viscosity_normal = 1e4
@@ -222,11 +222,11 @@ end
 info("# Ice floes free to move")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [20.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [40.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [60.05, 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [80.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [40.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [60.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [80.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[1].contact_viscosity_normal = 1e4
 sim.ice_floes[2].contact_viscosity_normal = 1e4

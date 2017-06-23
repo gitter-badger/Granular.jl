@@ -1,63 +1,55 @@
 ## Manage icefloes in the model
 
-const Nc_max = 32  # max. no. of contacts per ice floe
-
-export addIceFloeCylindrical
+export addIceFloeCylindrical!
 """
 Adds a grain to the simulation. Example:
 
     SeaIce.addIceFloeCylindrical([1.0, 2.0, 3.0], 1.0)
 """
-function addIceFloeCylindrical(simulation::Simulation,
-                               lin_pos::vector,
-                               contact_radius::float,
-                               thickness::float;
-                               areal_radius = false,
-                               lin_vel::vector = [0., 0.],
-                               lin_acc::vector = [0., 0.],
-                               force::vector = [0., 0.],
-                               ang_pos::float = 0.,
-                               ang_vel::float = 0.,
-                               ang_acc::float = 0.,
-                               torque::float = 0.,
-                               density::float = 934.,
-                               contact_stiffness_normal::float = 1e7,
-                               contact_stiffness_tangential::float = 0.,
-                               contact_viscosity_normal::float = 0.,
-                               contact_viscosity_tangential::float = 0.,
-                               contact_static_friction::float = 0.4,
-                               contact_dynamic_friction::float = 0.4,
-                               youngs_modulus::float = 2e7,
-                               #youngs_modulus::float = 2e9,  # Hopkins 2004
-                               poissons_ratio::float = 0.185,  # Hopkins 2004
-                               #tensile_strength::float = 500e3,  # Hopkins 2004
-                               tensile_strength::float = 0.,
-                               tensile_heal_rate::float = 0.,
-                               compressive_strength_prefactor::float = 1285e3,  
-                                   # Hopkins 2004
-                               ocean_drag_coeff_vert::float = 0.85, # H&C 2011
-                               ocean_drag_coeff_horiz::float = 5e-4, # H&C 2011
-                               atmosphere_drag_coeff_vert::float = 0.4,
-                                   # H&C 2011
-                               atmosphere_drag_coeff_horiz::float = 2.5e-4,
-                                   # H&C2011
-                               pressure::float = 0.,
-                               fixed::Bool = false,
-                               rotating::Bool = true,
-                               enabled::Bool = true,
-                               verbose::Bool = true,
-                               ocean_grid_pos::Array{Int, 1} = [0, 0],
-                               atmosphere_grid_pos::Array{Int, 1} = [0, 0],
-                               n_contacts::Int = 0,
-                               contacts::Array{Int, 1} = zeros(Int, Nc_max),
-                               contact_parallel_displacement::
-                                   Array{Array{Float64, 1}, 1} =
-                                   Array{Array{Float64, 1}, 1}(Nc_max),
-                               contact_age::Array{Float64, 1} =
-                                   zeros(Float64, Nc_max),
-                               granular_stress::vector = [0., 0.],
-                               ocean_stress::vector = [0., 0.],
-                               atmosphere_stress::vector = [0., 0.])
+function addIceFloeCylindrical!(simulation::Simulation,
+                                lin_pos::vector,
+                                contact_radius::float,
+                                thickness::float;
+                                areal_radius = false,
+                                lin_vel::vector = [0., 0.],
+                                lin_acc::vector = [0., 0.],
+                                force::vector = [0., 0.],
+                                ang_pos::float = 0.,
+                                ang_vel::float = 0.,
+                                ang_acc::float = 0.,
+                                torque::float = 0.,
+                                density::float = 934.,
+                                contact_stiffness_normal::float = 1e7,
+                                contact_stiffness_tangential::float = 0.,
+                                contact_viscosity_normal::float = 0.,
+                                contact_viscosity_tangential::float = 0.,
+                                contact_static_friction::float = 0.4,
+                                contact_dynamic_friction::float = 0.4,
+                                youngs_modulus::float = 2e7,
+                                #youngs_modulus::float = 2e9,  # Hopkins 2004
+                                poissons_ratio::float = 0.185,  # Hopkins 2004
+                                #tensile_strength::float = 500e3,  # Hopkins2004
+                                tensile_strength::float = 0.,
+                                tensile_heal_rate::float = 0.,
+                                compressive_strength_prefactor::float = 1285e3,  
+                                    # Hopkins 2004
+                                ocean_drag_coeff_vert::float = 0.85, # H&C 2011
+                                ocean_drag_coeff_horiz::float = 5e-4, # H&C 2011
+                                atmosphere_drag_coeff_vert::float = 0.4,
+                                    # H&C 2011
+                                atmosphere_drag_coeff_horiz::float = 2.5e-4,
+                                    # H&C2011
+                                pressure::float = 0.,
+                                fixed::Bool = false,
+                                rotating::Bool = true,
+                                enabled::Bool = true,
+                                verbose::Bool = true,
+                                ocean_grid_pos::Array{Int, 1} = [0, 0],
+                                atmosphere_grid_pos::Array{Int, 1} = [0, 0],
+                                n_contacts::Int = 0,
+                                granular_stress::vector = [0., 0.],
+                                ocean_stress::vector = [0., 0.],
+                                atmosphere_stress::vector = [0., 0.])
 
     # Check input values
     if length(lin_pos) != 2
@@ -83,7 +75,11 @@ function addIceFloeCylindrical(simulation::Simulation,
         areal_radius = contact_radius
     end
 
-    for i=1:Nc_max
+    contacts::Array{Int, 1} = zeros(Int, simulation.Nc_max)
+    contact_parallel_displacement =
+        Array{Array{Float64, 1}, 1}(simulation.Nc_max)
+    contact_age::Array{Float64, 1} = zeros(Float64, simulation.Nc_max)
+    for i=1:simulation.Nc_max
         contact_parallel_displacement[i] = zeros(2)
     end
 

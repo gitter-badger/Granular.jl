@@ -29,7 +29,8 @@ function createSimulation(;id::String="unnamed",
                           file_time_since_output_file::Float64=0.,
                           ice_floes=Array{IceFloeCylindrical, 1}[],
                           ocean::Ocean=createEmptyOcean(),
-                          atmosphere::Atmosphere=createEmptyAtmosphere())
+                          atmosphere::Atmosphere=createEmptyAtmosphere(),
+                          Nc_max::Int=16)
 
     return Simulation(id,
                       time_iteration,
@@ -41,7 +42,8 @@ function createSimulation(;id::String="unnamed",
                       file_time_since_output_file,
                       ice_floes,
                       ocean,
-                      atmosphere)
+                      atmosphere,
+                      Nc_max)
 end
 
 export run!
@@ -261,4 +263,6 @@ function compareSimulations(sim1::Simulation, sim2::Simulation)
     end
     compareOceans(sim1.ocean, sim2.ocean)
     compareAtmospheres(sim1.atmosphere, sim2.atmosphere)
+
+    Base.Test.@test sim1.Nc_max == sim2.Nc_max
 end

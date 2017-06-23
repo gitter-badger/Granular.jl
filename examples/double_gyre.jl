@@ -35,18 +35,18 @@ h = 1.
 
 ## N-S wall segments
 for y in linspace(r, L[2]-r, Int(round((L[2] - 2.*r)/(r*2))))
-    SeaIce.addIceFloeCylindrical(sim, [r, y], r, h, fixed=true,
-                                 verbose=false)
-    SeaIce.addIceFloeCylindrical(sim, [L[1]-r, y], r, h, fixed=true,
-                                 verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [r, y], r, h, fixed=true,
+                                  verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [L[1]-r, y], r, h, fixed=true,
+                                  verbose=false)
 end
 
 ## E-W wall segments
 for x in linspace(3.*r, L[1]-3.*r, Int(round((L[1] - 6.*r)/(r*2))))
-    SeaIce.addIceFloeCylindrical(sim, [x, r], r, h, fixed=true,
-                                 verbose=false)
-    SeaIce.addIceFloeCylindrical(sim, [x, L[2]-r], r, h, fixed=true,
-                                 verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [x, r], r, h, fixed=true,
+                                  verbose=false)
+    SeaIce.addIceFloeCylindrical!(sim, [x, L[2]-r], r, h, fixed=true,
+                                  verbose=false)
 end
 
 n_walls = length(sim.ice_floes)
@@ -70,7 +70,7 @@ for y in (4.*r + noise_amplitude):(2.*r + floe_padding):(L[2] - 4.*r -
         x_ = x + noise_amplitude*(0.5 - Base.Random.rand())
         y_ = y + noise_amplitude*(0.5 - Base.Random.rand())
 
-        SeaIce.addIceFloeCylindrical(sim, [x_, y_], r, h, verbose=false)
+        SeaIce.addIceFloeCylindrical!(sim, [x_, y_], r, h, verbose=false)
     end
 end
 n = length(sim.ice_floes) - n_walls

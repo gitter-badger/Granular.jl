@@ -9,8 +9,8 @@ verbose=false
 
 info("# One ice floe fixed")
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[2].fixed = true
 
@@ -65,8 +65,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Ice floes free to move")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 
 E_kin_lin_init = SeaIce.totalIceFloeKineticTranslationalEnergy(sim)
@@ -120,8 +120,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Adding contact-normal viscosity")
 info("# One ice floe fixed")
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[1].contact_viscosity_normal = 1e4
 sim.ice_floes[2].contact_viscosity_normal = 1e4
@@ -167,8 +167,8 @@ E_kin_rot_final = SeaIce.totalIceFloeKineticRotationalEnergy(sim)
 info("# Ice floes free to move")
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 sim.ice_floes[1].contact_viscosity_normal = 1e4
 sim.ice_floes[2].contact_viscosity_normal = 1e4

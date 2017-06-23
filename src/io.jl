@@ -368,7 +368,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
     shear_displacement = Array{float, 1}[]
     contact_age = float[]
     for i=1:length(simulation.ice_floes)
-        for ic=1:Nc_max
+        for ic=1:simulation.Nc_max
             if simulation.ice_floes[i].contacts[ic] > 0
                 j = simulation.ice_floes[i].contacts[ic]
 
