@@ -85,7 +85,7 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
     @test sim.ice_floes[nx].n_contacts == 0
     @test sim.ice_floes[nx + 1].n_contacts == 1
     @test sim.ice_floes[nx + 2].n_contacts == 4
-    return t_elapsed
+    return t_elapsed, Base.summarysize(sim)
 end
 
 #nx = Int[4 8 16 32 64 96]
@@ -95,13 +95,16 @@ t_elapsed = zeros(length(nx))
 t_elapsed_all_to_all = zeros(length(nx))
 t_elapsed_cell_sorting = zeros(length(nx))
 t_elapsed_cell_sorting2 = zeros(length(nx))
+memory_usage_all_to_all = zeros(length(nx))
+memory_usage_cell_sorting = zeros(length(nx))
+memory_usage_cell_sorting2 = zeros(length(nx))
 for i=1:length(nx)
     info("nx = $(nx[i])")
-    t_elapsed_all_to_all[i] =
+    t_elapsed_all_to_all[i], memory_usage_all_to_all[i] =
         timeSingleStepInDenseSimulation(Int(nx[i]), grid_sorting=false)
-    t_elapsed_cell_sorting[i] =
+    t_elapsed_cell_sorting[i], memory_usage_cell_sorting[i] =
         timeSingleStepInDenseSimulation(Int(nx[i]), grid_sorting=true)
-    t_elapsed_cell_sorting2[i] =
+    t_elapsed_cell_sorting2[i], memory_usage_cell_sorting2[i] =
         timeSingleStepInDenseSimulation(Int(nx[i]), grid_sorting=true, 
                                         include_atmosphere=true)
     elements[i] = nx[i]*nx[i]
@@ -148,4 +151,46 @@ Plots.plot!(elements, fit_cell_sorting2(elements),
 Plots.title!("Dense granular system " * "(host: $(gethostname()))")
 Plots.xaxis!("Number of ice floes")
 Plots.yaxis!("Wall time per time step [s]")
-Plots.savefig("profiling.pdf")
+Plots.savefig("profiling-cpu.pdf")
+
+Plots.scatter(elements, memory_usage_all_to_all .÷ 1024,
+              xscale=:log10,
+              yscale=:log10,
+              label="All to all")
+fit_all_to_all = CurveFit.curve_fit(CurveFit.PowerFit,
+                                    elements, memory_usage_all_to_all .÷ 1024)
+label_all_to_all = @sprintf "%1.3g n^%3.2f" fit_all_to_all.coefs[1] fit_all_to_all.coefs[2]
+Plots.plot!(elements, fit_all_to_all(elements),
+            xscale=:log10,
+            yscale=:log10,
+            label=label_all_to_all)
+
+Plots.scatter!(elements, memory_usage_cell_sorting .÷ 1024,
+               xscale=:log10,
+               yscale=:log10,
+               label="Cell-based spatial decomposition (ocean only)")
+fit_cell_sorting = CurveFit.curve_fit(CurveFit.PowerFit,
+                                    elements, memory_usage_cell_sorting .÷ 1024)
+label_cell_sorting = @sprintf "%1.3g n^%3.2f" fit_cell_sorting.coefs[1] fit_cell_sorting.coefs[2]
+Plots.plot!(elements, fit_cell_sorting(elements),
+            xscale=:log10,
+            yscale=:log10,
+            label=label_cell_sorting)
+
+Plots.scatter!(elements, memory_usage_cell_sorting2 .÷ 1024,
+               xscale=:log10,
+               yscale=:log10,
+               label="Cell-based spatial decomposition (ocean + atmosphere)")
+fit_cell_sorting2 = CurveFit.curve_fit(CurveFit.PowerFit,
+                                       elements,
+                                       memory_usage_cell_sorting2 .÷ 1024)
+label_cell_sorting2 = @sprintf "%1.3g n^%3.2f" fit_cell_sorting2.coefs[1] fit_cell_sorting2.coefs[2]
+Plots.plot!(elements, fit_cell_sorting2(elements),
+            xscale=:log10,
+            yscale=:log10,
+            label=label_cell_sorting2)
+
+Plots.title!("Dense granular system " * "(host: $(gethostname()))")
+Plots.xaxis!("Number of ice floes")
+Plots.yaxis!("Memory usage [kb]")
+Plots.savefig("profiling-memory-usage.pdf")
