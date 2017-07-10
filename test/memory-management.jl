@@ -1,0 +1,43 @@
+#!/usr/bin/env julia
+import SeaIce
+using Base.Test
+
+info("#### $(basename(@__FILE__)) ####")
+
+verbose=false
+
+info("Testing memory footprint of SeaIce types")
+
+sim = SeaIce.createSimulation()
+empty_sim_size = 96
+empty_sim_size_recursive = 472
+
+@test sizeof(sim) == empty_sim_size
+@test Base.summarysize(sim) == empty_sim_size_recursive
+
+size_per_icefloe = 352
+size_per_icefloe_recursive = 1136
+
+for i=1:100
+    SeaIce.addIceFloeCylindrical!(sim, [1., 1.], 1., 1., verbose=false)
+
+    @test sizeof(sim) == empty_sim_size
+
+    @test sizeof(sim.ice_floes) == sizeof(Int)*i
+    @test sizeof(sim.ice_floes[:]) == sizeof(Int)*i
+    @test Base.summarysize(sim.ice_floes) == size_per_icefloe_recursive*i + 
+        sizeof(Int)*i
+
+    @test Base.summarysize(sim) == empty_sim_size_recursive + sizeof(Int)*i + 
+        size_per_icefloe_recursive*i
+
+    @test Base.summarysize(sim.ice_floes[i]) == size_per_icefloe_recursive
+
+    for j=1:i
+        @test sizeof(sim.ice_floes[j]) == size_per_icefloe
+        @test Base.summarysize(sim.ice_floes[j]) == size_per_icefloe_recursive
+    end
+
+end
+
+
