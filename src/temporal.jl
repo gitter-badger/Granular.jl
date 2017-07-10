@@ -63,8 +63,9 @@ end
 
 export checkTimeParameters
 "Checks if simulation temporal parameters are of reasonable values."
-function checkTimeParameters(simulation::Simulation)
-    if simulation.time_total <= 0.0 || simulation.time_total <= simulation.time
+function checkTimeParameters(simulation::Simulation; single_step::Bool=false)
+    if !single_step && (simulation.time_total <= 0.0 || simulation.time_total <= 
+                        simulation.time)
         error("Total time should be positive and larger than current time.\n",
             "  t_total = ", simulation.time_total, " s, t = ", simulation.time, 
             " s")

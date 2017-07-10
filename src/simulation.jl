@@ -93,7 +93,7 @@ function run!(simulation::Simulation;
         simulation.time_total += simulation.time_step
     end
 
-    checkTimeParameters(simulation)
+    checkTimeParameters(simulation, single_step=single_step)
 
     # if both are enabled, check if the atmosphere grid spatial geometry is 
     # identical to the ocean grid
