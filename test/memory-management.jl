@@ -18,6 +18,7 @@ empty_sim_size_recursive = 472
 size_per_icefloe = 352
 size_per_icefloe_recursive = 1136
 
+info("Testing memory usage when adding ice floes")
 for i=1:100
     SeaIce.addIceFloeCylindrical!(sim, [1., 1.], 1., 1., verbose=false)
 
@@ -40,4 +41,10 @@ for i=1:100
 
 end
 
+info("Checking memory footprint when overwriting simulation object")
+sim = SeaIce.createSimulation()
+empty_sim_size = 96
+empty_sim_size_recursive = 472
 
+@test sizeof(sim) == empty_sim_size
+@test Base.summarysize(sim) == empty_sim_size_recursive
