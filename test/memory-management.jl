@@ -171,3 +171,5 @@ SeaIce.run!(sim, verbose=false)
 @test Base.summarysize(sim.ocean) == original_ocean_size_recursive
 @test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
 @test Base.summarysize(sim) == original_sim_size_recursive
+
+SeaIce.printMemoryUsage(sim)

@@ -266,3 +266,17 @@ function compareSimulations(sim1::Simulation, sim2::Simulation)
 
     Base.Test.@test sim1.Nc_max == sim2.Nc_max
 end
+
+export printMemoryUsage
+"""
+    printMemoryUsage(sim::Simulation)
+
+Shows the memory footprint of the simulation object.
+"""
+function printMemoryUsage(sim::Simulation)
+    @printf "sim                           %5d kb" Base.summarysize(sim) ÷ 1024
+    println("where:")
+    @printf "sim.ice_floes (N = %5d)  %5d kb" length(sim.ice_floes) Base.summarysize(sim) ÷ 1024
+    @printf "sim.ocean                     %5d kb" Base.summarysize(sim) ÷ 1024
+    @printf "sim.atmosphere                %5d kb" Base.summarysize(sim) ÷ 1024
+end
