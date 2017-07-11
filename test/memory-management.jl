@@ -107,8 +107,8 @@ end
 
 info("Checking if memory is freed after ended collision (all to all)")
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=false)
 sim.ice_floes[1].lin_vel[1] = 0.1
 SeaIce.setTotalTime!(sim, 10.0)
 SeaIce.setTimeStep!(sim, epsilon=0.07, verbose=false)
@@ -118,8 +118,8 @@ SeaIce.run!(sim, verbose=false)
 
 info("Checking if memory is freed after ended collision (cell sorting)")
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=false)
 sim.ocean = SeaIce.createRegularOceanGrid([2, 2, 2], [40., 40., 10.])
 sim.ice_floes[1].lin_vel[1] = 0.1
 SeaIce.setTotalTime!(sim, 10.0)
@@ -136,8 +136,8 @@ SeaIce.run!(sim, verbose=false)
 @test Base.summarysize(sim) == original_sim_size_recursive
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=false)
 sim.atmosphere = SeaIce.createRegularAtmosphereGrid([2, 2, 2], [40., 40., 10.])
 sim.ice_floes[1].lin_vel[1] = 0.1
 SeaIce.setTotalTime!(sim, 10.0)
@@ -154,8 +154,8 @@ SeaIce.run!(sim, verbose=false)
 @test Base.summarysize(sim) == original_sim_size_recursive
 
 sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
-SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=false)
 sim.atmosphere = SeaIce.createRegularAtmosphereGrid([2, 2, 2], [40., 40., 10.])
 sim.ocean = SeaIce.createRegularOceanGrid([2, 2, 2], [40., 40., 10.])
 sim.ice_floes[1].lin_vel[1] = 0.1
