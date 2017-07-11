@@ -274,9 +274,34 @@ export printMemoryUsage
 Shows the memory footprint of the simulation object.
 """
 function printMemoryUsage(sim::Simulation)
-    @printf "sim                           %5d kb" Base.summarysize(sim) ÷ 1024
-    println("where:")
-    @printf "sim.ice_floes (N = %5d)  %5d kb" length(sim.ice_floes) Base.summarysize(sim) ÷ 1024
-    @printf "sim.ocean                     %5d kb" Base.summarysize(sim) ÷ 1024
-    @printf "sim.atmosphere                %5d kb" Base.summarysize(sim) ÷ 1024
+    
+    reportMemory(sim, "sim")
+    println("  where:")
+
+    reportMemory(sim.ice_floes, "    sim.ice_floes", 
+                 "(N=$(length(sim.ice_floes)))")
+
+    reportMemory(sim.ocean, "    sim.ocean",
+                 "($(size(sim.ocean.xh, 1))x" *
+                 "$(size(sim.ocean.xh, 2))x" *
+                 "$(size(sim.ocean.xh, 3)))")
+
+    reportMemory(sim.atmosphere, "    sim.atmosphere",
+                 "($(size(sim.atmosphere.xh, 1))x" *
+                 "$(size(sim.atmosphere.xh, 2))x" *
+                 "$(size(sim.atmosphere.xh, 3)))")
+end
+
+function reportMemory(variable, head::String, tail::String="")
+    bytes = Base.summarysize(variable)
+    if bytes < 10_000
+        size_str = @sprintf "%5d bytes" bytes
+    elseif bytes < 10_000 * 1024
+        size_str = @sprintf "%5d kb" bytes ÷ 1024
+    elseif bytes < 10_000 * 1024 * 1024
+        size_str = @sprintf "%5d Mb" bytes ÷ 1024 ÷ 1024
+    else
+        size_str = @sprintf "%5d Gb" bytes ÷ 1024 ÷ 1024 ÷ 1024
+    end
+    @printf("%-20s %s %s\n", head, size_str, tail)
 end
