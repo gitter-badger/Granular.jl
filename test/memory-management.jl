@@ -4,8 +4,6 @@ using Base.Test
 
 info("#### $(basename(@__FILE__)) ####")
 
-verbose=false
-
 info("Testing memory footprint of SeaIce types")
 
 sim = SeaIce.createSimulation()
@@ -113,7 +111,7 @@ SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
 SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
 sim.ice_floes[1].lin_vel[1] = 0.1
 SeaIce.setTotalTime!(sim, 10.0)
-SeaIce.setTimeStep!(sim, epsilon=0.07)
+SeaIce.setTimeStep!(sim, epsilon=0.07, verbose=false)
 original_size_recursive = Base.summarysize(sim)
 SeaIce.run!(sim, verbose=false)
 @test Base.summarysize(sim) == original_size_recursive
@@ -125,7 +123,44 @@ SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
 sim.ocean = SeaIce.createRegularOceanGrid([2, 2, 2], [40., 40., 10.])
 sim.ice_floes[1].lin_vel[1] = 0.1
 SeaIce.setTotalTime!(sim, 10.0)
-SeaIce.setTimeStep!(sim, epsilon=0.07)
+SeaIce.setTimeStep!(sim, epsilon=0.07, verbose=false)
+SeaIce.run!(sim, single_step=true, verbose=false)
+original_sim_size_recursive = Base.summarysize(sim)
+original_icefloes_size_recursive = Base.summarysize(sim.ice_floes)
+original_ocean_size_recursive = Base.summarysize(sim.ocean)
+original_atmosphere_size_recursive = Base.summarysize(sim.atmosphere)
+SeaIce.run!(sim, verbose=false)
+@test Base.summarysize(sim.ice_floes) == original_icefloes_size_recursive
+@test Base.summarysize(sim.ocean) == original_ocean_size_recursive
+@test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
+@test Base.summarysize(sim) == original_sim_size_recursive
+
+sim = SeaIce.createSimulation(id="test")
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+sim.atmosphere = SeaIce.createRegularAtmosphereGrid([2, 2, 2], [40., 40., 10.])
+sim.ice_floes[1].lin_vel[1] = 0.1
+SeaIce.setTotalTime!(sim, 10.0)
+SeaIce.setTimeStep!(sim, epsilon=0.07, verbose=false)
+SeaIce.run!(sim, single_step=true, verbose=false)
+original_sim_size_recursive = Base.summarysize(sim)
+original_icefloes_size_recursive = Base.summarysize(sim.ice_floes)
+original_ocean_size_recursive = Base.summarysize(sim.ocean)
+original_atmosphere_size_recursive = Base.summarysize(sim.atmosphere)
+SeaIce.run!(sim, verbose=false)
+@test Base.summarysize(sim.ice_floes) == original_icefloes_size_recursive
+@test Base.summarysize(sim.ocean) == original_ocean_size_recursive
+@test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
+@test Base.summarysize(sim) == original_sim_size_recursive
+
+sim = SeaIce.createSimulation(id="test")
+SeaIce.addIceFloeCylindrical!(sim, [0., 0.], 10., 1., verbose=verbose)
+SeaIce.addIceFloeCylindrical!(sim, [20.05, 0.], 10., 1., verbose=verbose)
+sim.atmosphere = SeaIce.createRegularAtmosphereGrid([2, 2, 2], [40., 40., 10.])
+sim.ocean = SeaIce.createRegularOceanGrid([2, 2, 2], [40., 40., 10.])
+sim.ice_floes[1].lin_vel[1] = 0.1
+SeaIce.setTotalTime!(sim, 10.0)
+SeaIce.setTimeStep!(sim, epsilon=0.07, verbose=false)
 SeaIce.run!(sim, single_step=true, verbose=false)
 original_sim_size_recursive = Base.summarysize(sim)
 original_icefloes_size_recursive = Base.summarysize(sim.ice_floes)
