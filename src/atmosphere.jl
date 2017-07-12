@@ -141,6 +141,7 @@ function addAtmosphereDrag!(simulation::Simulation)
     end
 
     u, v = interpolateAtmosphereState(simulation.atmosphere, simulation.time)
+    uv_interp = [NaN, NaN]
 
     for ice_floe in simulation.ice_floes
 
@@ -163,13 +164,8 @@ function addAtmosphereDrag!(simulation::Simulation)
                  """)
         end
 
-        applyAtmosphereDragToIceFloe!(ice_floe,
-                                      bilinearInterpolation(u,
-                                                            x_tilde, y_tilde,
-                                                            i, j, k, 1),
-                                      bilinearInterpolation(v,
-                                                            x_tilde, y_tilde,
-                                                            i, j, k, 1))
+        bilinearInterpolation!(uv_interp, u, v, x_tilde, y_tilde, i, j, k, 1)
+        applyAtmosphereDragToIceFloe!(ice_floe, uv_interp[1], uv_interp[2])
         applyAtmosphereVorticityToIceFloe!(ice_floe,
                                            curl(simulation.atmosphere,
                                                 x_tilde, y_tilde, i, j, k, 1))

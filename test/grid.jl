@@ -81,11 +81,22 @@ ocean.u[1, 1, 1, 1] = 1.0
 ocean.u[2, 1, 1, 1] = 1.0
 ocean.u[2, 2, 1, 1] = 0.0
 ocean.u[1, 2, 1, 1] = 0.0
-@test SeaIce.bilinearInterpolation(ocean.u, .5, .5, 1, 1, 1, 1) ≈ .5
-@test SeaIce.bilinearInterpolation(ocean.u, 1., 1., 1, 1, 1, 1) ≈ .0
-@test SeaIce.bilinearInterpolation(ocean.u, 0., 0., 1, 1, 1, 1) ≈ 1.
-@test SeaIce.bilinearInterpolation(ocean.u, .25, .25, 1, 1, 1, 1) ≈ .75
-@test SeaIce.bilinearInterpolation(ocean.u, .75, .75, 1, 1, 1, 1) ≈ .25
+val = [NaN, NaN]
+SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, .5, .5, 1, 1, 1, 1)
+@test val[1] ≈ .5
+@test val[2] ≈ .5
+SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, 1., 1., 1, 1, 1, 1)
+@test val[1] ≈ .0
+@test val[2] ≈ .0
+SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, 0., 0., 1, 1, 1, 1)
+@test val[1] ≈ 1.
+@test val[2] ≈ 1.
+SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, .25, .25, 1, 1, 1, 1)
+@test val[1] ≈ .75
+@test val[2] ≈ .75
+SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, .75, .75, 1, 1, 1, 1)
+@test val[1] ≈ .25
+@test val[2] ≈ .25
 
 info("Testing cell binning - Area-based approach")
 @test SeaIce.findCellContainingPoint(ocean, [6.2,53.4], method="Area") == (1, 1)

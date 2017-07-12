@@ -13,36 +13,49 @@ south-west (-x, -y)-facing corner.
 * `j::Int`: j-index of scalar field to interpolate from
 * `it::Int`: time step from scalar field to interpolate from
 """
-@inline function bilinearInterpolation(field::Array{Float64, 4},
-                               x_tilde::Float64,
-                               y_tilde::Float64,
-                               i::Int,
-                               j::Int,
-                               k::Int,
-                               it::Int)
+function bilinearInterpolation!(interp_val::Array{Float64, 1},
+                                field_x::Array{Float64, 4},
+                                field_y::Array{Float64, 4},
+                                x_tilde::Float64,
+                                y_tilde::Float64,
+                                i::Int,
+                                j::Int,
+                                k::Int,
+                                it::Int)
 
     #if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
         #error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
     #end
 
-    @inbounds return (field[i+1, j+1, k, it]*x_tilde +
-            field[i, j+1, k, it]*(1. - x_tilde))*y_tilde +
-           (field[i+1, j, k, it]*x_tilde +
-            field[i, j, k, it]*(1. - x_tilde))*(1. - y_tilde)
+    interp_val[1] = (field_x[i+1, j+1, k, it]*x_tilde + 
+                     field_x[i, j+1, k, it]*(1. - x_tilde))*y_tilde + 
+    (field_x[i+1, j, k, it]*x_tilde + field_x[i, j, k, it]*
+                     (1.  - x_tilde))*(1.  - y_tilde)
+
+    interp_val[2] = (field_y[i+1, j+1, k, it]*x_tilde + 
+                     field_y[i, j+1, k, it]*(1. - x_tilde))*y_tilde + 
+    (field_y[i+1, j, k, it]*x_tilde + field_y[i, j, k, it]*
+                     (1.  - x_tilde))*(1.  - y_tilde)
 end
-@inline function bilinearInterpolation(field::Array{Float64, 2},
-                               x_tilde::Float64,
-                               y_tilde::Float64,
-                               i::Int,
-                               j::Int)
+function bilinearInterpolation!(interp_val::Array{Float64, 1},
+                                field_x::Array{Float64, 2},
+                                field_y::Array{Float64, 2},
+                                x_tilde::Float64,
+                                y_tilde::Float64,
+                                i::Int,
+                                j::Int)
 
-    if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
-        error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
-    end
+    #if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
+        #error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
+    #end
 
-    @inbounds return (field[i+1, j+1]*x_tilde + 
-                      field[i, j+1]*(1. - x_tilde))*y_tilde +
-           (field[i+1, j]*x_tilde + field[i, j]*(1. - x_tilde))*(1. - y_tilde)
+    interp_val[1] = (field_x[i+1, j+1]*x_tilde + 
+                     field_x[i, j+1]*(1. - x_tilde))*y_tilde + 
+    (field_x[i+1, j]*x_tilde + field_x[i, j]*(1. - x_tilde))*(1.  - y_tilde)
+
+    interp_val[2] = (field_y[i+1, j+1]*x_tilde + 
+                     field_y[i, j+1]*(1. - x_tilde))*y_tilde + 
+    (field_y[i+1, j]*x_tilde + field_y[i, j]*(1. - x_tilde))*(1.  - y_tilde)
 end
 
 """
@@ -412,7 +425,7 @@ function findEmptyPositionInGridCell(simulation::Simulation,
                                      verbose::Bool = false)
     overlap_found = false
     i_iter = 0
-    pos = [NaN NaN]
+    pos = [NaN, NaN]
 
     nx, ny = size(grid.xh)
 
@@ -423,8 +436,7 @@ function findEmptyPositionInGridCell(simulation::Simulation,
         # generate random candidate position
         x_tilde = Base.Random.rand()
         y_tilde = Base.Random.rand()
-        pos = [bilinearInterpolation(grid.xq, x_tilde, y_tilde, i, j)
-               bilinearInterpolation(grid.yq, x_tilde, y_tilde, i, j)]
+        bilinearInterpolation!(pos, grid.xq, grid.yq, x_tilde, y_tilde, i, j)
         if verbose
             info("trying poisition $pos in cell $i,$j")
         end
