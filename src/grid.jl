@@ -25,12 +25,12 @@ south-west (-x, -y)-facing corner.
         #error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
     #end
 
-    return (field[i+1, j+1, k, it]*x_tilde +
+    @inbounds return (field[i+1, j+1, k, it]*x_tilde +
             field[i, j+1, k, it]*(1. - x_tilde))*y_tilde +
            (field[i+1, j, k, it]*x_tilde +
             field[i, j, k, it]*(1. - x_tilde))*(1. - y_tilde)
 end
-function bilinearInterpolation(field::Array{Float64, 2},
+@inline function bilinearInterpolation(field::Array{Float64, 2},
                                x_tilde::Float64,
                                y_tilde::Float64,
                                i::Int,
@@ -40,7 +40,8 @@ function bilinearInterpolation(field::Array{Float64, 2},
         error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
     end
 
-    return (field[i+1, j+1]*x_tilde + field[i, j+1]*(1. - x_tilde))*y_tilde +
+    @inbounds return (field[i+1, j+1]*x_tilde + 
+                      field[i, j+1]*(1. - x_tilde))*y_tilde +
            (field[i+1, j]*x_tilde + field[i, j]*(1. - x_tilde))*(1. - y_tilde)
 end
 
@@ -73,7 +74,7 @@ function curl(grid::Any,
     nw_ne = norm(nw - ne)
     sw_nw = norm(sw - nw)
 
-    return (
+    @inbounds return (
     ((grid.v[i+1, j  , k,it] - grid.v[i  , j  , k,it])/sw_se*(1. - y_tilde) +
      ((grid.v[i+1, j+1, k,it] - grid.v[i  , j+1, k,it])/nw_ne)*y_tilde) -
     ((grid.u[i  , j+1, k,it] - grid.u[i  , j  , k,it])/sw_nw*(1. - x_tilde) +
@@ -92,36 +93,37 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
 
         for i=1:size(grid.xh, 1)
             for j=1:size(grid.xh, 2)
-                grid.ice_floe_list[i, j] = Int[]
+                @inbounds grid.ice_floe_list[i, j] = Int[]
             end
         end
     else
         for i=1:size(grid.xh, 1)
             for j=1:size(grid.xh, 2)
-                empty!(grid.ice_floe_list[i, j])
+                @inbounds empty!(grid.ice_floe_list[i, j])
             end
         end
     end
 
-    for idx in 1:length(simulation.ice_floes)
+    for idx=1:length(simulation.ice_floes)
 
-        if !simulation.ice_floes[idx].enabled
+        @inbounds if !simulation.ice_floes[idx].enabled
             continue
         end
 
         # After first iteration, check if ice floe is in same cell before 
         # traversing entire grid
         if typeof(grid) == Ocean
-            i_old, j_old = simulation.ice_floes[idx].ocean_grid_pos
+            @inbounds i_old, j_old = simulation.ice_floes[idx].ocean_grid_pos
         elseif typeof(grid) == Atmosphere
-            i_old, j_old = simulation.ice_floes[idx].atmosphere_grid_pos
+            @inbounds i_old, j_old = 
+                simulation.ice_floes[idx].atmosphere_grid_pos
         else
             error("grid type not understood.")
         end
         if simulation.time > 0. &&
             i_old > 0 && j_old > 0 &&
             isPointInCell(grid, i_old, j_old,
-                         simulation.ice_floes[idx].lin_pos)
+                          simulation.ice_floes[idx].lin_pos)
             i = i_old
             j = j_old
 
@@ -139,7 +141,7 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
                     i_t = max(min(i_old + i_rel, nx), 1)
                     j_t = max(min(j_old + j_rel, ny), 1)
                     
-                    if isPointInCell(grid, i_t, j_t,
+                    @inbounds if isPointInCell(grid, i_t, j_t,
                                      simulation.ice_floes[idx].lin_pos)
                         i = i_t
                         j = j_t
@@ -166,16 +168,16 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
 
             # add cell to ice floe
             if typeof(grid) == Ocean
-                simulation.ice_floes[idx].ocean_grid_pos = [i, j]
+                @inbounds simulation.ice_floes[idx].ocean_grid_pos = [i, j]
             elseif typeof(grid) == Atmosphere
-                simulation.ice_floes[idx].atmosphere_grid_pos = [i, j]
+                @inbounds simulation.ice_floes[idx].atmosphere_grid_pos = [i, j]
             else
                 error("grid type not understood.")
             end
         end
 
         # add ice floe to cell
-        push!(grid.ice_floe_list[i, j], idx)
+        @inbounds push!(grid.ice_floe_list[i, j], idx)
     end
 end
 
@@ -275,7 +277,7 @@ south-east corner, north-east corner, north-west corner).
 @inline function getCellCornerCoordinates(xq::Array{Float64, 2}, 
                                           yq::Array{Float64, 2},
                                           i::Int, j::Int)
-    return Float64[xq[  i,   j], yq[  i,   j]],
+    @inbounds return Float64[xq[  i,   j], yq[  i,   j]],
         Float64[xq[i+1,   j], yq[i+1,   j]],
         Float64[xq[i+1, j+1], yq[i+1, j+1]],
         Float64[xq[  i, j+1], yq[  i, j+1]]
