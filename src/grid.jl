@@ -13,7 +13,7 @@ south-west (-x, -y)-facing corner.
 * `j::Int`: j-index of scalar field to interpolate from
 * `it::Int`: time step from scalar field to interpolate from
 """
-function bilinearInterpolation(field::Array{Float64, 4},
+@inline function bilinearInterpolation(field::Array{Float64, 4},
                                x_tilde::Float64,
                                y_tilde::Float64,
                                i::Int,

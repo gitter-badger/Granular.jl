@@ -10,7 +10,7 @@ function interact!(simulation::Simulation)
     for i=1:length(simulation.ice_floes)
         for ic=1:simulation.Nc_max
 
-            j = simulation.ice_floes[i].contacts[ic]
+            @inbounds j = simulation.ice_floes[i].contacts[ic]
 
             if i > j  # skip i > j and j == 0
                 continue
@@ -33,7 +33,8 @@ function interact!(simulation::Simulation)
     end
 
     for i=1:length(simulation.ice_floes)
-        simulation.ice_floes[i].granular_stress = simulation.ice_floes[i].force/
+        @inbounds simulation.ice_floes[i].granular_stress = 
+            simulation.ice_floes[i].force/
             simulation.ice_floes[i].horizontal_surface_area
     end
 end

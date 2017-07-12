@@ -81,8 +81,8 @@ the optimal time step length."
 function findSmallestIceFloeMass(simulation::Simulation)
     m_min = 1e20
     i_min = -1
-    for i in length(simulation.ice_floes)
-        icefloe = simulation.ice_floes[i]
+    for i=1:length(simulation.ice_floes)
+        @inbounds icefloe = simulation.ice_floes[i]
         if icefloe.mass < m_min
             m_min = icefloe.mass
             i_min = i
@@ -99,9 +99,9 @@ function findLargestIceFloeStiffness(simulation::Simulation)
     k_t_max = 0.
     i_n_max = -1
     i_t_max = -1
-    for i in length(simulation.ice_floes)
+    for i=1:length(simulation.ice_floes)
 
-        icefloe = simulation.ice_floes[i]
+        @inbounds icefloe = simulation.ice_floes[i]
 
         if icefloe.youngs_modulus > 0.
             k_n = icefloe.youngs_modulus*icefloe.thickness  # A = h*r

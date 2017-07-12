@@ -457,8 +457,8 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Shear displacement [m]\" " *
               "NumberOfComponents=\"3\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(shear_displacement[i][1]) ")
-            write(f, "$(shear_displacement[i][2]) ")
+            @inbounds write(f, "$(shear_displacement[i][1]) ")
+            @inbounds write(f, "$(shear_displacement[i][2]) ")
             write(f, "0.0 ")
         end
         write(f, "\n")
@@ -467,7 +467,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        <DataArray type=\"Float32\" Name=\"Force [N]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(force[i]) ")
+            @inbounds write(f, "$(force[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -476,7 +476,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Effective radius [m]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(effective_radius[i]) ")
+            @inbounds write(f, "$(effective_radius[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -485,7 +485,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Contact area [m^2]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(contact_area[i]) ")
+            @inbounds write(f, "$(contact_area[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -494,7 +494,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Contact stiffness [N/m]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(contact_stiffness[i]) ")
+            @inbounds write(f, "$(contact_stiffness[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -503,7 +503,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Tensile stress [Pa]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(tensile_stress[i]) ")
+            @inbounds write(f, "$(tensile_stress[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -512,7 +512,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Contact age [s]\" NumberOfComponents=\"1\" 
         format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(contact_age[i]) ")
+            @inbounds write(f, "$(contact_age[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -525,7 +525,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        <DataArray type=\"Float32\" Name=\"Points\" " *
               "NumberOfComponents=\"3\" format=\"ascii\">\n")
         for i in simulation.ice_floes
-            write(f, "$(i.lin_pos[1]) $(i.lin_pos[2]) 0.0 ")
+            @inbounds write(f, "$(i.lin_pos[1]) $(i.lin_pos[2]) 0.0 ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -544,7 +544,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        <DataArray type=\"Int64\" Name=\"connectivity\" " *
               "format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(i1[i] - 1) $(i2[i] - 1) ")
+            @inbounds write(f, "$(i1[i] - 1) $(i2[i] - 1) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -554,7 +554,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        <DataArray type=\"Int64\" Name=\"offsets\" " *
               "format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$((i - 1)*2 + 2) ")
+            @inbounds write(f, "$((i - 1)*2 + 2) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -599,12 +599,12 @@ function writeGridVTK(grid::Any,
     zq = similar(grid.u[:,:,:,1])
 
     for iz=1:size(xq, 3)
-        xq[:,:,iz] = grid.xq
-        yq[:,:,iz] = grid.yq
+        @inbounds xq[:,:,iz] = grid.xq
+        @inbounds yq[:,:,iz] = grid.yq
     end
     for ix=1:size(xq, 1)
         for iy=1:size(xq, 2)
-            zq[ix,iy,:] = grid.zl
+            @inbounds zq[ix,iy,:] = grid.zl
         end
     end
 
@@ -620,8 +620,8 @@ function writeGridVTK(grid::Any,
     for ix=1:size(xq, 1)
         for iy=1:size(xq, 2)
             for iz=1:size(xq, 3)
-                vel[1, ix, iy, iz] = grid.u[ix, iy, iz, 1]
-                vel[2, ix, iy, iz] = grid.v[ix, iy, iz, 1]
+                @inbounds vel[1, ix, iy, iz] = grid.u[ix, iy, iz, 1]
+                @inbounds vel[2, ix, iy, iz] = grid.v[ix, iy, iz, 1]
             end
         end
     end

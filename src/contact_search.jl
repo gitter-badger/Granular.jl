@@ -48,7 +48,8 @@ Returns a `vector` pointing from ice floe `i` to ice floe `j` in the
 """
 function interIceFloePositionVector(simulation::Simulation,
                                     i::Integer, j::Integer)
-    return simulation.ice_floes[i].lin_pos - simulation.ice_floes[j].lin_pos
+    @inbounds return simulation.ice_floes[i].lin_pos - 
+    simulation.ice_floes[j].lin_pos
 end
 
 """
@@ -57,8 +58,8 @@ interIceFloePositionVector().
 """
 function findOverlap(simulation::Simulation, i::Integer, j::Integer, 
                      position_ij::vector)
-    return norm(position_ij) - (simulation.ice_floes[i].contact_radius + 
-                                simulation.ice_floes[j].contact_radius)
+    @inbounds return norm(position_ij) - (simulation.ice_floes[i].contact_radius 
+                                + simulation.ice_floes[j].contact_radius)
 end
 
 export findContactsAllToAll!
@@ -155,12 +156,12 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
                         break  # contact already registered
 
                     elseif sim.ice_floes[i].contacts[ic] == 0  # empty
-                        sim.ice_floes[i].n_contacts += 1  # register new contact
-                        sim.ice_floes[j].n_contacts += 1
-                        sim.ice_floes[i].contacts[ic] = j
-                        fill!(sim.ice_floes[i].
+                        @inbounds sim.ice_floes[i].n_contacts += 1
+                        @inbounds sim.ice_floes[j].n_contacts += 1
+                        @inbounds sim.ice_floes[i].contacts[ic] = j
+                        @inbounds fill!(sim.ice_floes[i].
                               contact_parallel_displacement[ic] , 0.)
-                        sim.ice_floes[i].contact_age[ic] = 0.
+                        @inbounds sim.ice_floes[i].contact_age[ic] = 0.
                         break
                     end
                 end
