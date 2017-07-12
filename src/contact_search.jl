@@ -47,7 +47,7 @@ Returns a `vector` pointing from ice floe `i` to ice floe `j` in the
 * `j::Int`: index of the second ice floe.
 """
 function interIceFloePositionVector(simulation::Simulation,
-                                    i::Integer, j::Integer)
+                                    i::Int, j::Int)
     @inbounds return simulation.ice_floes[i].lin_pos - 
     simulation.ice_floes[j].lin_pos
 end
@@ -56,7 +56,7 @@ end
 position_ij is the inter-grain position vector, and can be found with
 interIceFloePositionVector().
 """
-function findOverlap(simulation::Simulation, i::Integer, j::Integer, 
+function findOverlap(simulation::Simulation, i::Int, j::Int, 
                      position_ij::vector)
     @inbounds return norm(position_ij) - (simulation.ice_floes[i].contact_radius 
                                 + simulation.ice_floes[j].contact_radius)
@@ -108,7 +108,7 @@ function findContactsInGrid!(simulation::Simulation, grid::Any)
                     continue
                 end
 
-                for idx_j in grid.ice_floe_list[i, j]
+                @inbounds for idx_j in grid.ice_floe_list[i, j]
                     checkAndAddContact!(simulation, idx_i, idx_j)
                 end
             end
@@ -135,7 +135,7 @@ written to `simulation.contact_parallel_displacement`.
 function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
     if i < j
 
-        if (sim.ice_floes[i].fixed && sim.ice_floes[j].fixed) ||
+        @inbounds if (sim.ice_floes[i].fixed && sim.ice_floes[j].fixed) ||
             !sim.ice_floes[i].enabled || !sim.ice_floes[j].enabled
             return
         end
@@ -152,7 +152,7 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
                           "(sim.Nc_max = $(sim.Nc_max)) for ice floe $i")
 
                 else
-                    if sim.ice_floes[i].contacts[ic] == j
+                    @inbounds if sim.ice_floes[i].contacts[ic] == j
                         break  # contact already registered
 
                     elseif sim.ice_floes[i].contacts[ic] == 0  # empty

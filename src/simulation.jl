@@ -214,7 +214,7 @@ end
 
 export disableIceFloe!
 "Disable ice floe with index `i` in the `simulation` object."
-function disableIceFloe!(simulation::Simulation, i::Integer)
+function disableIceFloe!(simulation::Simulation, i::Int)
     if i < 1
         error("Index must be greater than 0 (i = $i)")
     end
