@@ -22,22 +22,23 @@ info("Testing area-determination methods")
 @test SeaIce.areaOfQuadrilateral([1., 0.], [0., 1.], [0., 0.], [1., 1.]) ≈ 1.
 
 info("Testing area-based cell content determination")
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.5, 53.5], sw, se, ne, nw) == true
 @test SeaIce.isPointInCell(ocean, 1, 1, [6.5, 53.5]) == true
 @test SeaIce.getNonDimensionalCellCoordinates(ocean, 1, 1, [6.5, 53.5]) ≈
     [.5, .5]
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.5]) == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.5], sw, se, ne, nw) == true
 @test SeaIce.getNonDimensionalCellCoordinates(ocean, 1, 1, [6.1, 53.5]) ≈
     [.1, .5]
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.0, 53.5]) == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.0, 53.5], sw, se, ne, nw) == true
 @test SeaIce.getNonDimensionalCellCoordinates(ocean, 1, 1, [6.0, 53.5]) ≈
     [.0, .5]
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.7]) == true
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.9]) == true
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.99999]) == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.7], sw, se, ne, nw) == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.9], sw, se, ne, nw) == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.99999], sw, se, ne, nw) == true
 @test SeaIce.getNonDimensionalCellCoordinates(ocean, 1, 1, [6.1, 53.99999]) ≈
     [.1, .99999]
-@test SeaIce.isPointInCell(ocean, 1, 1, [7.5, 53.5]) == false
-@test SeaIce.isPointInCell(ocean, 1, 1, [0.0, 53.5]) == false
+@test SeaIce.isPointInCell(ocean, 1, 1, [7.5, 53.5], sw, se, ne, nw) == false
+@test SeaIce.isPointInCell(ocean, 1, 1, [0.0, 53.5], sw, se, ne, nw) == false
 x_tilde, _ = SeaIce.getNonDimensionalCellCoordinates(ocean, 1, 1, [0., 53.5])
 @test x_tilde < 0.
 
@@ -64,16 +65,21 @@ info("Testing conformal mapping methods")
                                                                      [7.5,-1.5])
 
 info("Checking cell content using conformal mapping methods")
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.4, 53.4], method="Conformal") == true
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.5], method="Conformal") == true
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.0, 53.5], method="Conformal") == true
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.7], method="Conformal") == true
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.9], method="Conformal") == true
-@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.99999],
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.4, 53.4], sw, se, ne, nw, 
                            method="Conformal") == true
-@test SeaIce.isPointInCell(ocean, 1, 1, [7.5, 53.5],
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.5], sw, se, ne, nw, 
+                           method="Conformal") == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.0, 53.5], sw, se, ne, nw, 
+                           method="Conformal") == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.7], sw, se, ne, nw, 
+                           method="Conformal") == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.9], sw, se, ne, nw, 
+                           method="Conformal") == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [6.1, 53.99999], sw, se, ne, nw,
+                           method="Conformal") == true
+@test SeaIce.isPointInCell(ocean, 1, 1, [7.5, 53.5], sw, se, ne, nw,
                            method="Conformal") == false
-@test SeaIce.isPointInCell(ocean, 1, 1, [0.0, 53.5],
+@test SeaIce.isPointInCell(ocean, 1, 1, [0.0, 53.5], sw, se, ne, nw,
                            method="Conformal") == false
 
 info("Testing bilinear interpolation scheme on conformal mapping")
@@ -82,19 +88,26 @@ ocean.u[2, 1, 1, 1] = 1.0
 ocean.u[2, 2, 1, 1] = 0.0
 ocean.u[1, 2, 1, 1] = 0.0
 val = [NaN, NaN]
-SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, .5, .5, 1, 1, 1, 1)
+SeaIce.bilinearInterpolation!(val, ocean.u[:,:,1,1], ocean.u[:,:,1,1],
+                              .5, .5, 1, 1)
+@time SeaIce.bilinearInterpolation!(val, ocean.u[:,:,1,1], ocean.u[:,:,1,1], .5, 
+                              .5, 1, 1)
 @test val[1] ≈ .5
 @test val[2] ≈ .5
-SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, 1., 1., 1, 1, 1, 1)
+SeaIce.bilinearInterpolation!(val, ocean.u[:,:,1,1], ocean.u[:,:,1,1], 1., 1., 
+1, 1)
 @test val[1] ≈ .0
 @test val[2] ≈ .0
-SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, 0., 0., 1, 1, 1, 1)
+SeaIce.bilinearInterpolation!(val, ocean.u[:,:,1,1], ocean.u[:,:,1,1], 0., 0., 
+1, 1)
 @test val[1] ≈ 1.
 @test val[2] ≈ 1.
-SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, .25, .25, 1, 1, 1, 1)
+SeaIce.bilinearInterpolation!(val, ocean.u[:,:,1,1], ocean.u[:,:,1,1], .25, .25, 
+1, 1)
 @test val[1] ≈ .75
 @test val[2] ≈ .75
-SeaIce.bilinearInterpolation!(val, ocean.u, ocean.u, .75, .75, 1, 1, 1, 1)
+SeaIce.bilinearInterpolation!(val, ocean.u[:,:,1,1], ocean.u[:,:,1,1], .75, .75, 
+1, 1)
 @test val[1] ≈ .25
 @test val[2] ≈ .25
 
@@ -155,14 +168,18 @@ ocean.u[2, 1, 1, 1] = 1.0
 ocean.u[2, 2, 1, 1] = 0.0
 ocean.u[1, 2, 1, 1] = 0.0
 ocean.v[:, :, 1, 1] = 0.0
-@test SeaIce.curl(ocean, .5, .5, 1, 1, 1, 1) > 0.
+sw = Vector{Float64}(2)
+se = Vector{Float64}(2)
+ne = Vector{Float64}(2)
+nw = Vector{Float64}(2)
+@test SeaIce.curl(ocean, .5, .5, 1, 1, 1, 1, sw, se, ne, nw) > 0.
 
 ocean.u[1, 1, 1, 1] = 0.0
 ocean.u[2, 1, 1, 1] = 0.0
 ocean.u[2, 2, 1, 1] = 1.0
 ocean.u[1, 2, 1, 1] = 1.0
 ocean.v[:, :, 1, 1] = 0.0
-@test SeaIce.curl(ocean, .5, .5, 1, 1, 1, 1) < 0.
+@test SeaIce.curl(ocean, .5, .5, 1, 1, 1, 1, sw, se, ne, nw) < 0.
 
 info("Testing atmosphere drag")
 sim = SeaIce.createSimulation()
@@ -197,6 +214,7 @@ atmosphere.u[2, 2, 1, 1] = 0.0
 atmosphere.u[1, 2, 1, 1] = 0.0
 atmosphere.v[:, :, 1, 1] = 0.0
 @test SeaIce.curl(atmosphere, .5, .5, 1, 1, 1, 1) > 0.
+@test SeaIce.curl(atmosphere, .5, .5, 1, 1, 1, 1, sw, se, ne, nw) > 0.
 
 atmosphere.u[1, 1, 1, 1] = 0.0
 atmosphere.u[2, 1, 1, 1] = 0.0
@@ -204,6 +222,7 @@ atmosphere.u[2, 2, 1, 1] = 1.0
 atmosphere.u[1, 2, 1, 1] = 1.0
 atmosphere.v[:, :, 1, 1] = 0.0
 @test SeaIce.curl(atmosphere, .5, .5, 1, 1, 1, 1) < 0.
+@test SeaIce.curl(atmosphere, .5, .5, 1, 1, 1, 1, sw, se, ne, nw) < 0.
 
 
 info("Testing findEmptyPositionInGridCell")
