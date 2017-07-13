@@ -10,6 +10,7 @@ function setTotalTime!(simulation::Simulation, t::float)
         error("Total time should be a positive value (t = $t s)")
     end
     simulation.time_total = t
+    nothing
 end
 
 export setCurrentTime!
@@ -24,6 +25,7 @@ function setCurrentTime!(simulation::Simulation, t::float)
         error("Current time should be a positive value (t = $t s)")
     end
     simulation.time = t
+    nothing
 end
 
 export incrementCurrentTime!
@@ -39,6 +41,7 @@ function incrementCurrentTime!(simulation::Simulation, t::float)
     end
     simulation.time += t
     simulation.file_time_since_output_file += t
+    nothing
 end
 
 export setOutputFileInterval!
@@ -53,12 +56,14 @@ function setOutputFileInterval!(simulation::Simulation, t::float; verbose=true)
         info("No output files will be written")
     end
     simulation.file_time_step = t
+    nothing
 end
 
 export disableOutputFiles!
 "Disables the write of output files to disk during a simulation."
 function disableOutputFiles!(simulation::Simulation)
     simulation.file_time_step = 0.0
+    nothing
 end
 
 export checkTimeParameters
@@ -73,6 +78,7 @@ function checkTimeParameters(simulation::Simulation; single_step::Bool=false)
     if simulation.time_step <= 0.0
         error("Time step should be positive (t = ", simulation.time_step, ")")
     end
+    nothing
 end
 
 export findSmallestIceFloeMass
@@ -148,4 +154,5 @@ function setTimeStep!(simulation::Simulation;
     if verbose
         info("Time step length t=",  simulation.time_step, " s")
     end
+    nothing
 end

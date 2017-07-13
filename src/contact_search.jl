@@ -32,6 +32,7 @@ function findContacts!(simulation::Simulation;
     else
         error("Unknown contact search method '$method'")
     end
+    nothing
 end
 
 export interIceFloePositionVector
@@ -71,13 +72,14 @@ Perform an O(n^2) all-to-all contact search between all ice floes in the
 """
 function findContactsAllToAll!(simulation::Simulation)
 
-    for i = 1:length(simulation.ice_floes)
+    @inbounds for i = 1:length(simulation.ice_floes)
 
         # Check contacts with other grains
         for j = 1:length(simulation.ice_floes)
             checkAndAddContact!(simulation, i, j)
         end
     end
+    nothing
 end
 
 export findContactsInGrid!
@@ -114,6 +116,7 @@ function findContactsInGrid!(simulation::Simulation, grid::Any)
             end
         end
     end
+    nothing
 end
 
 export checkAndAddContact!
@@ -168,4 +171,5 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
             end
         end
     end
+    nothing
 end

@@ -170,6 +170,7 @@ function addAtmosphereDrag!(simulation::Simulation)
                                            curl(simulation.atmosphere,
                                                 x_tilde, y_tilde, i, j, k, 1))
     end
+    nothing
 end
 
 export applyAtmosphereDragToIceFloe!
@@ -190,6 +191,7 @@ function applyAtmosphereDragToIceFloe!(ice_floe::IceFloeCylindrical,
 
     ice_floe.force += drag_force
     ice_floe.atmosphere_stress = drag_force/ice_floe.horizontal_surface_area
+    nothing
 end
 
 export applyAtmosphereVorticityToIceFloe!
@@ -208,6 +210,7 @@ function applyAtmosphereVorticityToIceFloe!(ice_floe::IceFloeCylindrical,
         .1*ice_floe.thickness*ice_floe.atmosphere_drag_coeff_vert)*
         abs(.5*atmosphere_curl - ice_floe.ang_vel)*
         (.5*atmosphere_curl - ice_floe.ang_vel)
+    nothing
 end
 
 export compareAtmospheres
@@ -235,4 +238,5 @@ function compareAtmospheres(atmosphere1::Atmosphere, atmosphere2::Atmosphere)
     if isassigned(atmosphere1.ice_floe_list, 1)
         Base.Test.@test atmosphere1.ice_floe_list == atmosphere2.ice_floe_list
     end
+    nothing
 end

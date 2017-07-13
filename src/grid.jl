@@ -36,6 +36,7 @@ function bilinearInterpolation!(interp_val::Array{Float64, 1},
                      field_y[i, j+1, k, it]*(1. - x_tilde))*y_tilde + 
     (field_y[i+1, j, k, it]*x_tilde + field_y[i, j, k, it]*
                      (1.  - x_tilde))*(1.  - y_tilde)
+    nothing
 end
 function bilinearInterpolation!(interp_val::Array{Float64, 1},
                                 field_x::Array{Float64, 2},
@@ -56,6 +57,7 @@ function bilinearInterpolation!(interp_val::Array{Float64, 1},
     interp_val[2] = (field_y[i+1, j+1]*x_tilde + 
                      field_y[i, j+1]*(1. - x_tilde))*y_tilde + 
     (field_y[i+1, j]*x_tilde + field_y[i, j]*(1. - x_tilde))*(1.  - y_tilde)
+    nothing
 end
 
 """
@@ -192,6 +194,7 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
         # add ice floe to cell
         @inbounds push!(grid.ice_floe_list[i, j], idx)
     end
+    nothing
 end
 
 export findCellContainingPoint
@@ -510,4 +513,5 @@ function copyGridSortingInfo!(ocean::Ocean, atmosphere::Atmosphere,
         icefloe.atmosphere_grid_pos = deepcopy(icefloe.ocean_grid_pos)
     end
     atmosphere.ice_floe_list = deepcopy(ocean.ice_floe_list)
+    nothing
 end

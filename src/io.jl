@@ -41,6 +41,7 @@ function writeSimulation(simulation::Simulation;
             info("simulation written to $filename")
         end
     end
+    nothing
 end
 
 export readSimulation
@@ -56,6 +57,7 @@ function readSimulation(filename::String="";
         warn("Package JLD not found. Simulation save/read not supported. " * 
              "Please install JLD and its " *
              "requirements with `Pkg.add(\"JLD\")`.")
+        nothing
     else
         if verbose
             info("reading simulation from $filename")
@@ -85,6 +87,7 @@ function writeSimulationStatus(simulation::Simulation;
     if verbose
         info("wrote status to $filename")
     end
+    nothing
 end
 
 export readSimulationStatus
@@ -197,6 +200,7 @@ function status(folder::String=".";
             repeat = false
         end
     end
+    nothing
 end
 
 export writeVTK
@@ -240,6 +244,7 @@ function writeVTK(simulation::Simulation;
                         simulation.file_number)
         writeGridVTK(simulation.atmosphere, filename, verbose=verbose)
     end
+    nothing
 end
 
 export writeIceFloeVTK
@@ -343,9 +348,8 @@ function writeIceFloeVTK(simulation::Simulation,
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
         info("Output file: " * outfiles[1])
-    else
-        return nothing
     end
+    nothing
 end
 
 export writeIceFloeInteractionVTK
@@ -580,6 +584,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "  </PolyData>\n")
         write(f, "</VTKFile>\n")
     end
+    nothing
 end
 
 export writeOceanVTK
@@ -638,9 +643,8 @@ function writeGridVTK(grid::Any,
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
         info("Output file: " * outfiles[1])
-    else
-        return nothing
     end
+    nothing
 end
 
 export writeParaviewStateFile
@@ -18176,6 +18180,7 @@ function writeParaviewStateFile(simulation::Simulation;
     if verbose
         info("Output file: " * filename)
     end
+    nothing
 end
 
 export removeSimulationFiles
@@ -18192,4 +18197,5 @@ function removeSimulationFiles(simulation::Simulation; folder::String=".")
     run(`bash -c "rm -rf $(folder)/$(simulation.id).status.txt"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.jld"`)
     run(`bash -c "rm -rf $(folder)"`)
+    nothing
 end

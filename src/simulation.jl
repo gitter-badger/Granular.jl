@@ -175,7 +175,7 @@ function run!(simulation::Simulation;
         incrementCurrentTime!(simulation, simulation.time_step)
 
         if single_step
-            return
+            return nothing
         end
     end
 
@@ -191,6 +191,7 @@ function run!(simulation::Simulation;
         reportSimulationTimeToStdout(simulation)
         println()
     end
+    nothing
 end
 
 export addIceFloe!
@@ -210,6 +211,7 @@ function addIceFloe!(simulation::Simulation,
     if verbose
         info("Added IceFloe $(length(simulation.ice_floes))")
     end
+    nothing
 end
 
 export disableIceFloe!
@@ -218,8 +220,8 @@ function disableIceFloe!(simulation::Simulation, i::Int)
     if i < 1
         error("Index must be greater than 0 (i = $i)")
     end
-
     simulation.ice_floes[i].enabled = false
+    nothing
 end
 
 export zeroForcesAndTorques!
@@ -230,6 +232,7 @@ function zeroForcesAndTorques!(simulation::Simulation)
         icefloe.torque = 0.
         icefloe.pressure = 0.
     end
+    nothing
 end
 
 export reportSimulationTimeToStdout
@@ -237,6 +240,7 @@ export reportSimulationTimeToStdout
 function reportSimulationTimeToStdout(simulation::Simulation)
     print("\r  t = ", simulation.time, '/', simulation.time_total,
           " s            ")
+    nothing
 end
 
 export compareSimulations
@@ -265,6 +269,7 @@ function compareSimulations(sim1::Simulation, sim2::Simulation)
     compareAtmospheres(sim1.atmosphere, sim2.atmosphere)
 
     Base.Test.@test sim1.Nc_max == sim2.Nc_max
+    nothing
 end
 
 export printMemoryUsage
@@ -290,6 +295,7 @@ function printMemoryUsage(sim::Simulation)
                  "($(size(sim.atmosphere.xh, 1))x" *
                  "$(size(sim.atmosphere.xh, 2))x" *
                  "$(size(sim.atmosphere.xh, 3)))")
+    nothing
 end
 
 function reportMemory(variable, head::String, tail::String="")
@@ -304,4 +310,5 @@ function reportMemory(variable, head::String, tail::String="")
         size_str = @sprintf "%5d Gb" bytes ÷ 1024 ÷ 1024 ÷ 1024
     end
     @printf("%-20s %s %s\n", head, size_str, tail)
+    nothing
 end

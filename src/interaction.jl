@@ -37,6 +37,7 @@ function interact!(simulation::Simulation)
             simulation.ice_floes[i].force/
             simulation.ice_floes[i].horizontal_surface_area
     end
+    nothing
 end
 
 export interactIceFloes!
@@ -198,6 +199,7 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
         force_n/simulation.ice_floes[i].side_surface_area;
     simulation.ice_floes[j].pressure += 
         force_n/simulation.ice_floes[j].side_surface_area;
+    nothing
 end
 
 function harmonicMean(a::Any, b::Any)

@@ -151,6 +151,7 @@ function addIceFloeCylindrical!(simulation::Simulation,
 
     # Add to simulation object
     addIceFloe!(simulation, icefloe, verbose)
+    nothing
 end
 
 export iceFloeCircumreference
@@ -368,6 +369,7 @@ function deleteIceFloeArrays!(ifarr::IceFloeArrays)
     ifarr.ocean_stress = 0
     ifarr.atmosphere_stress = 0
     gc()
+    nothing
 end
 
 export printIceFloeInfo
@@ -427,6 +429,7 @@ function printIceFloeInfo(f::IceFloeCylindrical)
     println("  granular_stress:   $(f.granular_stress) Pa")
     println("  ocean_stress:      $(f.ocean_stress) Pa")
     println("  atmosphere_stress: $(f.atmosphere_stress) Pa")
+    nothing
 end
 
 export iceFloeKineticTranslationalEnergy
@@ -535,4 +538,5 @@ function compareIceFloes(if1::IceFloeCylindrical, if2::IceFloeCylindrical)
     Base.Test.@test if1.granular_stress ≈ if2.granular_stress
     Base.Test.@test if1.ocean_stress ≈ if2.ocean_stress
     Base.Test.@test if1.atmosphere_stress ≈ if2.atmosphere_stress
+    nothing
 end

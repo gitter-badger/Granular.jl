@@ -282,6 +282,7 @@ function addOceanDrag!(simulation::Simulation)
                                       curl(simulation.ocean, x_tilde, y_tilde,
                                            i, j, k, 1))
     end
+    nothing
 end
 
 export applyOceanDragToIceFloe!
@@ -303,6 +304,7 @@ function applyOceanDragToIceFloe!(ice_floe::IceFloeCylindrical,
 
     ice_floe.force += drag_force
     ice_floe.ocean_stress = drag_force/ice_floe.horizontal_surface_area
+    nothing
 end
 
 export applyOceanVorticityToIceFloe!
@@ -322,6 +324,7 @@ function applyOceanVorticityToIceFloe!(ice_floe::IceFloeCylindrical,
         (ice_floe.areal_radius/5.*ice_floe.ocean_drag_coeff_horiz + 
         draft*ice_floe.ocean_drag_coeff_vert)*
         abs(.5*ocean_curl - ice_floe.ang_vel)*(.5*ocean_curl - ice_floe.ang_vel)
+    nothing
 end
 
 export compareOceans
@@ -352,4 +355,5 @@ function compareOceans(ocean1::Ocean, ocean2::Ocean)
     if isassigned(ocean1.ice_floe_list, 1)
         Base.Test.@test ocean1.ice_floe_list == ocean2.ice_floe_list
     end
+    nothing
 end
