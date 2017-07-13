@@ -1,11 +1,11 @@
 export setTotalTime!
 """
-    setTotalTime!(simulation::Simulation, t::float)
+    setTotalTime!(simulation::Simulation, t::Float64)
 
 Sets the total simulation time of the `simulation` object to `t`, with parameter 
 value checks.
 """
-function setTotalTime!(simulation::Simulation, t::float)
+function setTotalTime!(simulation::Simulation, t::Float64)
     if t <= 0.0
         error("Total time should be a positive value (t = $t s)")
     end
@@ -15,12 +15,12 @@ end
 
 export setCurrentTime!
 """
-    setCurrentTime!(simulation::Simulation, t::float)
+    setCurrentTime!(simulation::Simulation, t::Float64)
 
 Sets the current simulation time of the `simulation` object to `t`, with 
 parameter value checks.
 """
-function setCurrentTime!(simulation::Simulation, t::float)
+function setCurrentTime!(simulation::Simulation, t::Float64)
     if t <= 0.0
         error("Current time should be a positive value (t = $t s)")
     end
@@ -30,12 +30,12 @@ end
 
 export incrementCurrentTime!
 """
-    incrementCurrentTime!(simulation::Simulation, t::float)
+    incrementCurrentTime!(simulation::Simulation, t::Float64)
 
 Sets the current simulation time of the `simulation` object to `t`, with 
 parameter value checks.
 """
-function incrementCurrentTime!(simulation::Simulation, t::float)
+function incrementCurrentTime!(simulation::Simulation, t::Float64)
     if t <= 0.0
         error("Current time increment should be a positive value (t = $t s)")
     end
@@ -46,12 +46,13 @@ end
 
 export setOutputFileInterval!
 """
-   setOutputFileInterval!(simulation::Simulation, t::float)
+   setOutputFileInterval!(simulation::Simulation, t::Float64)
 
 Sets the simulation-time interval between output files are written to disk.  If 
 this value is zero or negative, no output files will be written.
 """
-function setOutputFileInterval!(simulation::Simulation, t::float; verbose=true)
+function setOutputFileInterval!(simulation::Simulation, t::Float64; 
+    verbose=true)
     if t <= 0.0 && verbose
         info("No output files will be written")
     end
@@ -136,7 +137,7 @@ Find the computational time step length suitable given the grain radii, contact
 stiffnesses, and grain density. Uses the scheme by Radjaii et al. 2011.
 """
 function setTimeStep!(simulation::Simulation;
-                      epsilon::float=0.07, verbose::Bool=true)
+                      epsilon::Float64=0.07, verbose::Bool=true)
 
     if length(simulation.ice_floes) < 1
         error("At least 1 grain is needed to find the computational time step.")

@@ -71,17 +71,17 @@ or `########.ocean_month.nc`) from disk and return time stamps, velocity fields,
 layer thicknesses, interface heights, and vertical coordinates.
 
 # Returns
-* `time::Array{Float, 1}`: Time [s]
-* `u::Array{Float, 2}`: Cell corner zonal velocity [m/s],
+* `time::Vector{Float64}`: Time [s]
+* `u::Array{Float64, 2}`: Cell corner zonal velocity [m/s],
     dimensions correspond to placement in `[xq, yq, zl, time]`
-* `v::Array{Float, 2}`: Cell corner meridional velocity [m/s],
+* `v::Array{Float64, 2}`: Cell corner meridional velocity [m/s],
     dimensions correspond to placement in `[xq, yq, zl, time]`
 * `h::Array{Float64, 2}`: layer thickness [m], dimensions correspond to 
     placement in `[xh, yh, zl, time]`
 * `e::Array{Float64, 2}`: interface height relative to mean sea level [m],  
     dimensions correspond to placement in `[xh, yh, zi, time]`
-* `zl::Array{Float64, 1}`: layer target potential density [kg m^-3]
-* `zi::Array{Float64, 1}`: interface target potential density [kg m^-3]
+* `zl::Vector{Float64}`: layer target potential density [kg m^-3]
+* `zi::Vector{Float64}`: interface target potential density [kg m^-3]
 """
 function readOceanStateNetCDF(filename::String)
 
@@ -93,13 +93,13 @@ function readOceanStateNetCDF(filename::String)
     v_staggered = convert(Array{Float64, 4}, NetCDF.ncread(filename, "v"))
     u, v = interpolateOceanVelocitiesToCorners(u_staggered, v_staggered)
 
-    time = convert(Array{Float64, 1},
+    time = convert(Vector{Float64},
                    NetCDF.ncread(filename, "time")*24.*60.*60.)
     h = convert(Array{Float64, 4}, NetCDF.ncread(filename, "h"))
     e = convert(Array{Float64, 4}, NetCDF.ncread(filename, "e"))
 
-    zl = convert(Array{Float64, 1}, NetCDF.ncread(filename, "zl"))
-    zi = convert(Array{Float64, 1}, NetCDF.ncread(filename, "zi"))
+    zl = convert(Vector{Float64}, NetCDF.ncread(filename, "zl"))
+    zi = convert(Vector{Float64}, NetCDF.ncread(filename, "zi"))
 
     return time, u, v, h, e, zl, zi
 end
@@ -172,7 +172,7 @@ function performs linear interpolation between time steps to get the approximate
 ocean state at any point in time.  If the `Ocean` data set only contains a 
 single time step, values from that time are returned.
 """
-function interpolateOceanState(ocean::Ocean, t::float)
+function interpolateOceanState(ocean::Ocean, t::Float64)
     if length(ocean.time) == 1
         return ocean.u, ocean.v, ocean.h, ocean.e
     elseif t < ocean.time[1] || t > ocean.time[end]
@@ -213,9 +213,9 @@ the ocean spanning `z<0.`.  Vertical indexing starts with `k=0` at the sea
 surface, and increases downwards.
 """
 function createRegularOceanGrid(n::Array{Int, 1},
-                                L::Array{float, 1};
-                                origo::Array{float, 1} = zeros(2),
-                                time::Array{float, 1} = zeros(1),
+                                L::Vector{Float64};
+                                origo::Vector{Float64} = zeros(2),
+                                time::Vector{Float64} = zeros(1),
                                 name::String = "unnamed")
 
     xq = repmat(linspace(origo[1], L[1], n[1] + 1), 1, n[2] + 1)
@@ -291,7 +291,7 @@ Add Stokes-type drag from velocity difference between ocean and a single ice
 floe.
 """
 function applyOceanDragToIceFloe!(ice_floe::IceFloeCylindrical,
-                                  u::float, v::float)
+                                  u::Float64, v::Float64)
     freeboard = .1*ice_floe.thickness  # height above water
     rho_o = 1000.   # ocean density
     draft = ice_floe.thickness - freeboard  # height of submerged thickness
@@ -314,7 +314,7 @@ single ice floe.  See Eq. 9.28 in "Introduction to Fluid Mechanics" by Nakayama
 and Boucher, 1999.
 """
 function applyOceanVorticityToIceFloe!(ice_floe::IceFloeCylindrical, 
-                                       ocean_curl::float)
+                                       ocean_curl::Float64)
     freeboard = .1*ice_floe.thickness  # height above water
     rho_o = 1000.   # ocean density
     draft = ice_floe.thickness - freeboard  # height of submerged thickness

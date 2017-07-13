@@ -367,14 +367,14 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
 
     i1 = Int64[]
     i2 = Int64[]
-    inter_particle_vector = Array{float, 1}[]
-    force = float[]
-    effective_radius = float[]
-    contact_area = float[]
-    contact_stiffness = float[]
-    tensile_stress = float[]
-    shear_displacement = Array{float, 1}[]
-    contact_age = float[]
+    inter_particle_vector = Vector{Float64}[]
+    force = Float64[]
+    effective_radius = Float64[]
+    contact_area = Float64[]
+    contact_stiffness = Float64[]
+    tensile_stress = Float64[]
+    shear_displacement = Vector{Float64}[]
+    contact_age = Float64[]
     for i=1:length(simulation.ice_floes)
         for ic=1:simulation.Nc_max
             if simulation.ice_floes[i].contacts[ic] > 0

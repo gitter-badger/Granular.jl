@@ -58,7 +58,7 @@ position_ij is the inter-grain position vector, and can be found with
 interIceFloePositionVector().
 """
 function findOverlap(simulation::Simulation, i::Int, j::Int, 
-                     position_ij::vector)
+                     position_ij::Vector{Float64})
     @inbounds return norm(position_ij) - (simulation.ice_floes[i].contact_radius 
                                 + simulation.ice_floes[j].contact_radius)
 end

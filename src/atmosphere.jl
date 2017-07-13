@@ -15,7 +15,7 @@ function createEmptyAtmosphere()
                       zeros(1,1,1,1),
                       zeros(1,1,1,1),
 
-                      Array{Array{Int, 1}}(1, 1),
+                      Array{Vector{Int}}(1, 1),
 
                       false)
 end
@@ -25,16 +25,16 @@ export interpolateAtmosphereVelocitiesToCorners
 Convert gridded data from Arakawa-C type (decomposed velocities at faces) to 
 Arakawa-B type (velocities at corners) through interpolation.
 """
-function interpolateAtmosphereVelocitiesToCorners(u_in::Array{float, 4},
-                                                  v_in::Array{float, 4})
+function interpolateAtmosphereVelocitiesToCorners(u_in::Array{Float64, 4},
+                                                  v_in::Array{Float64, 4})
 
     if size(u_in) != size(v_in)
         error("size of u_in ($(size(u_in))) must match v_in ($(size(v_in)))")
     end
 
     nx, ny, nz, nt = size(u_in)
-    #u = Array{float}(nx+1, ny+1, nz, nt)
-    #v = Array{float}(nx+1, ny+1, nz, nt)
+    #u = Array{Float64}(nx+1, ny+1, nz, nt)
+    #v = Array{Float64}(nx+1, ny+1, nz, nt)
     u = zeros(nx+1, ny+1, nz, nt)
     v = zeros(nx+1, ny+1, nz, nt)
     for i=1:nx
@@ -62,7 +62,7 @@ steps to get the approximate atmosphere state at any point in time.  If the
 `Atmosphere` data set only contains a single time step, values from that time 
 are returned.
 """
-function interpolateAtmosphereState(atmosphere::Atmosphere, t::float)
+function interpolateAtmosphereState(atmosphere::Atmosphere, t::Float64)
     if length(atmosphere.time) == 1
         return atmosphere.u, atmosphere.v
     elseif t < atmosphere.time[1] || t > atmosphere.time[end]
@@ -102,10 +102,10 @@ one 4-th dimension matrix per `time` step.  Sea surface will be at `z=0.` with
 the atmosphere spanning `z<0.`.  Vertical indexing starts with `k=0` at the sea 
 surface, and increases downwards.
 """
-function createRegularAtmosphereGrid(n::Array{Int, 1},
-                                     L::Array{float, 1};
-                                     origo::Array{float, 1} = zeros(2),
-                                     time::Array{float, 1} = zeros(1),
+function createRegularAtmosphereGrid(n::Vector{Int},
+                                     L::Vector{Float64};
+                                     origo::Vector{Float64} = zeros(2),
+                                     time::Array{Float64, 1} = zeros(1),
                                      name::String = "unnamed")
 
     xq = repmat(linspace(origo[1], L[1], n[1] + 1), 1, n[2] + 1)
@@ -179,7 +179,7 @@ Add Stokes-type drag from velocity difference between atmosphere and a single
 ice floe.
 """
 function applyAtmosphereDragToIceFloe!(ice_floe::IceFloeCylindrical,
-                                  u::float, v::float)
+                                  u::Float64, v::Float64)
     rho_a = 1.2754   # atmosphere density
     length = ice_floe.areal_radius*2.
     width = ice_floe.areal_radius*2.
@@ -201,7 +201,7 @@ single ice floe.  See Eq. 9.28 in "Introduction to Fluid Mechanics" by Nakayama
 and Boucher, 1999.
 """
 function applyAtmosphereVorticityToIceFloe!(ice_floe::IceFloeCylindrical, 
-                                            atmosphere_curl::float)
+                                            atmosphere_curl::Float64)
     rho_a = 1.2754   # atmosphere density
 
     ice_floe.torque +=

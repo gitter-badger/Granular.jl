@@ -7,13 +7,13 @@ south-west (-x, -y)-facing corner.
 
 # Arguments
 * `field::Array{Float64, 4}`: a scalar field to interpolate from
-* `x_tilde::float`: x point position [0;1]
-* `y_tilde::float`: y point position [0;1]
+* `x_tilde::Float64`: x point position [0;1]
+* `y_tilde::Float64`: y point position [0;1]
 * `i::Int`: i-index of cell containing point
 * `j::Int`: j-index of scalar field to interpolate from
 * `it::Int`: time step from scalar field to interpolate from
 """
-function bilinearInterpolation!(interp_val::Array{Float64, 1},
+function bilinearInterpolation!(interp_val::Vector{Float64},
                                 field_x::Array{Float64, 4},
                                 field_y::Array{Float64, 4},
                                 x_tilde::Float64,
@@ -38,7 +38,7 @@ function bilinearInterpolation!(interp_val::Array{Float64, 1},
                      (1.  - x_tilde))*(1.  - y_tilde)
     nothing
 end
-function bilinearInterpolation!(interp_val::Array{Float64, 1},
+function bilinearInterpolation!(interp_val::Vector{Float64},
                                 field_x::Array{Float64, 2},
                                 field_y::Array{Float64, 2},
                                 x_tilde::Float64,
@@ -69,8 +69,8 @@ grid to an arbitrary position in a cell.  Assumes south-west convention, i.e.
 
 # Arguments
 * `grid::Any`: grid for which to determine curl
-* `x_tilde::float`: x point position [0;1]
-* `y_tilde::float`: y point position [0;1]
+* `x_tilde::Float64`: x point position [0;1]
+* `y_tilde::Float64`: y point position [0;1]
 * `i::Int`: i-index of cell containing point
 * `j::Int`: j-index of scalar field to interpolate from
 * `it::Int`: time step from scalar field to interpolate from
@@ -209,11 +209,11 @@ found the function returns `(0,0)`.
 
 # Arguments
 * `grid::Any`: grid object containing ocean or atmosphere data.
-* `point::Array{float, 1}`: two-dimensional vector of point to check.
+* `point::Vector{Float64}`: two-dimensional vector of point to check.
 * `method::String`: approach to use for determining if point is inside cell or 
     not, can be "Conformal" (default) or "Areal".
 """
-function findCellContainingPoint(grid::Any, point::Array{float, 1};
+function findCellContainingPoint(grid::Any, point::Vector{Float64};
                                  method::String="Conformal")
 
     for i=1:size(grid.xh, 1)
@@ -235,7 +235,7 @@ This function is a wrapper for `getCellCornerCoordinates()` and
 `conformalQuadrilateralCoordinates()`.
 """
 function getNonDimensionalCellCoordinates(grid::Any, i::Int, j::Int,
-                                          point::Array{float, 1})
+                                          point::Vector{Float64})
 
     sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
     return conformalQuadrilateralCoordinates(sw, se, ne, nw, point)
@@ -248,7 +248,7 @@ The function uses either an area-based approach (`method = "Area"`), or a
 conformal mapping approach (`method = "Conformal"`).  The area-based approach is 
 more robust.  This function returns `true` or `false`.
 """
-function isPointInCell(grid::Any, i::Int, j::Int, point::Array{float, 1};
+function isPointInCell(grid::Any, i::Int, j::Int, point::Vector{Float64};
                        method::String="Conformal")
 
     sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
@@ -318,9 +318,9 @@ end
 
 export areaOfTriangle
 "Returns the area of an triangle with corner coordinates `a`, `b`, and `c`."
-function areaOfTriangle(a::Array{float, 1},
-                        b::Array{float, 1},
-                        c::Array{float, 1})
+function areaOfTriangle(a::Vector{Float64},
+                        b::Vector{Float64},
+                        c::Vector{Float64})
     return abs(
                (a[1]*(b[2] - c[2]) +
                 b[1]*(c[2] - a[2]) +
@@ -335,10 +335,10 @@ Returns the area of a quadrilateral with corner coordinates `a`, `b`, `c`, and
 true for `b` and `d`.  This is true if the four corners are passed as arguments 
 in a "clockwise" or "counter-clockwise" manner.
 """
-function areaOfQuadrilateral(a::Array{float, 1},
-                             b::Array{float, 1},
-                             c::Array{float, 1},
-                             d::Array{float, 1})
+function areaOfQuadrilateral(a::Vector{Float64},
+                             b::Vector{Float64},
+                             c::Vector{Float64},
+                             d::Vector{Float64})
     return areaOfTriangle(a, b, c) + areaOfTriangle(c, d, a)
 end
 
@@ -349,11 +349,11 @@ within a quadrilateral with corner coordinates `A`, `B`, `C`, and `D`.
 Points must be ordered in counter-clockwise order, starting from south-west 
 corner.
 """
-function conformalQuadrilateralCoordinates(A::Array{float, 1},
-                                           B::Array{float, 1},
-                                           C::Array{float, 1},
-                                           D::Array{float, 1},
-                                           p::Array{float, 1})
+function conformalQuadrilateralCoordinates(A::Vector{Float64},
+                                           B::Vector{Float64},
+                                           C::Vector{Float64},
+                                           D::Vector{Float64},
+                                           p::Vector{Float64})
 
     if !(A[1] < B[1] && B[2] < C[2] && C[1] > D[1])
         error("corner coordinates are not passed in the correct order")
@@ -422,7 +422,7 @@ function findEmptyPositionInGridCell(simulation::Simulation,
                                      grid::Any,
                                      i::Int,
                                      j::Int,
-                                     r::float;
+                                     r::Float64;
                                      n_iter::Int = 10,
                                      seed::Int = 1,
                                      verbose::Bool = false)
