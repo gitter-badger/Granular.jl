@@ -280,16 +280,15 @@ function addOceanDrag!(simulation::Simulation)
         end
 
         x_tilde_inv = 1. - x_tilde
-
-        u_interp = (u[i+1, j+1, k, 1]*x_tilde +
-                    u[i, j+1, k, 1]*x_tilde_inv)*y_tilde +
-        (u[i+1, j, k, 1]*x_tilde + u[i, j, k, 1]*x_tilde_inv)*(1. - y_tilde)
-
-        v_interp = (v[i+1, j+1, k, 1]*x_tilde +
-                    v[i, j+1, k, 1]*x_tilde_inv)*y_tilde +
-        (v[i+1, j, k, 1]*x_tilde + v[i, j, k, 1]*x_tilde_inv)*(1. - y_tilde)
-
-        applyOceanDragToIceFloe!(ice_floe, u_interp, v_interp)
+        applyOceanDragToIceFloe!(ice_floe,
+                                 (u[i+1, j+1, k, 1]*x_tilde +
+                                  u[i, j+1, k, 1]*x_tilde_inv)*y_tilde +
+                                 (u[i+1, j, k, 1]*x_tilde + 
+                                  u[i, j, k, 1]*x_tilde_inv)*(1. - y_tilde),
+                                 (v[i+1, j+1, k, 1]*x_tilde +
+                                  v[i, j+1, k, 1]*x_tilde_inv)*y_tilde +
+                                 (v[i+1, j, k, 1]*x_tilde + 
+                                  v[i, j, k, 1]*x_tilde_inv)*(1. - y_tilde))
         applyOceanVorticityToIceFloe!(ice_floe,
                                       curl(simulation.ocean, x_tilde, y_tilde,
                                            i, j, k, 1, sw, se, ne, nw))
