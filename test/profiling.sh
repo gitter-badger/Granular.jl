@@ -13,4 +13,6 @@ declare -a arr=(\
 
 for flags in "${arr[@]}"; do
     julia --color=yes $flags profiling.jl
+    mv profiling-cpu.pdf "profiling-cpu.$flags.pdf"
+    mv profiling-memory-usage.pdf "profiling-memory-usage.$flags.pdf"
 done
