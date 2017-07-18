@@ -70,60 +70,61 @@ end
 type IceFloeArrays
 
     # Material properties
-    density
+    density::Vector{Float64}
 
     # Geometrical parameters
-    thickness
-    contact_radius
-    areal_radius
-    circumreference
-    horizontal_surface_area
-    side_surface_area
-    volume
-    mass
-    moment_of_inertia
+    thickness::Vector{Float64}
+    contact_radius::Vector{Float64}
+    areal_radius::Vector{Float64}
+    circumreference::Vector{Float64}
+    horizontal_surface_area::Vector{Float64}
+    side_surface_area::Vector{Float64}
+    volume::Vector{Float64}
+    mass::Vector{Float64}
+    moment_of_inertia::Vector{Float64}
 
     # Linear kinematic degrees of freedom along horizontal plane
-    lin_pos
-    lin_vel
-    lin_acc
-    force
+    lin_pos::Array{Float64, 2}
+    lin_vel::Array{Float64, 2}
+    lin_acc::Array{Float64, 2}
+    force::Array{Float64, 2}
 
     # Angular kinematic degrees of freedom for vertical rotation around center
-    ang_pos
-    ang_vel
-    ang_acc
-    torque
+    ang_pos::Array{Float64, 2}
+    ang_vel::Array{Float64, 2}
+    ang_acc::Array{Float64, 2}
+    torque::Array{Float64, 2}
 
     # Kinematic constraint flags
-    fixed
-    rotating
-    enabled
+    fixed::Vector{Int}
+    rotating::Vector{Int}
+    enabled::Vector{Int}
 
     # Rheological parameters
-    contact_stiffness_normal
-    contact_stiffness_tangential
-    contact_viscosity_normal
-    contact_viscosity_tangential
-    contact_static_friction
-    contact_dynamic_friction
+    contact_stiffness_normal::Vector{Float64}
+    contact_stiffness_tangential::Vector{Float64}
+    contact_viscosity_normal::Vector{Float64}
+    contact_viscosity_tangential::Vector{Float64}
+    contact_static_friction::Vector{Float64}
+    contact_dynamic_friction::Vector{Float64}
 
-    youngs_modulus
-    poissons_ratio
-    tensile_strength
-    compressive_strength_prefactor
+    youngs_modulus::Vector{Float64}
+    poissons_ratio::Vector{Float64}
+    tensile_strength::Vector{Float64}
+    #tensile_heal_rate::Vector{Float64}
+    compressive_strength_prefactor::Vector{Float64}
 
-    ocean_drag_coeff_vert
-    ocean_drag_coeff_horiz
-    atmosphere_drag_coeff_vert
-    atmosphere_drag_coeff_horiz
+    ocean_drag_coeff_vert::Vector{Float64}
+    ocean_drag_coeff_horiz::Vector{Float64}
+    atmosphere_drag_coeff_vert::Vector{Float64}
+    atmosphere_drag_coeff_horiz::Vector{Float64}
 
-    pressure
-    n_contacts
+    pressure::Vector{Float64}
+    n_contacts::Vector{Int}
 
-    granular_stress
-    ocean_stress
-    atmosphere_stress
+    granular_stress::Array{Float64, 2}
+    ocean_stress::Array{Float64, 2}
+    atmosphere_stress::Array{Float64, 2}
 end
 
 #=

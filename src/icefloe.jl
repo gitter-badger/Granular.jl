@@ -319,55 +319,60 @@ function convertIceFloeDataToArrays(simulation::Simulation)
 end
 
 function deleteIceFloeArrays!(ifarr::IceFloeArrays)
-    ifarr.density = 0
+    f1 = zeros(1)
+    f2 = zeros(1,1)
+    i1 = zeros(Int, 1)
 
-    ifarr.thickness = 0
-    ifarr.contact_radius = 0
-    ifarr.areal_radius = 0
-    ifarr.circumreference = 0
-    ifarr.horizontal_surface_area = 0
-    ifarr.side_surface_area = 0
-    ifarr.volume = 0
-    ifarr.mass = 0
-    ifarr.moment_of_inertia = 0
+    ifarr.density = f1
 
-    ifarr.lin_pos = 0
-    ifarr.lin_vel = 0
-    ifarr.lin_acc = 0
-    ifarr.force = 0
+    ifarr.thickness = f1
+    ifarr.contact_radius = f1
+    ifarr.areal_radius = f1
+    ifarr.circumreference = f1
+    ifarr.horizontal_surface_area = f1
+    ifarr.side_surface_area = f1
+    ifarr.volume = f1
+    ifarr.mass = f1
+    ifarr.moment_of_inertia = f1
 
-    ifarr.ang_pos = 0
-    ifarr.ang_vel = 0
-    ifarr.ang_acc = 0
-    ifarr.torque = 0
+    ifarr.lin_pos = f2
+    ifarr.lin_vel = f2
+    ifarr.lin_acc = f2
+    ifarr.force = f2
 
-    ifarr.fixed = 0
-    ifarr.rotating = 0
-    ifarr.enabled = 0
+    ifarr.ang_pos = f2
+    ifarr.ang_vel = f2
+    ifarr.ang_acc = f2
+    ifarr.torque = f2
 
-    ifarr.contact_stiffness_normal = 0
-    ifarr.contact_stiffness_tangential = 0
-    ifarr.contact_viscosity_normal = 0
-    ifarr.contact_viscosity_tangential = 0
-    ifarr.contact_static_friction = 0
-    ifarr.contact_dynamic_friction = 0
+    ifarr.fixed = i1
+    ifarr.rotating = i1
+    ifarr.enabled = i1
 
-    ifarr.youngs_modulus = 0
-    ifarr.poissons_ratio = 0
-    ifarr.tensile_strength = 0
-    ifarr.compressive_strength_prefactor = 0
+    ifarr.contact_stiffness_normal = f1
+    ifarr.contact_stiffness_tangential = f1
+    ifarr.contact_viscosity_normal = f1
+    ifarr.contact_viscosity_tangential = f1
+    ifarr.contact_static_friction = f1
+    ifarr.contact_dynamic_friction = f1
 
-    ifarr.ocean_drag_coeff_vert = 0
-    ifarr.ocean_drag_coeff_horiz = 0
-    ifarr.atmosphere_drag_coeff_vert = 0
-    ifarr.atmosphere_drag_coeff_horiz = 0
+    ifarr.youngs_modulus = f1
+    ifarr.poissons_ratio = f1
+    ifarr.tensile_strength = f1
+    ifarr.compressive_strength_prefactor = f1
 
-    ifarr.pressure = 0
-    ifarr.n_contacts = 0
+    ifarr.ocean_drag_coeff_vert = f1
+    ifarr.ocean_drag_coeff_horiz = f1
+    ifarr.atmosphere_drag_coeff_vert = f1
+    ifarr.atmosphere_drag_coeff_horiz = f1
 
-    ifarr.granular_stress = 0
-    ifarr.ocean_stress = 0
-    ifarr.atmosphere_stress = 0
+    ifarr.pressure = f1
+    ifarr.n_contacts = i1
+
+    ifarr.granular_stress = f2
+    ifarr.ocean_stress = f2
+    ifarr.atmosphere_stress = f2
+
     gc()
     nothing
 end
