@@ -10,23 +10,21 @@ function interact!(simulation::Simulation)
     for i=1:length(simulation.ice_floes)
         for ic=1:simulation.Nc_max
 
-            @inbounds j = simulation.ice_floes[i].contacts[ic]
+            j = simulation.ice_floes[i].contacts[ic]
 
             if i > j  # skip i > j and j == 0
                 continue
             end
 
-            """
-            if norm(simulation.ice_floes[i].lin_pos - 
+            #=if norm(simulation.ice_floes[i].lin_pos - 
                     simulation.ice_floes[j].lin_pos) - 
-                (simulation.ice_floes[i].contact_radius + 
-                 simulation.ice_floes[j].contact_radius) > 0.
+                    (simulation.ice_floes[i].contact_radius + 
+                    simulation.ice_floes[j].contact_radius) > 0.
 
                 simulation.ice_floes[i].contacts[ic] = 0  # remove contact
                 simulation.ice_floes[i].n_contacts -= 1
                 simulation.ice_floes[j].n_contacts -= 1
-            else
-            """
+            else=#
             interactIceFloes!(simulation, i, j, ic)
             #end
         end

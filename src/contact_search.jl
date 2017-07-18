@@ -147,18 +147,38 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
         position_ij = interIceFloePositionVector(sim, i, j)
         overlap_ij = findOverlap(sim, i, j, position_ij)
 
+        contact_found = false
+
         # Check if grains overlap (overlap when negative)
         if overlap_ij < 0.
-            for ic=1:(sim.Nc_max + 1)
-                if ic == (sim.Nc_max + 1)
-                    error("contact $i-$j exceeds max. number of contacts " *
-                          "(sim.Nc_max = $(sim.Nc_max)) for ice floe $i")
 
-                else
-                    @inbounds if sim.ice_floes[i].contacts[ic] == j
-                        break  # contact already registered
+            # Check if contact is already registered
+            for ic=1:sim.Nc_max
+                @inbounds if sim.ice_floes[i].contacts[ic] == j
+                    contact_found = true
+                    break  # contact already registered
+                end
+            end
 
-                    elseif sim.ice_floes[i].contacts[ic] == 0  # empty
+            # Register as new contact in first empty position
+            if !contact_found
+
+                for ic=1:(sim.Nc_max + 1)
+
+                    # Test if this contact exceeds the number of contacts
+                    if ic == (sim.Nc_max + 1)
+                        for ic=1:sim.Nc_max
+                            warn("ice_floes[$i].contacts[$ic] = " *
+                                 "$(sim.ice_floes[i].contacts[ic])")
+                            warn("ice_floes[$i].contact_age[$ic] = " *
+                                 "$(sim.ice_floes[i].contact_age[ic])")
+                        end
+                        error("contact $i-$j exceeds max. number of contacts " *
+                              "(sim.Nc_max = $(sim.Nc_max)) for ice floe $i")
+                    end
+
+                    # Register as new contact
+                    @inbounds if sim.ice_floes[i].contacts[ic] == 0  # empty
                         @inbounds sim.ice_floes[i].n_contacts += 1
                         @inbounds sim.ice_floes[j].n_contacts += 1
                         @inbounds sim.ice_floes[i].contacts[ic] = j

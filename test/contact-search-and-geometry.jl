@@ -197,3 +197,47 @@ end
 @test 1 == sim.ice_floes[2].n_contacts
 
 @test_throws ErrorException SeaIce.findContacts!(sim, method="")
+
+info("Testing contact registration with multiple contacts")
+sim = SeaIce.createSimulation(id="test")
+SeaIce.addIceFloeCylindrical!(sim, [2., 2.], 1.01, 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [4., 2.], 1.01, 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [6., 2.], 1.01, 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [2., 4.], 1.01, 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [4., 4.], 1.01, 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [6., 4.], 1.01, 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [2., 6.], 1.01, 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [4., 6.], 1.01, 1., verbose=false)
+SeaIce.addIceFloeCylindrical!(sim, [6., 6.], 1.01, 1., verbose=false)
+sim.ocean = SeaIce.createRegularOceanGrid([4, 4, 2], [8., 8., 2.])
+SeaIce.sortIceFloesInGrid!(sim, sim.ocean)
+SeaIce.findContacts!(sim)
+@test 2 == sim.ice_floes[1].n_contacts
+@test 3 == sim.ice_floes[2].n_contacts
+@test 2 == sim.ice_floes[3].n_contacts
+@test 3 == sim.ice_floes[4].n_contacts
+@test 4 == sim.ice_floes[5].n_contacts
+@test 3 == sim.ice_floes[6].n_contacts
+@test 2 == sim.ice_floes[7].n_contacts
+@test 3 == sim.ice_floes[8].n_contacts
+@test 2 == sim.ice_floes[9].n_contacts
+SeaIce.interact!(sim)
+SeaIce.interact!(sim)
+SeaIce.interact!(sim)
+SeaIce.interact!(sim)
+@test 2 == sim.ice_floes[1].n_contacts
+@test 3 == sim.ice_floes[2].n_contacts
+@test 2 == sim.ice_floes[3].n_contacts
+@test 3 == sim.ice_floes[4].n_contacts
+@test 4 == sim.ice_floes[5].n_contacts
+@test 3 == sim.ice_floes[6].n_contacts
+@test 2 == sim.ice_floes[7].n_contacts
+@test 3 == sim.ice_floes[8].n_contacts
+@test 2 == sim.ice_floes[9].n_contacts
+for i=1:9
+    sim.ice_floes[i].contact_radius = 0.99
+end
+SeaIce.interact!(sim)
+for i=1:9
+    @test sim.ice_floes[i].n_contacts == 0
+end
