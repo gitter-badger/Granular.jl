@@ -253,7 +253,7 @@ function addOceanDrag!(simulation::Simulation)
     end
 
     u, v, h, e = interpolateOceanState(simulation.ocean, simulation.time)
-    x_tilde_inv = u_interp = v_interp = NaN
+    uv_interp = Vector{Float64}(2)
     sw = Vector{Float64}(2)
     se = Vector{Float64}(2)
     ne = Vector{Float64}(2)
@@ -279,16 +279,8 @@ function addOceanDrag!(simulation::Simulation)
                  """)
         end
 
-        x_tilde_inv = 1. - x_tilde
-        applyOceanDragToIceFloe!(ice_floe,
-                                 (u[i+1, j+1, k, 1]*x_tilde +
-                                  u[i, j+1, k, 1]*x_tilde_inv)*y_tilde +
-                                 (u[i+1, j, k, 1]*x_tilde + 
-                                  u[i, j, k, 1]*x_tilde_inv)*(1. - y_tilde),
-                                 (v[i+1, j+1, k, 1]*x_tilde +
-                                  v[i, j+1, k, 1]*x_tilde_inv)*y_tilde +
-                                 (v[i+1, j, k, 1]*x_tilde + 
-                                  v[i, j, k, 1]*x_tilde_inv)*(1. - y_tilde))
+        bilinearInterpolation!(uv_interp, u, v, x_tilde, y_tilde, i, j, k, 1)
+        applyOceanDragToIceFloe!(ice_floe, uv_interp[1], uv_interp[2])
         applyOceanVorticityToIceFloe!(ice_floe,
                                       curl(simulation.ocean, x_tilde, y_tilde,
                                            i, j, k, 1, sw, se, ne, nw))

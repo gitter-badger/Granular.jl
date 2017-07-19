@@ -13,7 +13,7 @@ south-west (-x, -y)-facing corner.
 * `j::Int`: j-index of scalar field to interpolate from
 * `it::Int`: time step from scalar field to interpolate from
 """
-function bilinearInterpolation!(interp_val::Vector{Float64},
+@inline function bilinearInterpolation!(interp_val::Vector{Float64},
                                 field_x::Array{Float64, 2},
                                 field_y::Array{Float64, 2},
                                 x_tilde::Float64,
@@ -26,9 +26,45 @@ function bilinearInterpolation!(interp_val::Vector{Float64},
     #end
 
     x_tilde_inv = 1. - x_tilde
-    interp_val[1] = (field_x[i+1, j+1]*x_tilde + field_x[i, j+1]*x_tilde_inv)*y_tilde + (field_x[i+1, j]*x_tilde + field_x[i, j]*x_tilde_inv)*(1. - y_tilde)
 
-    interp_val[2] = (field_y[i+1, j+1]*x_tilde + field_y[i, j+1]*x_tilde_inv)*y_tilde + (field_y[i+1, j]*x_tilde + field_y[i, j]*x_tilde_inv)*(1. - y_tilde)
+    @views interp_val[1] = 
+    (field_x[i+1, j+1]*x_tilde + field_x[i, j+1]*x_tilde_inv)*y_tilde + 
+    (field_x[i+1, j]*x_tilde + field_x[i, j]*x_tilde_inv)*(1. - y_tilde)
+
+    @views interp_val[2] = 
+    (field_y[i+1, j+1]*x_tilde + field_y[i, j+1]*x_tilde_inv)*y_tilde + 
+    (field_y[i+1, j]*x_tilde + field_y[i, j]*x_tilde_inv)*(1.  - y_tilde)
+
+    nothing
+end
+@inline function bilinearInterpolation!(interp_val::Vector{Float64},
+                                field_x::Array{Float64, 4},
+                                field_y::Array{Float64, 4},
+                                x_tilde::Float64,
+                                y_tilde::Float64,
+                                i::Int,
+                                j::Int,
+                                k::Int,
+                                it::Int)
+
+    #if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
+        #error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
+    #end
+
+    x_tilde_inv = 1. - x_tilde
+
+    @views interp_val[1] = 
+    (field_x[i+1, j+1, k, it]*x_tilde + 
+     field_x[i, j+1, k, it]*x_tilde_inv)*y_tilde + 
+    (field_x[i+1, j, k, it]*x_tilde + 
+     field_x[i, j, k, it]*x_tilde_inv)*(1. - y_tilde)
+
+    @views interp_val[2] = 
+    (field_y[i+1, j+1, k, it]*x_tilde + 
+     field_y[i, j+1, k, it]*x_tilde_inv)*y_tilde + 
+    (field_y[i+1, j, k, it]*x_tilde + 
+     field_y[i, j, k, it]*x_tilde_inv)*(1. - y_tilde)
+
     nothing
 end
 
@@ -73,7 +109,7 @@ function curl(grid::Any,
     nw_ne = norm(nw - ne)
     sw_nw = norm(sw - nw)
 
-    @inbounds return (
+    @views @inbounds return (
     ((grid.v[i+1, j  , k,it] - grid.v[i  , j  , k,it])/sw_se*(1. - y_tilde) +
      ((grid.v[i+1, j+1, k,it] - grid.v[i  , j+1, k,it])/nw_ne)*y_tilde) -
     ((grid.u[i  , j+1, k,it] - grid.u[i  , j  , k,it])/sw_nw*(1. - x_tilde) +
@@ -253,14 +289,14 @@ function isPointInCell(grid::Any, i::Int, j::Int, point::Vector{Float64},
                        method::String="Conformal")
 
     #sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
-    sw[1] = grid.xq[  i,   j]
-    sw[2] = grid.yq[  i,   j]
-    se[1] = grid.xq[i+1,   j]
-    se[2] = grid.yq[i+1,   j]
-    ne[1] = grid.xq[i+1, j+1]
-    ne[2] = grid.yq[i+1, j+1]
-    nw[1] = grid.xq[  i, j+1]
-    nw[2] = grid.yq[  i, j+1]
+    @views sw[1] = grid.xq[  i,   j]
+    @views sw[2] = grid.yq[  i,   j]
+    @views se[1] = grid.xq[i+1,   j]
+    @views se[2] = grid.yq[i+1,   j]
+    @views ne[1] = grid.xq[i+1, j+1]
+    @views ne[2] = grid.yq[i+1, j+1]
+    @views nw[1] = grid.xq[  i, j+1]
+    @views nw[2] = grid.yq[  i, j+1]
 
     if method == "Area"
         if areaOfQuadrilateral(sw, se, ne, nw) ≈
