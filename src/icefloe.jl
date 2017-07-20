@@ -578,7 +578,7 @@ function plotIceFloeSizeDistribution(simulation::Simulation;
                                      filetype::String = "png",
                                      verbose::Bool = true,
                                      skip_fixed::Bool = true,
-                                     logy::Bool = true)
+                                     log_y::Bool = true)
 
     diameters = Float64[]
     for i=1:length(simulation.ice_floes)
@@ -595,7 +595,7 @@ function plotIceFloeSizeDistribution(simulation::Simulation;
     end
     PyPlot.pygui(false)
     PyPlot.figure(figsize=figsize)
-    PyPlot.plt[:hist](diameters, nbins)
+    PyPlot.plt[:hist](diameters, nbins, log=log_y)
     PyPlot.xlabel("Diameter [m]")
     PyPlot.ylabel("Count [-]")
     filename = string(simulation.id * filename_postfix * 
