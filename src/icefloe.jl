@@ -593,7 +593,7 @@ function plotIceFloeSizeDistribution(simulation::Simulation;
             error("size_type '$size_type' not understood")
         end
     end
-    PyPlot.ioff()
+    PyPlot.pygui(false)
     PyPlot.figure(figsize=figsize)
     PyPlot.plt[:hist](diameters, nbins)
     PyPlot.xlabel("Diameter [m]")
