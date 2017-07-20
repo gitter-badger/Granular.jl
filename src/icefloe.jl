@@ -564,20 +564,31 @@ string, and the `filetype`, and is written to the current folder.
     for the ice-floe size.  The default is `contact`.
 * `figsize::Tuple`: the output figure size in inches (default = (6,4).
 * `filetype::String`: the output file type (default = "png").
+* `verbose::String`: show output file as info message in stdout (default = 
+    true).
+* `skip_fixed::Bool`: ommit ice floes that are fixed in space from the size 
+    distribution (default = true).
+* `logy::Bool`: plot y-axis in log scale.
 """
 function plotIceFloeSizeDistribution(simulation::Simulation;
                                      filename_postfix::String = "",
                                      nbins::Int=12,
                                      size_type::String = "contact",
                                      figsize::Tuple = (6,4),
-                                     filetype::String = "png")
+                                     filetype::String = "png",
+                                     verbose::Bool = true,
+                                     skip_fixed::Bool = true,
+                                     logy::Bool = true)
 
-    diameters = Vector{Float64}(length(simulation.ice_floes))
+    diameters = Float64[]
     for i=1:length(simulation.ice_floes)
+        if simulation.ice_floes[i].fixed && skip_fixed
+            continue
+        end
         if size_type == "contact"
-            diameters[i] = simulation.ice_floes[i].contact_radius*2.
+            push!(diameters, simulation.ice_floes[i].contact_radius*2.)
         elseif size_type == "areal"
-            diameters[i] = simulation.ice_floes[i].areal_radius*2.
+            push!(diameters, simulation.ice_floes[i].areal_radius*2.)
         else
             error("size_type '$size_type' not understood")
         end
@@ -586,6 +597,10 @@ function plotIceFloeSizeDistribution(simulation::Simulation;
     PyPlot.plt[:hist](diameters, nbins)
     PyPlot.xlabel("Diameter [m]")
     PyPlot.ylabel("Count [-]")
-    PyPlot.savefig(simulation.id * filename_postfix * 
-                   "-ice-floe-size-distribution." * filetype)
+    filename = string(simulation.id * filename_postfix * 
+                      "-ice-floe-size-distribution." * filetype)
+    PyPlot.savefig(filename)
+    if verbose
+        info(filename)
+    end
 end
