@@ -1,4 +1,5 @@
 ## Manage icefloes in the model
+import PyPlot
 
 export addIceFloeCylindrical!
 """
@@ -544,4 +545,47 @@ function compareIceFloes(if1::IceFloeCylindrical, if2::IceFloeCylindrical)
     Base.Test.@test if1.ocean_stress ≈ if2.ocean_stress
     Base.Test.@test if1.atmosphere_stress ≈ if2.atmosphere_stress
     nothing
+end
+
+export plotIceFloeSizeDistribution
+"""
+    plotIceFloeSizeDistribution(simulation, [filename_postfix], [nbins],
+                                [size_type], [figsize], [filetype])
+
+Plot the ice-floe size distribution as a histogram and save it to the disk.  The 
+plot is saved accoring to the simulation id, the optional `filename_postfix` 
+string, and the `filetype`, and is written to the current folder.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the ice floes.
+* `filename_postfix::String`: optional string for the output filename.
+* `nbins::Int`: number of bins in the histogram (default = 12).
+* `size_type::String`: specify whether to use the `contact` or `areal` radius 
+    for the ice-floe size.  The default is `contact`.
+* `figsize::Tuple`: the output figure size in inches (default = (6,4).
+* `filetype::String`: the output file type (default = "png").
+"""
+function plotIceFloeSizeDistribution(simulation::Simulation;
+                                     filename_postfix::String = "",
+                                     nbins::Int=12,
+                                     size_type::String = "contact",
+                                     figsize::Tuple = (6,4),
+                                     filetype::String = "png")
+
+    diameters = Vector{Float64}(length(simulation.ice_floes))
+    for i=1:length(simulation.ice_floes)
+        if size_type == "contact"
+            diameters[i] = simulation.ice_floes[i].contact_radius*2.
+        elseif size_type == "areal"
+            diameters[i] = simulation.ice_floes[i].areal_radius*2.
+        else
+            error("size_type '$size_type' not understood")
+        end
+    end
+    PyPlot.figure(figsize=figsize)
+    PyPlot.plt[:hist](diameters, nbins)
+    PyPlot.xlabel("Diameter [m]")
+    PyPlot.ylabel("Count [-]")
+    PyPlot.savefig(simulation.id * filename_postfix * 
+                   "-ice-floe-size-distribution." * filetype)
 end
