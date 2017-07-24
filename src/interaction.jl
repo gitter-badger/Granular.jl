@@ -199,11 +199,3 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
         force_n/simulation.ice_floes[j].side_surface_area;
     nothing
 end
-
-function harmonicMean(a::Any, b::Any)
-    if a ≈ 0. && b ≈ 0
-        return 0.
-    else
-        return 2.*a*b/(a + b)
-    end
-end

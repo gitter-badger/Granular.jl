@@ -27,3 +27,17 @@ Returns one or more random numbers from a power-law probability distribution.
         return val
     end
 end
+
+export harmonicMean
+"""
+    harmonicMean(a, b)
+
+Returns the harmonic mean of two numbers `a::Number` and `b::Number`.
+"""
+function harmonicMean(a::Number, b::Number)::Number
+    if a ≈ 0. && b ≈ 0
+        return 0.
+    else
+        return 2.*a*b/(a + b)
+    end
+end
