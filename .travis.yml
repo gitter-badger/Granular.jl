@@ -1,16 +1,25 @@
 # Documentation: http://docs.travis-ci.com/user/languages/julia/
 language: julia
+
 os:
   - linux
+  - osx
+
 julia:
   - 0.6
   - nightly
+
 notifications:
   email:
       recipients:
           - andersd@riseup.net
       on_success: never # default: change
       on_failure: always # default: always
+
+before_deploy:
+  - provider: script
+    script: julia -e 'ENV["PYTHON"]=""; Pkg.build("PyCall")'
+
 deploy:
   - provider: script
     script: julia -e 'cd(Pkg.dir("SeaIce")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
