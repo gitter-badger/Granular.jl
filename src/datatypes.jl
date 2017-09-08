@@ -1,35 +1,31 @@
-# Define floating point data types
-const float = Float64
-const vector = Array{Float64, 1}
-
 ## Particle composite types
 type IceFloeCylindrical
 
     # Material properties
-    density::float
+    density::Float64
 
     # Geometrical parameters
-    thickness::float
-    contact_radius::float
-    areal_radius::float
-    circumreference::float
-    horizontal_surface_area::float
-    side_surface_area::float
-    volume::float
-    mass::float
-    moment_of_inertia::float
+    thickness::Float64
+    contact_radius::Float64
+    areal_radius::Float64
+    circumreference::Float64
+    horizontal_surface_area::Float64
+    side_surface_area::Float64
+    volume::Float64
+    mass::Float64
+    moment_of_inertia::Float64
 
     # Linear kinematic degrees of freedom along horizontal plane
-    lin_pos::vector
-    lin_vel::vector
-    lin_acc::vector
-    force::vector
+    lin_pos::Vector{Float64}
+    lin_vel::Vector{Float64}
+    lin_acc::Vector{Float64}
+    force::Vector{Float64}
 
     # Angular kinematic degrees of freedom for vertical rotation around center
-    ang_pos::float
-    ang_vel::float
-    ang_acc::float
-    torque::float
+    ang_pos::Float64
+    ang_vel::Float64
+    ang_acc::Float64
+    torque::Float64
 
     # Kinematic constraint flags
     fixed::Bool
@@ -37,97 +33,98 @@ type IceFloeCylindrical
     enabled::Bool
 
     # Rheological parameters
-    contact_stiffness_normal::float
-    contact_stiffness_tangential::float
-    contact_viscosity_normal::float
-    contact_viscosity_tangential::float
-    contact_static_friction::float
-    contact_dynamic_friction::float
+    contact_stiffness_normal::Float64
+    contact_stiffness_tangential::Float64
+    contact_viscosity_normal::Float64
+    contact_viscosity_tangential::Float64
+    contact_static_friction::Float64
+    contact_dynamic_friction::Float64
 
-    youngs_modulus::float
-    poissons_ratio::float
-    tensile_strength::float
-    tensile_heal_rate::float
-    compressive_strength_prefactor::float
+    youngs_modulus::Float64
+    poissons_ratio::Float64
+    tensile_strength::Float64
+    tensile_heal_rate::Float64
+    compressive_strength_prefactor::Float64
 
     # Ocean/atmosphere interaction parameters
-    ocean_drag_coeff_vert::float
-    ocean_drag_coeff_horiz::float
-    atmosphere_drag_coeff_vert::float
-    atmosphere_drag_coeff_horiz::float
+    ocean_drag_coeff_vert::Float64
+    ocean_drag_coeff_horiz::Float64
+    atmosphere_drag_coeff_vert::Float64
+    atmosphere_drag_coeff_horiz::Float64
 
     # Interaction
-    pressure::float
+    pressure::Float64
     n_contacts::Int
-    ocean_grid_pos::Array{Int, 1}
-    atmosphere_grid_pos::Array{Int, 1}
-    contacts::Array{Int, 1}
-    contact_parallel_displacement::Array{Array{Float64, 1}, 1}
-    contact_age::Array{Float64, 1}
+    ocean_grid_pos::Vector{Int}
+    atmosphere_grid_pos::Vector{Int}
+    contacts::Vector{Int}
+    contact_parallel_displacement::Vector{Vector{Float64}}
+    contact_age::Vector{Float64}
 
-    granular_stress::vector
-    ocean_stress::vector
-    atmosphere_stress::vector
+    granular_stress::Vector{Float64}
+    ocean_stress::Vector{Float64}
+    atmosphere_stress::Vector{Float64}
 end
 
 # Type for gathering data from ice floe objects into single arrays
 type IceFloeArrays
 
     # Material properties
-    density
+    density::Vector{Float64}
 
     # Geometrical parameters
-    thickness
-    contact_radius
-    areal_radius
-    circumreference
-    horizontal_surface_area
-    side_surface_area
-    volume
-    mass
-    moment_of_inertia
+    thickness::Vector{Float64}
+    contact_radius::Vector{Float64}
+    areal_radius::Vector{Float64}
+    circumreference::Vector{Float64}
+    horizontal_surface_area::Vector{Float64}
+    side_surface_area::Vector{Float64}
+    volume::Vector{Float64}
+    mass::Vector{Float64}
+    moment_of_inertia::Vector{Float64}
 
     # Linear kinematic degrees of freedom along horizontal plane
-    lin_pos
-    lin_vel
-    lin_acc
-    force
+    lin_pos::Array{Float64, 2}
+    lin_vel::Array{Float64, 2}
+    lin_acc::Array{Float64, 2}
+    force::Array{Float64, 2}
 
     # Angular kinematic degrees of freedom for vertical rotation around center
-    ang_pos
-    ang_vel
-    ang_acc
-    torque
+    ang_pos::Array{Float64, 2}
+    ang_vel::Array{Float64, 2}
+    ang_acc::Array{Float64, 2}
+    torque::Array{Float64, 2}
 
     # Kinematic constraint flags
-    fixed
-    rotating
-    enabled
+    fixed::Vector{Int}
+    rotating::Vector{Int}
+    enabled::Vector{Int}
 
     # Rheological parameters
-    contact_stiffness_normal
-    contact_stiffness_tangential
-    contact_viscosity_normal
-    contact_viscosity_tangential
-    contact_static_friction
-    contact_dynamic_friction
+    contact_stiffness_normal::Vector{Float64}
+    contact_stiffness_tangential::Vector{Float64}
+    contact_viscosity_normal::Vector{Float64}
+    contact_viscosity_tangential::Vector{Float64}
+    contact_static_friction::Vector{Float64}
+    contact_dynamic_friction::Vector{Float64}
 
-    youngs_modulus
-    poissons_ratio
-    tensile_strength
-    compressive_strength_prefactor
+    youngs_modulus::Vector{Float64}
+    poissons_ratio::Vector{Float64}
+    tensile_strength::Vector{Float64}
+    #tensile_heal_rate::Vector{Float64}
+    compressive_strength_prefactor::Vector{Float64}
 
-    ocean_drag_coeff_vert
-    ocean_drag_coeff_horiz
-    atmosphere_drag_coeff_vert
-    atmosphere_drag_coeff_horiz
+    ocean_drag_coeff_vert::Vector{Float64}
+    ocean_drag_coeff_horiz::Vector{Float64}
+    atmosphere_drag_coeff_vert::Vector{Float64}
+    atmosphere_drag_coeff_horiz::Vector{Float64}
 
-    pressure
-    n_contacts
+    pressure::Vector{Float64}
+    n_contacts::Vector{Int}
 
-    granular_stress
-    ocean_stress
-    atmosphere_stress
+    granular_stress::Array{Float64, 2}
+    ocean_stress::Array{Float64, 2}
+    atmosphere_stress::Array{Float64, 2}
 end
 
 #=
@@ -171,7 +168,7 @@ h-points.  During read, the velocities are interpolated to the cell corners
 type Ocean
     input_file::Any
 
-    time::Array{Float64, 1}
+    time::Vector{Float64}
 
     # q-point (cell corner) positions
     xq::Array{Float64, 2}
@@ -182,8 +179,8 @@ type Ocean
     yh::Array{Float64, 2}
 
     # Vertical positions
-    zl::Array{Float64, 1}
-    zi::Array{Float64, 1}
+    zl::Vector{Float64}
+    zi::Vector{Float64}
     
     # Field values
     u::Array{Float64, 4}
@@ -191,7 +188,7 @@ type Ocean
     h::Array{Float64, 4}
     e::Array{Float64, 4}
 
-    ice_floe_list::Array{Array{Int, 1}, 2}
+    ice_floe_list::Array{Vector{Int}, 2}
 end
 
 #=
@@ -213,12 +210,12 @@ cell corners (q-points).
 
 # Fields
 * `input_file::String`: path to input NetCDF file
-* `time::Array{Float64, 1}`: time in days
-* `xq::Array{Float64, 1}`: nominal longitude of q-points [degrees_E]
-* `yq::Array{Float64, 1}`: nominal latitude of q-points [degrees_N]
-* `xh::Array{Float64, 1}`: nominal longitude of h-points [degrees_E]
-* `yh::Array{Float64, 1}`: nominal latitude of h-points [degrees_N]
-* `zl::Array{Float64, 1}`: vertical position [m]
+* `time::Vector{Float64}`: time in days
+* `xq::Array{Float64, 2}`: nominal longitude of q-points [degrees_E]
+* `yq::Array{Float64, 2}`: nominal latitude of q-points [degrees_N]
+* `xh::Array{Float64, 2}`: nominal longitude of h-points [degrees_E]
+* `yh::Array{Float64, 2}`: nominal latitude of h-points [degrees_N]
+* `zl::Vector{Float64}`: vertical position [m]
 * `u::Array{Float64, Int}`: zonal velocity (positive towards west) [m/s], 
     dimensions correspond to placement in `[xq, yq, zl, time]`.
 * `v::Array{Float64, Int}`: meridional velocity (positive towards north) [m/s], 
@@ -229,7 +226,7 @@ cell corners (q-points).
 type Atmosphere
     input_file::Any
 
-    time::Array{Float64, 1}
+    time::Vector{Float64}
 
     # q-point (cell corner) positions
     xq::Array{Float64, 2}
@@ -240,13 +237,13 @@ type Atmosphere
     yh::Array{Float64, 2}
 
     # Vertical positions
-    zl::Array{Float64, 1}
+    zl::Vector{Float64}
     
     # Field values
     u::Array{Float64, 4}
     v::Array{Float64, 4}
 
-    ice_floe_list::Array{Array{Int, 1}, 2}
+    ice_floe_list::Array{Vector{Int}, 2}
 
     # If true the grid positions are identical to the ocean grid
     collocated_with_ocean_grid::Bool
@@ -264,7 +261,7 @@ type Simulation
     file_number::Int
     file_time_since_output_file::Float64
 
-    ice_floes::Array{IceFloeCylindrical, 1}
+    ice_floes::Vector{IceFloeCylindrical}
 
     ocean::Ocean
     atmosphere::Atmosphere

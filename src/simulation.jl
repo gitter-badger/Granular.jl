@@ -93,7 +93,7 @@ function run!(simulation::Simulation;
         simulation.time_total += simulation.time_step
     end
 
-    checkTimeParameters(simulation)
+    checkTimeParameters(simulation, single_step=single_step)
 
     # if both are enabled, check if the atmosphere grid spatial geometry is 
     # identical to the ocean grid
@@ -175,7 +175,7 @@ function run!(simulation::Simulation;
         incrementCurrentTime!(simulation, simulation.time_step)
 
         if single_step
-            return
+            return nothing
         end
     end
 
@@ -191,6 +191,8 @@ function run!(simulation::Simulation;
         reportSimulationTimeToStdout(simulation)
         println()
     end
+    gc()
+    nothing
 end
 
 export addIceFloe!
@@ -210,16 +212,17 @@ function addIceFloe!(simulation::Simulation,
     if verbose
         info("Added IceFloe $(length(simulation.ice_floes))")
     end
+    nothing
 end
 
 export disableIceFloe!
 "Disable ice floe with index `i` in the `simulation` object."
-function disableIceFloe!(simulation::Simulation, i::Integer)
+function disableIceFloe!(simulation::Simulation, i::Int)
     if i < 1
         error("Index must be greater than 0 (i = $i)")
     end
-
     simulation.ice_floes[i].enabled = false
+    nothing
 end
 
 export zeroForcesAndTorques!
@@ -230,6 +233,7 @@ function zeroForcesAndTorques!(simulation::Simulation)
         icefloe.torque = 0.
         icefloe.pressure = 0.
     end
+    nothing
 end
 
 export reportSimulationTimeToStdout
@@ -237,6 +241,7 @@ export reportSimulationTimeToStdout
 function reportSimulationTimeToStdout(simulation::Simulation)
     print("\r  t = ", simulation.time, '/', simulation.time_total,
           " s            ")
+    nothing
 end
 
 export compareSimulations
@@ -265,4 +270,46 @@ function compareSimulations(sim1::Simulation, sim2::Simulation)
     compareAtmospheres(sim1.atmosphere, sim2.atmosphere)
 
     Base.Test.@test sim1.Nc_max == sim2.Nc_max
+    nothing
+end
+
+export printMemoryUsage
+"""
+    printMemoryUsage(sim::Simulation)
+
+Shows the memory footprint of the simulation object.
+"""
+function printMemoryUsage(sim::Simulation)
+    
+    reportMemory(sim, "sim")
+    println("  where:")
+
+    reportMemory(sim.ice_floes, "    sim.ice_floes", 
+                 "(N=$(length(sim.ice_floes)))")
+
+    reportMemory(sim.ocean, "    sim.ocean",
+                 "($(size(sim.ocean.xh, 1))x" *
+                 "$(size(sim.ocean.xh, 2))x" *
+                 "$(size(sim.ocean.xh, 3)))")
+
+    reportMemory(sim.atmosphere, "    sim.atmosphere",
+                 "($(size(sim.atmosphere.xh, 1))x" *
+                 "$(size(sim.atmosphere.xh, 2))x" *
+                 "$(size(sim.atmosphere.xh, 3)))")
+    nothing
+end
+
+function reportMemory(variable, head::String, tail::String="")
+    bytes = Base.summarysize(variable)
+    if bytes < 10_000
+        size_str = @sprintf "%5d bytes" bytes
+    elseif bytes < 10_000 * 1024
+        size_str = @sprintf "%5d kb" bytes ÷ 1024
+    elseif bytes < 10_000 * 1024 * 1024
+        size_str = @sprintf "%5d Mb" bytes ÷ 1024 ÷ 1024
+    else
+        size_str = @sprintf "%5d Gb" bytes ÷ 1024 ÷ 1024 ÷ 1024
+    end
+    @printf("%-20s %s %s\n", head, size_str, tail)
+    nothing
 end

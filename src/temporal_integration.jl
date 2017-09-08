@@ -36,6 +36,7 @@ function updateIceFloeKinematics!(simulation::Simulation;
     else
         error("Unknown integration method '$method'")
     end
+    nothing
 end
 
 export updateIceFloeKinematicsTwoTermTaylor!
@@ -64,6 +65,7 @@ function updateIceFloeKinematicsTwoTermTaylor!(icefloe::IceFloeCylindrical,
 
     icefloe.lin_vel += icefloe.lin_acc * simulation.time_step
     icefloe.ang_vel += icefloe.ang_acc * simulation.time_step
+    nothing
 end
 
 export updateIceFloeKinematicsThreeTermTaylor!
@@ -109,4 +111,5 @@ function updateIceFloeKinematicsThreeTermTaylor!(icefloe::IceFloeCylindrical,
         0.5 * d_lin_acc_dt * simulation.time_step^2.
     icefloe.ang_vel += icefloe.ang_acc * simulation.time_step +
         0.5 * d_ang_acc_dt * simulation.time_step^2.
+    nothing
 end

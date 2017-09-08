@@ -32,6 +32,7 @@ function findContacts!(simulation::Simulation;
     else
         error("Unknown contact search method '$method'")
     end
+    nothing
 end
 
 export interIceFloePositionVector
@@ -47,18 +48,19 @@ Returns a `vector` pointing from ice floe `i` to ice floe `j` in the
 * `j::Int`: index of the second ice floe.
 """
 function interIceFloePositionVector(simulation::Simulation,
-                                    i::Integer, j::Integer)
-    return simulation.ice_floes[i].lin_pos - simulation.ice_floes[j].lin_pos
+                                    i::Int, j::Int)
+    @inbounds return simulation.ice_floes[i].lin_pos - 
+    simulation.ice_floes[j].lin_pos
 end
 
 """
 position_ij is the inter-grain position vector, and can be found with
 interIceFloePositionVector().
 """
-function findOverlap(simulation::Simulation, i::Integer, j::Integer, 
-                     position_ij::vector)
-    return norm(position_ij) - (simulation.ice_floes[i].contact_radius + 
-                                simulation.ice_floes[j].contact_radius)
+function findOverlap(simulation::Simulation, i::Int, j::Int, 
+                     position_ij::Vector{Float64})
+    @inbounds return norm(position_ij) - (simulation.ice_floes[i].contact_radius 
+                                + simulation.ice_floes[j].contact_radius)
 end
 
 export findContactsAllToAll!
@@ -70,13 +72,14 @@ Perform an O(n^2) all-to-all contact search between all ice floes in the
 """
 function findContactsAllToAll!(simulation::Simulation)
 
-    for i = 1:length(simulation.ice_floes)
+    @inbounds for i = 1:length(simulation.ice_floes)
 
         # Check contacts with other grains
         for j = 1:length(simulation.ice_floes)
             checkAndAddContact!(simulation, i, j)
         end
     end
+    nothing
 end
 
 export findContactsInGrid!
@@ -107,12 +110,13 @@ function findContactsInGrid!(simulation::Simulation, grid::Any)
                     continue
                 end
 
-                for idx_j in grid.ice_floe_list[i, j]
+                @inbounds for idx_j in grid.ice_floe_list[i, j]
                     checkAndAddContact!(simulation, idx_i, idx_j)
                 end
             end
         end
     end
+    nothing
 end
 
 export checkAndAddContact!
@@ -134,7 +138,7 @@ written to `simulation.contact_parallel_displacement`.
 function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
     if i < j
 
-        if (sim.ice_floes[i].fixed && sim.ice_floes[j].fixed) ||
+        @inbounds if (sim.ice_floes[i].fixed && sim.ice_floes[j].fixed) ||
             !sim.ice_floes[i].enabled || !sim.ice_floes[j].enabled
             return
         end
@@ -143,28 +147,49 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
         position_ij = interIceFloePositionVector(sim, i, j)
         overlap_ij = findOverlap(sim, i, j, position_ij)
 
+        contact_found = false
+
         # Check if grains overlap (overlap when negative)
         if overlap_ij < 0.
-            for ic=1:(sim.Nc_max + 1)
-                if ic == (sim.Nc_max + 1)
-                    error("contact $i-$j exceeds max. number of contacts " *
-                          "(sim.Nc_max = $(sim.Nc_max)) for ice floe $i")
 
-                else
-                    if sim.ice_floes[i].contacts[ic] == j
-                        break  # contact already registered
+            # Check if contact is already registered
+            for ic=1:sim.Nc_max
+                @inbounds if sim.ice_floes[i].contacts[ic] == j
+                    contact_found = true
+                    break  # contact already registered
+                end
+            end
 
-                    elseif sim.ice_floes[i].contacts[ic] == 0  # empty
-                        sim.ice_floes[i].n_contacts += 1  # register new contact
-                        sim.ice_floes[j].n_contacts += 1
-                        sim.ice_floes[i].contacts[ic] = j
-                        fill!(sim.ice_floes[i].
+            # Register as new contact in first empty position
+            if !contact_found
+
+                for ic=1:(sim.Nc_max + 1)
+
+                    # Test if this contact exceeds the number of contacts
+                    if ic == (sim.Nc_max + 1)
+                        for ic=1:sim.Nc_max
+                            warn("ice_floes[$i].contacts[$ic] = " *
+                                 "$(sim.ice_floes[i].contacts[ic])")
+                            warn("ice_floes[$i].contact_age[$ic] = " *
+                                 "$(sim.ice_floes[i].contact_age[ic])")
+                        end
+                        error("contact $i-$j exceeds max. number of contacts " *
+                              "(sim.Nc_max = $(sim.Nc_max)) for ice floe $i")
+                    end
+
+                    # Register as new contact
+                    @inbounds if sim.ice_floes[i].contacts[ic] == 0  # empty
+                        @inbounds sim.ice_floes[i].n_contacts += 1
+                        @inbounds sim.ice_floes[j].n_contacts += 1
+                        @inbounds sim.ice_floes[i].contacts[ic] = j
+                        @inbounds fill!(sim.ice_floes[i].
                               contact_parallel_displacement[ic] , 0.)
-                        sim.ice_floes[i].contact_age[ic] = 0.
+                        @inbounds sim.ice_floes[i].contact_age[ic] = 0.
                         break
                     end
                 end
             end
         end
     end
+    nothing
 end

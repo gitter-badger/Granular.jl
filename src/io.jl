@@ -41,6 +41,7 @@ function writeSimulation(simulation::Simulation;
             info("simulation written to $filename")
         end
     end
+    nothing
 end
 
 export readSimulation
@@ -56,6 +57,7 @@ function readSimulation(filename::String="";
         warn("Package JLD not found. Simulation save/read not supported. " * 
              "Please install JLD and its " *
              "requirements with `Pkg.add(\"JLD\")`.")
+        nothing
     else
         if verbose
             info("reading simulation from $filename")
@@ -85,6 +87,7 @@ function writeSimulationStatus(simulation::Simulation;
     if verbose
         info("wrote status to $filename")
     end
+    nothing
 end
 
 export readSimulationStatus
@@ -197,6 +200,7 @@ function status(folder::String=".";
             repeat = false
         end
     end
+    nothing
 end
 
 export writeVTK
@@ -240,6 +244,7 @@ function writeVTK(simulation::Simulation;
                         simulation.file_number)
         writeGridVTK(simulation.atmosphere, filename, verbose=verbose)
     end
+    nothing
 end
 
 export writeIceFloeVTK
@@ -343,9 +348,8 @@ function writeIceFloeVTK(simulation::Simulation,
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
         info("Output file: " * outfiles[1])
-    else
-        return nothing
     end
+    nothing
 end
 
 export writeIceFloeInteractionVTK
@@ -363,14 +367,14 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
 
     i1 = Int64[]
     i2 = Int64[]
-    inter_particle_vector = Array{float, 1}[]
-    force = float[]
-    effective_radius = float[]
-    contact_area = float[]
-    contact_stiffness = float[]
-    tensile_stress = float[]
-    shear_displacement = Array{float, 1}[]
-    contact_age = float[]
+    inter_particle_vector = Vector{Float64}[]
+    force = Float64[]
+    effective_radius = Float64[]
+    contact_area = Float64[]
+    contact_stiffness = Float64[]
+    tensile_stress = Float64[]
+    shear_displacement = Vector{Float64}[]
+    contact_age = Float64[]
     for i=1:length(simulation.ice_floes)
         for ic=1:simulation.Nc_max
             if simulation.ice_floes[i].contacts[ic] > 0
@@ -457,8 +461,8 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Shear displacement [m]\" " *
               "NumberOfComponents=\"3\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(shear_displacement[i][1]) ")
-            write(f, "$(shear_displacement[i][2]) ")
+            @inbounds write(f, "$(shear_displacement[i][1]) ")
+            @inbounds write(f, "$(shear_displacement[i][2]) ")
             write(f, "0.0 ")
         end
         write(f, "\n")
@@ -467,7 +471,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        <DataArray type=\"Float32\" Name=\"Force [N]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(force[i]) ")
+            @inbounds write(f, "$(force[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -476,7 +480,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Effective radius [m]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(effective_radius[i]) ")
+            @inbounds write(f, "$(effective_radius[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -485,7 +489,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Contact area [m^2]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(contact_area[i]) ")
+            @inbounds write(f, "$(contact_area[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -494,7 +498,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Contact stiffness [N/m]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(contact_stiffness[i]) ")
+            @inbounds write(f, "$(contact_stiffness[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -503,7 +507,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Tensile stress [Pa]\" " *
               "NumberOfComponents=\"1\" format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(tensile_stress[i]) ")
+            @inbounds write(f, "$(tensile_stress[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -512,7 +516,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "Name=\"Contact age [s]\" NumberOfComponents=\"1\" 
         format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(contact_age[i]) ")
+            @inbounds write(f, "$(contact_age[i]) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -525,7 +529,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        <DataArray type=\"Float32\" Name=\"Points\" " *
               "NumberOfComponents=\"3\" format=\"ascii\">\n")
         for i in simulation.ice_floes
-            write(f, "$(i.lin_pos[1]) $(i.lin_pos[2]) 0.0 ")
+            @inbounds write(f, "$(i.lin_pos[1]) $(i.lin_pos[2]) 0.0 ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -544,7 +548,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        <DataArray type=\"Int64\" Name=\"connectivity\" " *
               "format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$(i1[i] - 1) $(i2[i] - 1) ")
+            @inbounds write(f, "$(i1[i] - 1) $(i2[i] - 1) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -554,7 +558,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "        <DataArray type=\"Int64\" Name=\"offsets\" " *
               "format=\"ascii\">\n")
         for i=1:length(i1)
-            write(f, "$((i - 1)*2 + 2) ")
+            @inbounds write(f, "$((i - 1)*2 + 2) ")
         end
         write(f, "\n")
         write(f, "        </DataArray>\n")
@@ -580,6 +584,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "  </PolyData>\n")
         write(f, "</VTKFile>\n")
     end
+    nothing
 end
 
 export writeOceanVTK
@@ -599,12 +604,12 @@ function writeGridVTK(grid::Any,
     zq = similar(grid.u[:,:,:,1])
 
     for iz=1:size(xq, 3)
-        xq[:,:,iz] = grid.xq
-        yq[:,:,iz] = grid.yq
+        @inbounds xq[:,:,iz] = grid.xq
+        @inbounds yq[:,:,iz] = grid.yq
     end
     for ix=1:size(xq, 1)
         for iy=1:size(xq, 2)
-            zq[ix,iy,:] = grid.zl
+            @inbounds zq[ix,iy,:] = grid.zl
         end
     end
 
@@ -620,8 +625,8 @@ function writeGridVTK(grid::Any,
     for ix=1:size(xq, 1)
         for iy=1:size(xq, 2)
             for iz=1:size(xq, 3)
-                vel[1, ix, iy, iz] = grid.u[ix, iy, iz, 1]
-                vel[2, ix, iy, iz] = grid.v[ix, iy, iz, 1]
+                @inbounds vel[1, ix, iy, iz] = grid.u[ix, iy, iz, 1]
+                @inbounds vel[2, ix, iy, iz] = grid.v[ix, iy, iz, 1]
             end
         end
     end
@@ -638,9 +643,8 @@ function writeGridVTK(grid::Any,
     outfiles = WriteVTK.vtk_save(vtkfile)
     if verbose
         info("Output file: " * outfiles[1])
-    else
-        return nothing
     end
+    nothing
 end
 
 export writeParaviewStateFile
@@ -18176,6 +18180,7 @@ function writeParaviewStateFile(simulation::Simulation;
     if verbose
         info("Output file: " * filename)
     end
+    nothing
 end
 
 export removeSimulationFiles
@@ -18192,4 +18197,5 @@ function removeSimulationFiles(simulation::Simulation; folder::String=".")
     run(`bash -c "rm -rf $(folder)/$(simulation.id).status.txt"`)
     run(`bash -c "rm -rf $(folder)/$(simulation.id).*.jld"`)
     run(`bash -c "rm -rf $(folder)"`)
+    nothing
 end

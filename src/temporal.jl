@@ -1,70 +1,77 @@
 export setTotalTime!
 """
-    setTotalTime!(simulation::Simulation, t::float)
+    setTotalTime!(simulation::Simulation, t::Float64)
 
 Sets the total simulation time of the `simulation` object to `t`, with parameter 
 value checks.
 """
-function setTotalTime!(simulation::Simulation, t::float)
+function setTotalTime!(simulation::Simulation, t::Float64)
     if t <= 0.0
         error("Total time should be a positive value (t = $t s)")
     end
     simulation.time_total = t
+    nothing
 end
 
 export setCurrentTime!
 """
-    setCurrentTime!(simulation::Simulation, t::float)
+    setCurrentTime!(simulation::Simulation, t::Float64)
 
 Sets the current simulation time of the `simulation` object to `t`, with 
 parameter value checks.
 """
-function setCurrentTime!(simulation::Simulation, t::float)
+function setCurrentTime!(simulation::Simulation, t::Float64)
     if t <= 0.0
         error("Current time should be a positive value (t = $t s)")
     end
     simulation.time = t
+    nothing
 end
 
 export incrementCurrentTime!
 """
-    incrementCurrentTime!(simulation::Simulation, t::float)
+    incrementCurrentTime!(simulation::Simulation, t::Float64)
 
 Sets the current simulation time of the `simulation` object to `t`, with 
 parameter value checks.
 """
-function incrementCurrentTime!(simulation::Simulation, t::float)
+function incrementCurrentTime!(simulation::Simulation, t::Float64)
     if t <= 0.0
         error("Current time increment should be a positive value (t = $t s)")
     end
     simulation.time += t
     simulation.file_time_since_output_file += t
+    nothing
 end
 
 export setOutputFileInterval!
 """
-   setOutputFileInterval!(simulation::Simulation, t::float)
+   setOutputFileInterval!(simulation::Simulation, t::Float64)
 
 Sets the simulation-time interval between output files are written to disk.  If 
 this value is zero or negative, no output files will be written.
 """
-function setOutputFileInterval!(simulation::Simulation, t::float; verbose=true)
+function setOutputFileInterval!(simulation::Simulation, t::Float64; 
+    verbose=true)
     if t <= 0.0 && verbose
         info("No output files will be written")
     end
     simulation.file_time_step = t
+    nothing
 end
 
 export disableOutputFiles!
 "Disables the write of output files to disk during a simulation."
 function disableOutputFiles!(simulation::Simulation)
     simulation.file_time_step = 0.0
+    nothing
 end
 
 export checkTimeParameters
 "Checks if simulation temporal parameters are of reasonable values."
-function checkTimeParameters(simulation::Simulation)
-    if simulation.time_total <= 0.0 || simulation.time_total <= simulation.time
+function checkTimeParameters(simulation::Simulation; single_step::Bool=false)
+    if !single_step && (simulation.time_total <= 0.0 || simulation.time_total <= 
+                        simulation.time)
         error("Total time should be positive and larger than current time.\n",
             "  t_total = ", simulation.time_total, " s, t = ", simulation.time, 
             " s")
@@ -72,6 +79,7 @@ function checkTimeParameters(simulation::Simulation)
     if simulation.time_step <= 0.0
         error("Time step should be positive (t = ", simulation.time_step, ")")
     end
+    nothing
 end
 
 export findSmallestIceFloeMass
@@ -80,8 +88,8 @@ the optimal time step length."
 function findSmallestIceFloeMass(simulation::Simulation)
     m_min = 1e20
     i_min = -1
-    for i in length(simulation.ice_floes)
-        icefloe = simulation.ice_floes[i]
+    for i=1:length(simulation.ice_floes)
+        @inbounds icefloe = simulation.ice_floes[i]
         if icefloe.mass < m_min
             m_min = icefloe.mass
             i_min = i
@@ -98,9 +106,9 @@ function findLargestIceFloeStiffness(simulation::Simulation)
     k_t_max = 0.
     i_n_max = -1
     i_t_max = -1
-    for i in length(simulation.ice_floes)
+    for i=1:length(simulation.ice_floes)
 
-        icefloe = simulation.ice_floes[i]
+        @inbounds icefloe = simulation.ice_floes[i]
 
         if icefloe.youngs_modulus > 0.
             k_n = icefloe.youngs_modulus*icefloe.thickness  # A = h*r
@@ -129,7 +137,7 @@ Find the computational time step length suitable given the grain radii, contact
 stiffnesses, and grain density. Uses the scheme by Radjaii et al. 2011.
 """
 function setTimeStep!(simulation::Simulation;
-                      epsilon::float=0.07, verbose::Bool=true)
+                      epsilon::Float64=0.07, verbose::Bool=true)
 
     if length(simulation.ice_floes) < 1
         error("At least 1 grain is needed to find the computational time step.")
@@ -147,4 +155,5 @@ function setTimeStep!(simulation::Simulation;
     if verbose
         info("Time step length t=",  simulation.time_step, " s")
     end
+    nothing
 end

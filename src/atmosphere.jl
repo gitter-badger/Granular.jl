@@ -15,7 +15,7 @@ function createEmptyAtmosphere()
                       zeros(1,1,1,1),
                       zeros(1,1,1,1),
 
-                      Array{Array{Int, 1}}(1, 1),
+                      Array{Vector{Int}}(1, 1),
 
                       false)
 end
@@ -25,16 +25,16 @@ export interpolateAtmosphereVelocitiesToCorners
 Convert gridded data from Arakawa-C type (decomposed velocities at faces) to 
 Arakawa-B type (velocities at corners) through interpolation.
 """
-function interpolateAtmosphereVelocitiesToCorners(u_in::Array{float, 4},
-                                                  v_in::Array{float, 4})
+function interpolateAtmosphereVelocitiesToCorners(u_in::Array{Float64, 4},
+                                                  v_in::Array{Float64, 4})
 
     if size(u_in) != size(v_in)
         error("size of u_in ($(size(u_in))) must match v_in ($(size(v_in)))")
     end
 
     nx, ny, nz, nt = size(u_in)
-    #u = Array{float}(nx+1, ny+1, nz, nt)
-    #v = Array{float}(nx+1, ny+1, nz, nt)
+    #u = Array{Float64}(nx+1, ny+1, nz, nt)
+    #v = Array{Float64}(nx+1, ny+1, nz, nt)
     u = zeros(nx+1, ny+1, nz, nt)
     v = zeros(nx+1, ny+1, nz, nt)
     for i=1:nx
@@ -62,7 +62,7 @@ steps to get the approximate atmosphere state at any point in time.  If the
 `Atmosphere` data set only contains a single time step, values from that time 
 are returned.
 """
-function interpolateAtmosphereState(atmosphere::Atmosphere, t::float)
+function interpolateAtmosphereState(atmosphere::Atmosphere, t::Float64)
     if length(atmosphere.time) == 1
         return atmosphere.u, atmosphere.v
     elseif t < atmosphere.time[1] || t > atmosphere.time[end]
@@ -102,10 +102,10 @@ one 4-th dimension matrix per `time` step.  Sea surface will be at `z=0.` with
 the atmosphere spanning `z<0.`.  Vertical indexing starts with `k=0` at the sea 
 surface, and increases downwards.
 """
-function createRegularAtmosphereGrid(n::Array{Int, 1},
-                                     L::Array{float, 1};
-                                     origo::Array{float, 1} = zeros(2),
-                                     time::Array{float, 1} = zeros(1),
+function createRegularAtmosphereGrid(n::Vector{Int},
+                                     L::Vector{Float64};
+                                     origo::Vector{Float64} = zeros(2),
+                                     time::Array{Float64, 1} = zeros(1),
                                      name::String = "unnamed")
 
     xq = repmat(linspace(origo[1], L[1], n[1] + 1), 1, n[2] + 1)
@@ -141,6 +141,11 @@ function addAtmosphereDrag!(simulation::Simulation)
     end
 
     u, v = interpolateAtmosphereState(simulation.atmosphere, simulation.time)
+    uv_interp = Vector{Float64}(2)
+    sw = Vector{Float64}(2)
+    se = Vector{Float64}(2)
+    ne = Vector{Float64}(2)
+    nw = Vector{Float64}(2)
 
     for ice_floe in simulation.ice_floes
 
@@ -163,17 +168,13 @@ function addAtmosphereDrag!(simulation::Simulation)
                  """)
         end
 
-        applyAtmosphereDragToIceFloe!(ice_floe,
-                                      bilinearInterpolation(u,
-                                                            x_tilde, y_tilde,
-                                                            i, j, k, 1),
-                                      bilinearInterpolation(v,
-                                                            x_tilde, y_tilde,
-                                                            i, j, k, 1))
+        bilinearInterpolation!(uv_interp, u, v, x_tilde, y_tilde, i, j, k, 1)
+        applyAtmosphereDragToIceFloe!(ice_floe, uv_interp[1], uv_interp[2])
         applyAtmosphereVorticityToIceFloe!(ice_floe,
-                                           curl(simulation.atmosphere,
-                                                x_tilde, y_tilde, i, j, k, 1))
+                                      curl(simulation.atmosphere, x_tilde, y_tilde,
+                                           i, j, k, 1, sw, se, ne, nw))
     end
+    nothing
 end
 
 export applyAtmosphereDragToIceFloe!
@@ -182,18 +183,19 @@ Add Stokes-type drag from velocity difference between atmosphere and a single
 ice floe.
 """
 function applyAtmosphereDragToIceFloe!(ice_floe::IceFloeCylindrical,
-                                  u::float, v::float)
-    freeboard = .1*ice_floe.thickness  # height above water
+                                  u::Float64, v::Float64)
     rho_a = 1.2754   # atmosphere density
     length = ice_floe.areal_radius*2.
     width = ice_floe.areal_radius*2.
 
-    drag_force = rho_a * (.5*ice_floe.ocean_drag_coeff_vert*width*freeboard + 
-        ice_floe.atmosphere_drag_coeff_horiz*length*width) *
+    drag_force = rho_a * 
+    (.5*ice_floe.ocean_drag_coeff_vert*width*.1*ice_floe.thickness + 
+     ice_floe.atmosphere_drag_coeff_horiz*length*width) *
         ([u, v] - ice_floe.lin_vel)*norm([u, v] - ice_floe.lin_vel)
 
     ice_floe.force += drag_force
     ice_floe.atmosphere_stress = drag_force/ice_floe.horizontal_surface_area
+    nothing
 end
 
 export applyAtmosphereVorticityToIceFloe!
@@ -203,16 +205,16 @@ single ice floe.  See Eq. 9.28 in "Introduction to Fluid Mechanics" by Nakayama
 and Boucher, 1999.
 """
 function applyAtmosphereVorticityToIceFloe!(ice_floe::IceFloeCylindrical, 
-                                            atmosphere_curl::float)
-    freeboard = .1*ice_floe.thickness  # height above water
+                                            atmosphere_curl::Float64)
     rho_a = 1.2754   # atmosphere density
 
     ice_floe.torque +=
         pi*ice_floe.areal_radius^4.*rho_a*
         (ice_floe.areal_radius/5.*ice_floe.atmosphere_drag_coeff_horiz + 
-        freeboard*ice_floe.atmosphere_drag_coeff_vert)*
+        .1*ice_floe.thickness*ice_floe.atmosphere_drag_coeff_vert)*
         abs(.5*atmosphere_curl - ice_floe.ang_vel)*
         (.5*atmosphere_curl - ice_floe.ang_vel)
+    nothing
 end
 
 export compareAtmospheres
@@ -240,4 +242,5 @@ function compareAtmospheres(atmosphere1::Atmosphere, atmosphere2::Atmosphere)
     if isassigned(atmosphere1.ice_floe_list, 1)
         Base.Test.@test atmosphere1.ice_floe_list == atmosphere2.ice_floe_list
     end
+    nothing
 end

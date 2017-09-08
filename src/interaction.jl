@@ -16,26 +16,26 @@ function interact!(simulation::Simulation)
                 continue
             end
 
-            """
-            if norm(simulation.ice_floes[i].lin_pos - 
+            #=if norm(simulation.ice_floes[i].lin_pos - 
                     simulation.ice_floes[j].lin_pos) - 
-                (simulation.ice_floes[i].contact_radius + 
-                 simulation.ice_floes[j].contact_radius) > 0.
+                    (simulation.ice_floes[i].contact_radius + 
+                    simulation.ice_floes[j].contact_radius) > 0.
 
                 simulation.ice_floes[i].contacts[ic] = 0  # remove contact
                 simulation.ice_floes[i].n_contacts -= 1
                 simulation.ice_floes[j].n_contacts -= 1
-            else
-            """
+            else=#
             interactIceFloes!(simulation, i, j, ic)
             #end
         end
     end
 
     for i=1:length(simulation.ice_floes)
-        simulation.ice_floes[i].granular_stress = simulation.ice_floes[i].force/
+        @inbounds simulation.ice_floes[i].granular_stress = 
+            simulation.ice_floes[i].force/
             simulation.ice_floes[i].horizontal_surface_area
     end
+    nothing
 end
 
 export interactIceFloes!
@@ -197,12 +197,5 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
         force_n/simulation.ice_floes[i].side_surface_area;
     simulation.ice_floes[j].pressure += 
         force_n/simulation.ice_floes[j].side_surface_area;
-end
-
-function harmonicMean(a::Any, b::Any)
-    if a ≈ 0. && b ≈ 0
-        return 0.
-    else
-        return 2.*a*b/(a + b)
-    end
+    nothing
 end

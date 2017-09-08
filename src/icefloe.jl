@@ -1,4 +1,5 @@
 ## Manage icefloes in the model
+import PyPlot
 
 export addIceFloeCylindrical!
 """
@@ -7,39 +8,39 @@ Adds a grain to the simulation. Example:
     SeaIce.addIceFloeCylindrical([1.0, 2.0, 3.0], 1.0)
 """
 function addIceFloeCylindrical!(simulation::Simulation,
-                                lin_pos::vector,
-                                contact_radius::float,
-                                thickness::float;
+                                lin_pos::Vector{Float64},
+                                contact_radius::Float64,
+                                thickness::Float64;
                                 areal_radius = false,
-                                lin_vel::vector = [0., 0.],
-                                lin_acc::vector = [0., 0.],
-                                force::vector = [0., 0.],
-                                ang_pos::float = 0.,
-                                ang_vel::float = 0.,
-                                ang_acc::float = 0.,
-                                torque::float = 0.,
-                                density::float = 934.,
-                                contact_stiffness_normal::float = 1e7,
-                                contact_stiffness_tangential::float = 0.,
-                                contact_viscosity_normal::float = 0.,
-                                contact_viscosity_tangential::float = 0.,
-                                contact_static_friction::float = 0.4,
-                                contact_dynamic_friction::float = 0.4,
-                                youngs_modulus::float = 2e7,
-                                #youngs_modulus::float = 2e9,  # Hopkins 2004
-                                poissons_ratio::float = 0.185,  # Hopkins 2004
-                                #tensile_strength::float = 500e3,  # Hopkins2004
-                                tensile_strength::float = 0.,
-                                tensile_heal_rate::float = 0.,
-                                compressive_strength_prefactor::float = 1285e3,  
+                                lin_vel::Vector{Float64} = [0., 0.],
+                                lin_acc::Vector{Float64} = [0., 0.],
+                                force::Vector{Float64} = [0., 0.],
+                                ang_pos::Float64 = 0.,
+                                ang_vel::Float64 = 0.,
+                                ang_acc::Float64 = 0.,
+                                torque::Float64 = 0.,
+                                density::Float64 = 934.,
+                                contact_stiffness_normal::Float64 = 1e7,
+                                contact_stiffness_tangential::Float64 = 0.,
+                                contact_viscosity_normal::Float64 = 0.,
+                                contact_viscosity_tangential::Float64 = 0.,
+                                contact_static_friction::Float64 = 0.4,
+                                contact_dynamic_friction::Float64 = 0.4,
+                                youngs_modulus::Float64 = 2e7,
+                                #youngs_modulus::Float64 = 2e9,  # Hopkins 2004
+                                poissons_ratio::Float64 = 0.185,  # Hopkins 2004
+                                #tensile_strength::Float64 = 500e3,  # Hopkins2004
+                                tensile_strength::Float64 = 0.,
+                                tensile_heal_rate::Float64 = 0.,
+                                compressive_strength_prefactor::Float64 = 1285e3,  
                                     # Hopkins 2004
-                                ocean_drag_coeff_vert::float = 0.85, # H&C 2011
-                                ocean_drag_coeff_horiz::float = 5e-4, # H&C 2011
-                                atmosphere_drag_coeff_vert::float = 0.4,
+                                ocean_drag_coeff_vert::Float64 = 0.85, # H&C 2011
+                                ocean_drag_coeff_horiz::Float64 = 5e-4, # H&C 2011
+                                atmosphere_drag_coeff_vert::Float64 = 0.4,
                                     # H&C 2011
-                                atmosphere_drag_coeff_horiz::float = 2.5e-4,
+                                atmosphere_drag_coeff_horiz::Float64 = 2.5e-4,
                                     # H&C2011
-                                pressure::float = 0.,
+                                pressure::Float64 = 0.,
                                 fixed::Bool = false,
                                 rotating::Bool = true,
                                 enabled::Bool = true,
@@ -47,9 +48,9 @@ function addIceFloeCylindrical!(simulation::Simulation,
                                 ocean_grid_pos::Array{Int, 1} = [0, 0],
                                 atmosphere_grid_pos::Array{Int, 1} = [0, 0],
                                 n_contacts::Int = 0,
-                                granular_stress::vector = [0., 0.],
-                                ocean_stress::vector = [0., 0.],
-                                atmosphere_stress::vector = [0., 0.])
+                                granular_stress::Vector{Float64} = [0., 0.],
+                                ocean_stress::Vector{Float64} = [0., 0.],
+                                atmosphere_stress::Vector{Float64} = [0., 0.])
 
     # Check input values
     if length(lin_pos) != 2
@@ -77,8 +78,8 @@ function addIceFloeCylindrical!(simulation::Simulation,
 
     contacts::Array{Int, 1} = zeros(Int, simulation.Nc_max)
     contact_parallel_displacement =
-        Array{Array{Float64, 1}, 1}(simulation.Nc_max)
-    contact_age::Array{Float64, 1} = zeros(Float64, simulation.Nc_max)
+        Vector{Vector{Float64}}(simulation.Nc_max)
+        contact_age::Vector{Float64} = zeros(Float64, simulation.Nc_max)
     for i=1:simulation.Nc_max
         contact_parallel_displacement[i] = zeros(2)
     end
@@ -151,6 +152,7 @@ function addIceFloeCylindrical!(simulation::Simulation,
 
     # Add to simulation object
     addIceFloe!(simulation, icefloe, verbose)
+    nothing
 end
 
 export iceFloeCircumreference
@@ -318,56 +320,62 @@ function convertIceFloeDataToArrays(simulation::Simulation)
 end
 
 function deleteIceFloeArrays!(ifarr::IceFloeArrays)
-    ifarr.density = 0
+    f1 = zeros(1)
+    f2 = zeros(1,1)
+    i1 = zeros(Int, 1)
 
-    ifarr.thickness = 0
-    ifarr.contact_radius = 0
-    ifarr.areal_radius = 0
-    ifarr.circumreference = 0
-    ifarr.horizontal_surface_area = 0
-    ifarr.side_surface_area = 0
-    ifarr.volume = 0
-    ifarr.mass = 0
-    ifarr.moment_of_inertia = 0
+    ifarr.density = f1
 
-    ifarr.lin_pos = 0
-    ifarr.lin_vel = 0
-    ifarr.lin_acc = 0
-    ifarr.force = 0
+    ifarr.thickness = f1
+    ifarr.contact_radius = f1
+    ifarr.areal_radius = f1
+    ifarr.circumreference = f1
+    ifarr.horizontal_surface_area = f1
+    ifarr.side_surface_area = f1
+    ifarr.volume = f1
+    ifarr.mass = f1
+    ifarr.moment_of_inertia = f1
 
-    ifarr.ang_pos = 0
-    ifarr.ang_vel = 0
-    ifarr.ang_acc = 0
-    ifarr.torque = 0
+    ifarr.lin_pos = f2
+    ifarr.lin_vel = f2
+    ifarr.lin_acc = f2
+    ifarr.force = f2
 
-    ifarr.fixed = 0
-    ifarr.rotating = 0
-    ifarr.enabled = 0
+    ifarr.ang_pos = f2
+    ifarr.ang_vel = f2
+    ifarr.ang_acc = f2
+    ifarr.torque = f2
 
-    ifarr.contact_stiffness_normal = 0
-    ifarr.contact_stiffness_tangential = 0
-    ifarr.contact_viscosity_normal = 0
-    ifarr.contact_viscosity_tangential = 0
-    ifarr.contact_static_friction = 0
-    ifarr.contact_dynamic_friction = 0
+    ifarr.fixed = i1
+    ifarr.rotating = i1
+    ifarr.enabled = i1
 
-    ifarr.youngs_modulus = 0
-    ifarr.poissons_ratio = 0
-    ifarr.tensile_strength = 0
-    ifarr.compressive_strength_prefactor = 0
+    ifarr.contact_stiffness_normal = f1
+    ifarr.contact_stiffness_tangential = f1
+    ifarr.contact_viscosity_normal = f1
+    ifarr.contact_viscosity_tangential = f1
+    ifarr.contact_static_friction = f1
+    ifarr.contact_dynamic_friction = f1
 
-    ifarr.ocean_drag_coeff_vert = 0
-    ifarr.ocean_drag_coeff_horiz = 0
-    ifarr.atmosphere_drag_coeff_vert = 0
-    ifarr.atmosphere_drag_coeff_horiz = 0
+    ifarr.youngs_modulus = f1
+    ifarr.poissons_ratio = f1
+    ifarr.tensile_strength = f1
+    ifarr.compressive_strength_prefactor = f1
 
-    ifarr.pressure = 0
-    ifarr.n_contacts = 0
+    ifarr.ocean_drag_coeff_vert = f1
+    ifarr.ocean_drag_coeff_horiz = f1
+    ifarr.atmosphere_drag_coeff_vert = f1
+    ifarr.atmosphere_drag_coeff_horiz = f1
 
-    ifarr.granular_stress = 0
-    ifarr.ocean_stress = 0
-    ifarr.atmosphere_stress = 0
+    ifarr.pressure = f1
+    ifarr.n_contacts = i1
+
+    ifarr.granular_stress = f2
+    ifarr.ocean_stress = f2
+    ifarr.atmosphere_stress = f2
+
     gc()
+    nothing
 end
 
 export printIceFloeInfo
@@ -427,6 +435,7 @@ function printIceFloeInfo(f::IceFloeCylindrical)
     println("  granular_stress:   $(f.granular_stress) Pa")
     println("  ocean_stress:      $(f.ocean_stress) Pa")
     println("  atmosphere_stress: $(f.atmosphere_stress) Pa")
+    nothing
 end
 
 export iceFloeKineticTranslationalEnergy
@@ -535,4 +544,64 @@ function compareIceFloes(if1::IceFloeCylindrical, if2::IceFloeCylindrical)
     Base.Test.@test if1.granular_stress ≈ if2.granular_stress
     Base.Test.@test if1.ocean_stress ≈ if2.ocean_stress
     Base.Test.@test if1.atmosphere_stress ≈ if2.atmosphere_stress
+    nothing
+end
+
+export plotIceFloeSizeDistribution
+"""
+    plotIceFloeSizeDistribution(simulation, [filename_postfix], [nbins],
+                                [size_type], [figsize], [filetype])
+
+Plot the ice-floe size distribution as a histogram and save it to the disk.  The 
+plot is saved accoring to the simulation id, the optional `filename_postfix` 
+string, and the `filetype`, and is written to the current folder.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the ice floes.
+* `filename_postfix::String`: optional string for the output filename.
+* `nbins::Int`: number of bins in the histogram (default = 12).
+* `size_type::String`: specify whether to use the `contact` or `areal` radius 
+    for the ice-floe size.  The default is `contact`.
+* `figsize::Tuple`: the output figure size in inches (default = (6,4).
+* `filetype::String`: the output file type (default = "png").
+* `verbose::String`: show output file as info message in stdout (default = 
+    true).
+* `skip_fixed::Bool`: ommit ice floes that are fixed in space from the size 
+    distribution (default = true).
+* `logy::Bool`: plot y-axis in log scale.
+"""
+function plotIceFloeSizeDistribution(simulation::Simulation;
+                                     filename_postfix::String = "",
+                                     nbins::Int=12,
+                                     size_type::String = "contact",
+                                     figsize::Tuple = (6,4),
+                                     filetype::String = "png",
+                                     verbose::Bool = true,
+                                     skip_fixed::Bool = true,
+                                     log_y::Bool = true)
+
+    diameters = Float64[]
+    for i=1:length(simulation.ice_floes)
+        if simulation.ice_floes[i].fixed && skip_fixed
+            continue
+        end
+        if size_type == "contact"
+            push!(diameters, simulation.ice_floes[i].contact_radius*2.)
+        elseif size_type == "areal"
+            push!(diameters, simulation.ice_floes[i].areal_radius*2.)
+        else
+            error("size_type '$size_type' not understood")
+        end
+    end
+    PyPlot.pygui(false)
+    PyPlot.figure(figsize=figsize)
+    PyPlot.plt[:hist](diameters, nbins, log=log_y)
+    PyPlot.xlabel("Diameter [m]")
+    PyPlot.ylabel("Count [-]")
+    filename = string(simulation.id * filename_postfix * 
+                      "-ice-floe-size-distribution." * filetype)
+    PyPlot.savefig(filename)
+    if verbose
+        info(filename)
+    end
 end
