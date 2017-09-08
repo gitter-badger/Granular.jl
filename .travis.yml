@@ -17,8 +17,7 @@ notifications:
       on_failure: always # default: always
 
 before_deploy:
-  - provider: script
-    script: julia -e 'ENV["PYTHON"]=""; Pkg.build("PyCall")'
+  - julia -e 'info("Preparing Python"); ENV["PYTHON"]=""; Pkg.build("PyCall")'
 
 deploy:
   - provider: script
