@@ -1,6 +1,5 @@
 # SeaIce
-A [Julia](https://julialang.org) package for sea-ice thermodynamics and granular 
-mechanics.
+A [Julia](https://julialang.org) package for sea-ice granular mechanics.
 
 | Documentation | Build Status (Linux/Mac) | Build Status (Win) | Test Coverage |
 |:-------------:|:------------------------:|:------------------:|:-------------:|
