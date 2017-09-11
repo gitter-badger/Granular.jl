@@ -1,15 +1,15 @@
-## Public Documentation
+# Public API Documentation
 
 Documentation for `SeaIce.jl`'s public interface.
 
-See [Internal Documentation](@ref) for itnernal package docs.
+See [Internal Documentation](@ref) for internal package docs.
 
 ## Contents
 ```@contents
 Pages = ["public.md"]
 ```
 
-## Index
+## Index(@id main-index)
 ```@index
 Pages = ["public.md"]
 ```

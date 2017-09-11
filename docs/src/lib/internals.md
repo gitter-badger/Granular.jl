@@ -1,4 +1,4 @@
-## Internal Documentation
+# Package-internal Documentation
 
 This page lists all the documented internals of the `SeaIce` module.
 
@@ -14,6 +14,7 @@ A list of all internal documentation sorted by module.
 Pages = ["internals.md"]
 ```
 
+## Internal Interface
 ```@autodocs
 Modules = [SeaIce]
 Public = false
