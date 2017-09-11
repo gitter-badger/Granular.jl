@@ -23,8 +23,9 @@ matrix:
 before_script:
   - julia -e 'info("Preparing Python"); ENV["PYTHON"]=""; Pkg.add("PyCall"); Pkg.build("PyCall")'
 
-#after_success:
-#  - julia -e 'Pkg.add("Documenter")'
+after_success:
+  - julia -e 'Pkg.add("Documenter")'
+  - julia -e 'cd(Pkg.dir("SeaIce")); include(joinpath("docs", "make.jl"))'
 
 deploy:
   - provider: script
