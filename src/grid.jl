@@ -120,7 +120,7 @@ export sortIceFloesInGrid!
 """
 Find ice-floe positions in grid, based on their center positions.
 """
-function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
+function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=true)
 
     if simulation.time_iteration == 0
         grid.ice_floe_list =
@@ -203,6 +203,10 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=false)
 
             # remove ice floe if it is outside of the grid
             if i == 0 && j == 0
+                if verbose
+                    info("Disabling ice floe $idx at pos (" *
+                         "$(simulation.ice_floes[idx].lin_pos))")
+                end
                 disableIceFloe!(simulation, idx)
                 continue
             end
