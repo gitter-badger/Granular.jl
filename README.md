@@ -33,11 +33,6 @@ The package can be updated from this repository using:
 
     Pkg.update("SeaIce")
 
-## Documentation
-All functions and types are documented via docstrings.  The documentation can be 
-displayed in the Julia shell by typing `?` followed by the function or type 
-name.
-
 ## Author
 [Anders Damsgaard](mailto:anders.damsgaard@noaa.gov),
 [www.adamsgaard.dk](https://adamsgaard.dk)
