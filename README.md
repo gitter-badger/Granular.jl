@@ -2,7 +2,7 @@
 A [Julia](https://julialang.org) package for sea-ice thermodynamics and granular 
 mechanics.
 
-Documentation: [![Seaice.jl Documentation](https://img.shields.io/badge/docs-latest-blue.svt)](https://anders-dc.github.io/SeaIce.jl/latest)
+Documentation: [![Seaice.jl Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://anders-dc.github.io/SeaIce.jl/latest)
 
 Build status on Linux/Mac: [![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) 
 
