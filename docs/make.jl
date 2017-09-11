@@ -10,7 +10,7 @@ makedocs(
         "Home" => "index.md",
         "Manual" => Any[
             "man/installation.md",
-        ]
+        ],
         "Library" => Any[
             "Public" => "lib/public.md",
             hide("Internals" => "lib/internals.md", Any[
