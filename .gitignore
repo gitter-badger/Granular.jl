@@ -11,3 +11,7 @@ deps/deps.jl
 *.vtu
 *.vtp
 *.vts
+
+# documentation
+docs/build/
+docs/site/
