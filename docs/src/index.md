@@ -30,6 +30,6 @@ Depth = 1
 Pages = [
     "lib/public.md",
     "lib/internals.md",
-Depth = 1
 ]
+Depth = 1
 ```
