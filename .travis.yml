@@ -26,8 +26,6 @@ before_script:
 after_success:
   - julia -e 'Pkg.add("Documenter")'
   - julia -e 'cd(Pkg.dir("SeaIce")); include(joinpath("docs", "make.jl"))'
-
-deploy:
   - provider: script
     script: julia -e 'cd(Pkg.dir("SeaIce")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
     on:
