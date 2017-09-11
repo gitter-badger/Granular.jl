@@ -12,6 +12,7 @@ deps/deps.jl
 *.vtu
 *.vtp
 *.vts
+*.pdf
 
 # documentation
 docs/build/
