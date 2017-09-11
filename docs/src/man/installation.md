@@ -14,8 +14,8 @@ Import the package contents into the current Julia session or script with:
     import SeaIce
 
 This will import all functions and data types in the `SeaIce` namespace.  You 
-can run the package tests, which are contained in the [test/ directory](test/), 
-with the following command:
+can run the package tests, which are contained in the `test/` directory, with
+the following command:
 
     Pkg.test("SeaIce")
 
