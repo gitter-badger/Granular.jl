@@ -2,8 +2,7 @@
 
 """
 # SeaIce.jl
-Offline sea-ice dynamics simulator by [Anders Damsgaard](mailto:andersd@riseup.net),
-[www.adamsgaard.dk](https://adamsgaard.dk)
+Offline sea-ice dynamics simulator module.
 """
 module SeaIce
 
