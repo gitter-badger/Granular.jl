@@ -2,13 +2,9 @@
 A [Julia](https://julialang.org) package for sea-ice thermodynamics and granular 
 mechanics.
 
-Documentation: [![Seaice.jl Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://anders-dc.github.io/SeaIce.jl/latest)
-
-Build status on Linux/Mac: [![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) 
-
-Build status on Windows: [![Build Status](https://ci.appveyor.com/api/projects/status/github/anders-dc/SeaIce.jl?svg=true)](https://ci.appveyor.com/project/anders-dc/seaice-jl/) 
-
-Test coverage: [![codecov.io](http://codecov.io/github/anders-dc/SeaIce.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/SeaIce.jl?branch=master)
+| Documentation | Build Status (Linux/Mac) | Build Status (Win) | Test Coverage |
+|:-------------:|:------------------------:|:------------------:|:-------------:|
+|[![Seaice.jl Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://anders-dc.github.io/SeaIce.jl/latest) | [![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) | [![Build Status](https://ci.appveyor.com/api/projects/status/github/anders-dc/SeaIce.jl?svg=true)](https://ci.appveyor.com/project/anders-dc/seaice-jl/) | [![codecov.io](http://codecov.io/github/anders-dc/SeaIce.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/SeaIce.jl?branch=master) |
 
 ## Installation
 [SeaIce.jl](https://github.com/anders-dc/SeaIce.jl) is in heavy development and 
