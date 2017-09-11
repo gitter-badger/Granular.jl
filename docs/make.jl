@@ -12,7 +12,7 @@ makedocs(
             "man/installation.md",
         ],
         "Library" => Any[
-            "Public" => "lib/public.md",
+            "Public API" => "lib/public.md",
             hide("Internals" => "lib/internals.md", Any[
               "lib/internals.md",
              ])
