@@ -96,10 +96,30 @@ are optional, and come with default values.  The only required arguments are
 
 # Examples
 The most basic example adds a new ice floe to the simulation `sim`, with a 
-center at `[1., 2., 3.]`, a radius of `1.` meter, and a thickness of `0.5` 
-meter.
+center at `[1., 2.]`, a radius of `1.` meter, and a thickness of `0.5` 
+meter:
 
-    SeaIce.addIceFloeCylindrical(sim, [1., 2., 3.], 1., .5)
+```julia
+SeaIce.addIceFloeCylindrical!(sim, [1., 2.], 1., .5)
+```
+
+The following example will create a ice floe with tensile strength (cohesion),
+and a velocity of 0.5 m/s towards -x:
+
+```julia
+SeaIce.addIceFloeCylindrical!(sim, [4., 2.], 1., .5,
+                              tensile_strength = 200e3,
+                              lin_vel = [-.5, 0.])
+```
+
+Fixed ice floes are useful for creating walls or coasts, and loops are useful
+for creating regular arrangements:
+
+```julia
+for i=1:5
+    SeaIce.addIceFloeCylindrical!(sim, [i*2., 0., 3.], 1., .5, fixed=true)
+end
+```
 """
 function addIceFloeCylindrical!(simulation::Simulation,
                                 lin_pos::Vector{Float64},
