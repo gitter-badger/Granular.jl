@@ -4,6 +4,8 @@ import SeaIce
 
 const verbose = true
 const text = "SeaIce.jl"
+#const forcing = "down"
+const forcing = "gyres"
 
 # Font created with `figlet` and the font 'pebbles'.  If figlet is not installed 
 # on your system, use the string below:
@@ -85,24 +87,33 @@ end
 sim.ocean = SeaIce.createRegularOceanGrid([nx, ny, 1], [Lx, Ly, 1.],
                                           name="logo_ocean")
 
-epsilon = 0.25  # amplitude of periodic oscillations
-t = 0.
-a = epsilon*sin(2.*pi*t)
-b = 1. - 2.*epsilon*sin(2.*pi*t)
-for i=1:size(sim.ocean.u, 1)
-    for j=1:size(sim.ocean.u, 2)
+if forcing == "gyres"
+    epsilon = 0.25  # amplitude of periodic oscillations
+    t = 0.
+    a = epsilon*sin(2.*pi*t)
+    b = 1. - 2.*epsilon*sin(2.*pi*t)
+    for i=1:size(sim.ocean.u, 1)
+        for j=1:size(sim.ocean.u, 2)
 
-        x = sim.ocean.xq[i, j]/(Lx*.5)  # x in [0;2]
-        y = sim.ocean.yq[i, j]/Ly       # y in [0;1]
+            x = sim.ocean.xq[i, j]/(Lx*.5)  # x in [0;2]
+            y = sim.ocean.yq[i, j]/Ly       # y in [0;1]
 
-        f = a*x^2. + b*x
-        df_dx = 2.*a*x + b
+            f = a*x^2. + b*x
+            df_dx = 2.*a*x + b
 
-        sim.ocean.u[i, j, 1, 1] = -pi/10.*sin(pi*f)*cos(pi*y) * 1e1
-        sim.ocean.v[i, j, 1, 1] = pi/10.*cos(pi*f)*sin(pi*y)*df_dx * 1e1
+            sim.ocean.u[i, j, 1, 1] = -pi/10.*sin(pi*f)*cos(pi*y) * 2e1
+            sim.ocean.v[i, j, 1, 1] = pi/10.*cos(pi*f)*sin(pi*y)*df_dx * 2e1
+        end
     end
-end
 
+elseif forcing == "down"
+    Base.Random.srand(1)
+    sim.ocean.u[:, :, 1, 1] = (Base.Random.rand(nx+1, ny+1) - .5)*.1
+    sim.ocean.v[:, :, 1, 1] = -5.
+
+else
+    error("Forcing not understood")
+end
 
 # Initialize confining walls, which are ice floes that are fixed in space
 r = dx/4.
