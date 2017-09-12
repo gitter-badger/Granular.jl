@@ -3,10 +3,12 @@
 import SeaIce
 
 const verbose = true
+
 const text = "SeaIce.jl"
+
+const forcing = "gyres"
 #const forcing = "down"
-#const forcing = "gyres"
-const forcing = "convergent"
+#const forcing = "convergent"
 
 # Font created with `figlet` and the font 'pebbles'.  If figlet is not installed 
 # on your system, use the string below:
@@ -116,7 +118,7 @@ elseif forcing == "convergent"
     Base.Random.srand(1)
     sim.ocean.u[:, :, 1, 1] = (Base.Random.rand(nx+1, ny+1) - .5)*.1
     for j=1:size(sim.ocean.u, 2)
-        sim.ocean.v[:, j, 1, 1] = -(j/ny - .5)*5.
+        sim.ocean.v[:, j, 1, 1] = -(j/ny - .5)*10.
     end
 
 else
