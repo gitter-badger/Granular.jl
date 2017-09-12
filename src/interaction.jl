@@ -148,6 +148,7 @@ function interactIceFloes!(simulation::Simulation, i::Int, j::Int, ic::Int)
                                max(simulation.ice_floes[i].tensile_heal_rate,
                                    1e-12), 1.)*
                                simulation.ice_floes[i].tensile_strength
+        
 
         # break bond
         if abs(force_n) >= tensile_strength*A_ij
