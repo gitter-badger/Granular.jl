@@ -3,9 +3,103 @@ import PyPlot
 
 export addIceFloeCylindrical!
 """
-Adds a grain to the simulation. Example:
+    function addIceFloeCylindrical!(simulation, lin_pos, contact_radius,
+                                    thickness[, areal_radius, lin_vel, lin_acc,
+                                    force, ang_pos, ang_vel, ang_acc, torque,
+                                    density, contact_stiffness_normal,
+                                    contact_stiffness_tangential,
+                                    contact_viscosity_normal,
+                                    contact_viscosity_tangential,
+                                    contact_static_friction,
+                                    contact_dynamic_friction,
+                                    youngs_modulus, poissons_ratio,
+                                    tensile_strength, tensile_heal_rate,
+                                    compressive_strength_prefactor,
+                                    ocean_drag_coeff_vert,
+                                    ocean_drag_coeff_horiz,
+                                    atmosphere_drag_coeff_vert,
+                                    atmosphere_drag_coeff_horiz,
+                                    pressure, fixed, rotating, enabled, verbose,
+                                    ocean_grid_pos, atmosphere_grid_pos,
+                                    n_contact, granular_stress, ocean_stress,
+                                    atmosphere_stress])
 
-    SeaIce.addIceFloeCylindrical([1.0, 2.0, 3.0], 1.0)
+Creates and adds a cylindrical icefloe to a simulation. Most of the arguments 
+are optional, and come with default values.  The only required arguments are 
+`simulation`, `lin_pos`, `contact_radius`, and `thickness`.
+
+# Arguments
+- `simulation::Simulation`: the simulation object where the ice floe should be
+    added to.
+- `lin_pos::Vector{Float64}`: linear position of ice-floe center [m].
+- `contact_radius::Float64`: ice-floe radius for granular interaction [m].
+- `thickness::Float64`: ice-floe thickness [m].
+- `areal_radius = false`: ice-floe radius for determining sea-ice concentration
+    [m].
+- `lin_vel::Vector{Float64} = [0., 0.]`: linear velocity [m/s].
+- `lin_acc::Vector{Float64} = [0., 0.]`: linear acceleration [m/s^2].
+- `force::Vector{Float64} = [0., 0.]`: linear force balance [N].
+- `ang_pos::Float64 = 0.`: angular position around its center vertical axis
+    [rad].
+- `ang_vel::Float64 = 0.`: angular velocity around its center vertical axis
+    [rad/s].
+- `ang_acc::Float64 = 0.`: angular acceleration around its center vertical axis
+    [rad/s^2].
+- `torque::Float64 = 0.`: torque around its center vertical axis [N*m]
+- `density::Float64 = 934.`: ice-floe mean density [kg/m^3].
+- `contact_stiffness_normal::Float64 = 1e7`: contact-normal stiffness [N/m];
+    overridden if `youngs_modulus` is set to a positive value.
+- `contact_stiffness_tangential::Float64 = 0.`: contact-tangential stiffness
+    [N/m]; overridden if `youngs_modulus` is set to a positive value.
+- `contact_viscosity_normal::Float64 = 0.`: contact-normal viscosity [N/m/s].
+- `contact_viscosity_tangential::Float64 = 0.`: contact-tangential viscosity
+    [N/m/s].
+- `contact_static_friction::Float64 = 0.4`: contact static Coulomb frictional
+    coefficient [-].
+- `contact_dynamic_friction::Float64 = 0.4`: contact dynamic Coulomb frictional
+    coefficient [-].
+- `youngs_modulus::Float64 = 2e7`: elastic modulus [Pa]; overrides any value
+    set for `k_n`.
+- `poissons_ratio::Float64 = 0.185`: Poisson's ratio, used to determine the
+    contact-tangential stiffness from `youngs_modulus` [-].
+- `tensile_strength::Float64 = 0.`: contact-tensile (cohesive) bond strength
+    [Pa].
+- `tensile_heal_rate::Float64 = 0.`: rate at which contact-tensile bond strength
+    is obtained [1/s].
+- `compressive_strength_prefactor::Float64 = 1285e3`: maximum compressive
+    strength on granular contact (not currently enforced) [m*Pa].
+- `ocean_drag_coeff_vert::Float64 = 0.85`: vertical drag coefficient for ocean
+    against ice-floe sides [-].
+- `ocean_drag_coeff_horiz::Float64 = 5e-4`: horizontal drag coefficient for
+    ocean against ice-floe bottom [-].
+- `atmosphere_drag_coeff_vert::Float64 = 0.4`: vertical drag coefficient for
+    atmosphere against ice-floe sides [-].
+- `atmosphere_drag_coeff_horiz::Float64 = 2.5e-4`: horizontal drag coefficient
+    for atmosphere against ice-floe bottom [-].
+- `pressure::Float64 = 0.`: current compressive stress on ice floe [Pa].
+- `fixed::Bool = false`: ice floe is fixed in space.
+- `rotating::Bool = true`: ice floe is allowed to rotate.
+- `enabled::Bool = true`: ice floe interacts with other ice floes.
+- `verbose::Bool = true`: display diagnostic information during the function
+    call.
+- `ocean_grid_pos::Array{Int, 1} = [0, 0]`: position of ice floe in the ocean
+    grid.
+- `atmosphere_grid_pos::Array{Int, 1} = [0, 0]`: position of ice floe in the
+    atmosphere grid.
+- `n_contacts::Int = 0`: number of contacts with other ice floes.
+- `granular_stress::Vector{Float64} = [0., 0.]`: resultant stress on ice floe
+    from granular interactions [Pa].
+- `ocean_stress::Vector{Float64} = [0., 0.]`: resultant stress on ice floe from
+    ocean drag [Pa].
+- `atmosphere_stress::Vector{Float64} = [0., 0.]`: resultant stress on ice floe
+    from atmosphere drag [Pa].
+
+# Examples
+The most basic example adds a new ice floe to the simulation `sim`, with a 
+center at `[1., 2., 3.]`, a radius of `1.` meter, and a thickness of `0.5` 
+meter.
+
+    SeaIce.addIceFloeCylindrical(sim, [1., 2., 3.], 1., .5)
 """
 function addIceFloeCylindrical!(simulation::Simulation,
                                 lin_pos::Vector{Float64},
@@ -557,18 +651,18 @@ plot is saved accoring to the simulation id, the optional `filename_postfix`
 string, and the `filetype`, and is written to the current folder.
 
 # Arguments
-* `simulation::Simulation`: the simulation object containing the ice floes.
-* `filename_postfix::String`: optional string for the output filename.
-* `nbins::Int`: number of bins in the histogram (default = 12).
-* `size_type::String`: specify whether to use the `contact` or `areal` radius 
+- `simulation::Simulation`: the simulation object containing the ice floes.
+- `filename_postfix::String`: optional string for the output filename.
+- `nbins::Int`: number of bins in the histogram (default = 12).
+- `size_type::String`: specify whether to use the `contact` or `areal` radius 
     for the ice-floe size.  The default is `contact`.
-* `figsize::Tuple`: the output figure size in inches (default = (6,4).
-* `filetype::String`: the output file type (default = "png").
-* `verbose::String`: show output file as info message in stdout (default = 
+- `figsize::Tuple`: the output figure size in inches (default = (6,4).
+- `filetype::String`: the output file type (default = "png").
+- `verbose::String`: show output file as info message in stdout (default = 
     true).
-* `skip_fixed::Bool`: ommit ice floes that are fixed in space from the size 
+- `skip_fixed::Bool`: ommit ice floes that are fixed in space from the size 
     distribution (default = true).
-* `logy::Bool`: plot y-axis in log scale.
+- `logy::Bool`: plot y-axis in log scale.
 """
 function plotIceFloeSizeDistribution(simulation::Simulation;
                                      filename_postfix::String = "",
