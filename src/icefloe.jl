@@ -59,7 +59,7 @@ are optional, and come with default values.  The only required arguments are
 * `contact_dynamic_friction::Float64 = 0.4`: contact dynamic Coulomb frictional
     coefficient [-].
 * `youngs_modulus::Float64 = 2e7`: elastic modulus [Pa]; overrides any value
-    set for `k_n`.
+    set for `contact_stiffness_normal`.
 * `poissons_ratio::Float64 = 0.185`: Poisson's ratio, used to determine the
     contact-tangential stiffness from `youngs_modulus` [-].
 * `tensile_strength::Float64 = 0.`: contact-tensile (cohesive) bond strength
