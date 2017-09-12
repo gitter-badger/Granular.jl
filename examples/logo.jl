@@ -3,7 +3,8 @@
 import SeaIce
 
 const verbose = true
-const text = "SeaIce.jl"
+#const text = "SeaIce.jl"
+const text = "Quality Street"
 #const forcing = "down"
 const forcing = "gyres"
 
