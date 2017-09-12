@@ -60,8 +60,8 @@ renderView1.ResetCamera()
 
 #changing interaction mode based on data extents
 renderView1.InteractionMode = '2D'
-renderView1.CameraPosition = [30.5, 11.0, 10000.0]
-renderView1.CameraFocalPoint = [30.5, 11.0, 0.0]
+#renderView1.CameraPosition = [30.5, 11.0, 10000.0]
+#renderView1.CameraFocalPoint = [30.5, 11.0, 0.0]
 
 # update the view to ensure updated data information
 renderView1.Update()
@@ -159,20 +159,20 @@ renderView1.OrientationAxesVisibility = 0
 
 # current camera placement for renderView1
 renderView1.InteractionMode = '2D'
-renderView1.CameraPosition = [30.75, 10.99999962002039, 125.01319337485243]
-renderView1.CameraFocalPoint = [30.75, 10.99999962002039, 0.0]
-renderView1.CameraParallelScale = 20.56227912200389
+#renderView1.CameraPosition = [30.75, 10.99999962002039, 125.01319337485243]
+#renderView1.CameraFocalPoint = [30.75, 10.99999962002039, 0.0]
+#renderView1.CameraParallelScale = 20.56227912200389
 
 # save animation
-SaveAnimation('./logo/logo.avi', renderView1, ImageResolution=[1239, 785],
-    FrameRate=10,
-    FrameWindow=[0, 49])
+#SaveAnimation('./logo/logo.avi', renderView1, ImageResolution=[1239, 785],
+#    FrameRate=10,
+#    FrameWindow=[0, 49])
 
 # current camera placement for renderView1
 renderView1.InteractionMode = '2D'
-renderView1.CameraPosition = [30.75, 10.99999962002039, 125.01319337485243]
-renderView1.CameraFocalPoint = [30.75, 10.99999962002039, 0.0]
-renderView1.CameraParallelScale = 20.56227912200389
+#renderView1.CameraPosition = [30.75, 10.99999962002039, 125.01319337485243]
+#renderView1.CameraFocalPoint = [30.75, 10.99999962002039, 0.0]
+#renderView1.CameraParallelScale = 20.56227912200389
 
 # save animation
 SaveAnimation('./logo/logo.png', renderView1, ImageResolution=[1239, 785],
@@ -183,9 +183,9 @@ SaveAnimation('./logo/logo.png', renderView1, ImageResolution=[1239, 785],
 
 # current camera placement for renderView1
 renderView1.InteractionMode = '2D'
-renderView1.CameraPosition = [30.75, 10.99999962002039, 125.01319337485243]
-renderView1.CameraFocalPoint = [30.75, 10.99999962002039, 0.0]
-renderView1.CameraParallelScale = 20.56227912200389
+#renderView1.CameraPosition = [30.75, 10.99999962002039, 125.01319337485243]
+#renderView1.CameraFocalPoint = [30.75, 10.99999962002039, 0.0]
+#renderView1.CameraParallelScale = 20.56227912200389
 
 #### uncomment the following to render all views
 # RenderAllViews()
