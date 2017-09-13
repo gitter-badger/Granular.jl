@@ -36,5 +36,4 @@ julia> Pkg.update("SeaIce")
 For more information on installation and usage, please refer to the [documentation](https://anders-dc.github.io/SeaIce.jl/latest).
 
 ## Author
-[Anders Damsgaard](mailto:anders.damsgaard@noaa.gov),
-[www.adamsgaard.dk](https://adamsgaard.dk)
+[Anders Damsgaard](https://adamsgaard.dk), Geophysical Fluid Dynamics Laboratory, Princeton University.
