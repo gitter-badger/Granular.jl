@@ -29,9 +29,16 @@ logo_string = readstring(`figlet -f pebbles "$text"`)
 const dx = 1.
 const dy = dx
 
-const nx = search(logo_string, '\n') - 1 + 2
 const logo_string_split = split(logo_string, '\n')
-const ny = length(logo_string_split) + 1
+
+const ny = length(logo_string_split)
+maxwidth = 0
+for i=1:ny
+    if maxwidth < length(logo_string_split[i])
+        maxwidth = length(logo_string_split[i])
+    end
+end
+const nx = maxwidth + 1
 
 const Lx = nx*dx
 const Ly = ny*dy
