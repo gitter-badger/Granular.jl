@@ -47,7 +47,8 @@ x = 0.
 y = 0.
 r = 0.
 c = ' '
-h = 1.
+h = .5
+const youngs_modulus = 2e6
 
 sim = SeaIce.createSimulation(id="logo")
 
@@ -86,7 +87,7 @@ for iy=1:length(logo_string_split)
         if r > 0.
             SeaIce.addIceFloeCylindrical!(sim, [x + dx, y - dy], r, h,
                                           tensile_strength=200e3,
-                                          youngs_modulus=2e6,
+                                          youngs_modulus=youngs_modulus,
                                           verbose=verbose)
         end
         r = -1.
@@ -138,16 +139,20 @@ r = dx/4.
 ## N-S wall segments
 for y in linspace(r, Ly-r, Int(round((Ly - 2.*r)/(r*2))))
     SeaIce.addIceFloeCylindrical!(sim, [r, y], r, h, fixed=true,
+                                  youngs_modulus=youngs_modulus,
                                   verbose=false)
     SeaIce.addIceFloeCylindrical!(sim, [Lx-r, y], r, h, fixed=true,
+                                  youngs_modulus=youngs_modulus,
                                   verbose=false)
 end
 
 ## E-W wall segments
 for x in linspace(3.*r, Lx-3.*r, Int(round((Lx - 6.*r)/(r*2))))
     SeaIce.addIceFloeCylindrical!(sim, [x, r], r, h, fixed=true,
+                                  youngs_modulus=youngs_modulus,
                                   verbose=false)
     SeaIce.addIceFloeCylindrical!(sim, [x, Ly-r], r, h, fixed=true,
+                                  youngs_modulus=youngs_modulus,
                                   verbose=false)
 end
 
