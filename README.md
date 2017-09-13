@@ -1,4 +1,8 @@
 # SeaIce
+
+![SeaIce.jl 
+logo](https://github.com/anders-dc/SeaIce.jl/raw/master/docs/src/assets/logo.gif)
+
 A [Julia](https://julialang.org) package for sea-ice granular mechanics.
 
 | Documentation | Build Status (Linux/Mac) | Build Status (Win) | Test Coverage |
