@@ -326,11 +326,81 @@ function isPointInCell(grid::Any, i::Int, j::Int, point::Vector{Float64},
     end
 end
 
+export isPointInGrid
+"""
+Check if a 2d point is contained inside the grid.  The function uses either an
+area-based approach (`method = "Area"`), or a conformal mapping approach
+(`method = "Conformal"`).  The area-based approach is more robust.  This
+function returns `true` or `false`.
+"""
+function isPointInGrid(grid::Any, point::Vector{Float64},
+                       sw::Vector{Float64} = Vector{Float64}(2),
+                       se::Vector{Float64} = Vector{Float64}(2),
+                       ne::Vector{Float64} = Vector{Float64}(2),
+                       nw::Vector{Float64} = Vector{Float64}(2);
+                       method::String="Conformal")
+
+    #sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
+    nx, ny = size(grid.xq)
+    @views sw[1] = grid.xq[  1,  1]
+    @views sw[2] = grid.yq[  1,  1]
+    @views se[1] = grid.xq[ nx,  1]
+    @views se[2] = grid.yq[ nx,  1]
+    @views ne[1] = grid.xq[ nx, ny]
+    @views ne[2] = grid.yq[ nx, ny]
+    @views nw[1] = grid.xq[  1, ny]
+    @views nw[2] = grid.yq[  1, ny]
+
+    if method == "Area"
+        if areaOfQuadrilateral(sw, se, ne, nw) ≈
+            areaOfTriangle(point, sw, se) +
+            areaOfTriangle(point, se, ne) +
+            areaOfTriangle(point, ne, nw) +
+            areaOfTriangle(point, nw, sw)
+            return true
+        else
+            return false
+        end
+
+    elseif method == "Conformal"
+        x_tilde, y_tilde = conformalQuadrilateralCoordinates(sw, se, ne, nw,
+                                                             point)
+        if x_tilde >= 0. && x_tilde <= 1. && y_tilde >= 0. && y_tilde <= 1.
+            return true
+        else
+            return false
+        end
+    else
+        error("method not understood")
+    end
+end
+
+export getGridCornerCoordinates
+"""
+    getGridCornerCoordinates(xq, yq)
+
+Returns grid corner coordinates in the following order (south-west corner, 
+south-east corner, north-east corner, north-west corner).
+
+# Arguments
+* `xq::Array{Float64, 2}`: nominal longitude of q-points [degrees_E]
+* `yq::Array{Float64, 2}`: nominal latitude of q-points [degrees_N]
+"""
+@inline function getGridCornerCoordinates(xq::Array{Float64, 2}, 
+                                          yq::Array{Float64, 2})
+    nx, ny = size(xq)
+    @inbounds return Float64[xq[  1,   1], yq[  1,   1]],
+        Float64[xq[ nx,  1], yq[ nx,   1]],
+        Float64[xq[ nx, ny], yq[ nx, ny]],
+        Float64[xq[  1, ny], yq[  1, ny]]
+end
+
+
 export getCellCornerCoordinates
 """
     getCellCornerCoordinates(xq, yq, i, j)
 
-Returns grid corner coordinates in the following order (south-west corner, 
+Returns grid-cell corner coordinates in the following order (south-west corner, 
 south-east corner, north-east corner, north-west corner).
 
 # Arguments
