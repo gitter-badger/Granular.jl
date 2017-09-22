@@ -1,102 +1,72 @@
 #!/usr/bin/env julia
 
 import SeaIce
+import FileIO
+import Colors
 
 const verbose = true
 
-const text = "SeaIce.jl"
+const img_file = "Cundall2008.png"
 
-const forcing = "gyres"
+img = FileIO.load(img_file)
+
+# resize the image if it is too large, preceed with lopass to avoid antialias
+max_pixels = 100^2
+if size(img, 1)*size(img, 2) > max_pixels
+    cp(img_file, "backup-" * img_file, remove_destination=true)
+    run(`convert $(img_file) -resize "$(max_pixels)@>" $(img_file)`)
+    img = FileIO.load(img_file)
+end
+
+const img_bw = Colors.Gray.(img)
+
+#const forcing = "gyres"
 #const forcing = "down"
 #const forcing = "convergent"
-
-# Font created with `figlet` and the font 'pebbles'.  If figlet is not installed 
-# on your system, use the string below:
-#logo_string =
-#""".oOOOo.               ooOoOOo                     o 
-#o     o                  O                     O O  
-#O.                       o                       o  
-# `OOoo.                  O                       O  
-#      `O .oOo. .oOoO'    o    .oOo  .oOo.     'o o  
-#       o OooO' O   o     O    O     OooO'      O O  
-#O.    .O O     o   O     O    o     O     oO   o o  
-# `oooO'  `OoO' `OoO'o ooOOoOo `OoO' `OoO' Oo   O Oo 
-#                                               o    
-#                                             oO'    """
-
-logo_string = readstring(`figlet -f pebbles "$text"`)
+const forcing = "sandpile"
 
 const dx = 1.
 const dy = dx
 
-const logo_string_split = split(logo_string, '\n')
+const nx = size(img_bw, 2) + 1
+const ny = size(img_bw, 1) + 1
 
-const ny = length(logo_string_split)
-maxwidth = 0
-for i=1:ny
-    if maxwidth < length(logo_string_split[i])
-        maxwidth = length(logo_string_split[i])
-    end
+Lx = nx*dx
+if forcing == "sandpile"
+    Lx *= 1.5
 end
-const nx = maxwidth + 1
-
-const Lx = nx*dx
 const Ly = ny*dy
 
-x = 0.
-y = 0.
-r = 0.
-c = ' '
-h = .5
-const youngs_modulus = 2e6
+const youngs_modulus = 2e7
+const tensile_strength = 0e3
+const h = .5
 
-sim = SeaIce.createSimulation(id="logo")
+sim = SeaIce.createSimulation(id="image")
 
-print(logo_string)
 info("nx = $nx, ny = $ny")
 
-for iy=1:length(logo_string_split)
-    for ix=1:length(logo_string_split[iy])
+for iy=1:size(img_bw, 1)
+    for ix=1:size(img_bw, 2)
 
-        c = logo_string_split[iy][ix]
-
-        if c == ' '
-            continue
-        elseif c == 'O'
-            x = ix*dx - .5*dx
-            y = Ly - (iy*dy - .5*dy)
-            r = .5*dx
-        elseif c == 'o'
-            x = ix*dx - .5*dx
-            y = Ly - (iy*dy - .33*dy)
-            r = .33*dx
-        elseif c == 'o'
-            x = ix*dx - .5*dx
-            y = Ly - (iy*dy - .25*dy)
-            r = .25*dx
-        elseif c == '\''
-            x = ix*dx - .75*dx
-            y = Ly - (iy*dy - .75*dy)
-            r = .25*dx
-        elseif c == '`'
-            x = ix*dx - .25*dx
-            y = Ly - (iy*dy - .75*dy)
-            r = .25*dx
+        x = ix*dx - dx
+        if forcing == "sandpile"
+            x += Lx/6.
         end
+        y = Ly - (iy*dy - dy)
+        r = .5*dx*((1. - Float64(img_bw[iy, ix])))
 
-        if r > 0.
+        if r > .1*dx
             SeaIce.addIceFloeCylindrical!(sim, [x + dx, y - dy], r, h,
-                                          tensile_strength=200e3,
+                                          tensile_strength=tensile_strength,
                                           youngs_modulus=youngs_modulus,
                                           verbose=verbose)
         end
-        r = -1.
     end
 end
 
 # set ocean forcing
 sim.ocean = SeaIce.createRegularOceanGrid([nx, ny, 1], [Lx, Ly, 1.],
-                                          name="logo_ocean")
+                                          name="image_ocean")
 
 if forcing == "gyres"
     epsilon = 0.25  # amplitude of periodic oscillations
@@ -112,15 +82,15 @@ if forcing == "gyres"
             f = a*x^2. + b*x
             df_dx = 2.*a*x + b
 
-            sim.ocean.u[i, j, 1, 1] = -pi/10.*sin(pi*f)*cos(pi*y) * 2e1
-            sim.ocean.v[i, j, 1, 1] = pi/10.*cos(pi*f)*sin(pi*y)*df_dx * 2e1
+            sim.ocean.u[i, j, 1, 1] = -pi/10.*sin(pi*f)*cos(pi*y) * 4e1
+            sim.ocean.v[i, j, 1, 1] = pi/10.*cos(pi*f)*sin(pi*y)*df_dx * 4e1
         end
     end
 
-elseif forcing == "down"
+elseif forcing == "down" || forcing == "sandpile"
     srand(1)
     sim.ocean.u[:, :, 1, 1] = (rand(nx+1, ny+1) - .5)*.1
-    sim.ocean.v[:, :, 1, 1] = -5.
+    sim.ocean.v[:, :, 1, 1] = -Ly/5.
 
 elseif forcing == "convergent"
     srand(1)

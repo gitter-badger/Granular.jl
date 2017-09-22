@@ -18,7 +18,7 @@ Returns one or more random numbers from a power-law probability distribution.
                            max_val::Number = 1.)
 
     val = ((max_val^(distribution_power + 1.) - 
-            min_val^(distribution_power + 1.))*Base.Random.rand(dims) + 
+            min_val^(distribution_power + 1.))*rand(dims) + 
            min_val^(distribution_power + 1.)).^(1./(distribution_power + 1.))
 
     if dims == 1

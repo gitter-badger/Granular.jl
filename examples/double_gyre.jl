@@ -57,7 +57,7 @@ info("added $(n_walls) fixed ice floes as walls")
 # Initialize ice floes everywhere
 floe_padding = .5*r
 noise_amplitude = .8*floe_padding
-Base.Random.srand(1)
+srand(1)
 for y in (4.*r + noise_amplitude):(2.*r + floe_padding):(L[2] - 4.*r - 
                                                          noise_amplitude)
                                                          
@@ -67,8 +67,8 @@ for y in (4.*r + noise_amplitude):(2.*r + floe_padding):(L[2] - 4.*r -
             #x += 1.5*r
         #end
 
-        x_ = x + noise_amplitude*(0.5 - Base.Random.rand())
-        y_ = y + noise_amplitude*(0.5 - Base.Random.rand())
+        x_ = x + noise_amplitude*(0.5 - rand())
+        y_ = y + noise_amplitude*(0.5 - rand())
 
         SeaIce.addIceFloeCylindrical!(sim, [x_, y_], r, h, verbose=false)
     end

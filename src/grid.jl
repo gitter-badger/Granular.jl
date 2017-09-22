@@ -484,10 +484,10 @@ function findEmptyPositionInGridCell(simulation::Simulation,
     for i_iter=1:n_iter
 
         overlap_found = false
-        Base.Random.srand(i*j*seed*i_iter)
+        srand(i*j*seed*i_iter)
         # generate random candidate position
-        x_tilde = Base.Random.rand()
-        y_tilde = Base.Random.rand()
+        x_tilde = rand()
+        y_tilde = rand()
         bilinearInterpolation!(pos, grid.xq, grid.yq, x_tilde, y_tilde, i, j)
         if verbose
             info("trying poisition $pos in cell $i,$j")

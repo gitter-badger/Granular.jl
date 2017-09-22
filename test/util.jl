@@ -15,7 +15,7 @@ info("Testing power-law RNG")
 @test 5 == length(SeaIce.randpower(5))
 @test (5,) == size(SeaIce.randpower(5))
 
-Base.Random.srand(1)
+srand(1)
 for i=1:10^5
     @test 0. <= SeaIce.randpower() <= 1.
     @test 0. <= SeaIce.randpower(1, 1., 0., 1.) <= 1.
