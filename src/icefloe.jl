@@ -1,5 +1,8 @@
 ## Manage icefloes in the model
-import PyPlot
+if typeof(Pkg.installed("PyPlot")) == VersionNumber
+    import PyPlot
+    hasPyPlot = true
+end
 
 export addIceFloeCylindrical!
 """
@@ -694,6 +697,10 @@ function plotIceFloeSizeDistribution(simulation::Simulation;
                                      skip_fixed::Bool = true,
                                      log_y::Bool = true)
 
+    if !hasPyPlot
+        warn("Function not available because PyPlot is not installed")
+        return
+    end
     diameters = Float64[]
     for i=1:length(simulation.ice_floes)
         if simulation.ice_floes[i].fixed && skip_fixed
