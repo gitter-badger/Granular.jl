@@ -1,4 +1,5 @@
 ## Manage icefloes in the model
+hasPyPlot = false
 if typeof(Pkg.installed("PyPlot")) == VersionNumber
     import PyPlot
     hasPyPlot = true
