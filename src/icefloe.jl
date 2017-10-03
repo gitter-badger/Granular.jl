@@ -699,7 +699,7 @@ function plotIceFloeSizeDistribution(simulation::Simulation;
                                      log_y::Bool = true)
 
     if !hasPyPlot
-        warn("Function not available because PyPlot is not installed")
+        error("Function not available because PyPlot is not installed")
         return
     end
     diameters = Float64[]
