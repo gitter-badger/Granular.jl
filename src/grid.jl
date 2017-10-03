@@ -27,11 +27,9 @@ south-west (-x, -y)-facing corner.
 
     x_tilde_inv = 1. - x_tilde
 
-    @views interp_val[1] = 
+    @views interp_val .= 
     (field_x[i+1, j+1]*x_tilde + field_x[i, j+1]*x_tilde_inv)*y_tilde + 
-    (field_x[i+1, j]*x_tilde + field_x[i, j]*x_tilde_inv)*(1. - y_tilde)
-
-    @views interp_val[2] = 
+    (field_x[i+1, j]*x_tilde + field_x[i, j]*x_tilde_inv)*(1. - y_tilde),
     (field_y[i+1, j+1]*x_tilde + field_y[i, j+1]*x_tilde_inv)*y_tilde + 
     (field_y[i+1, j]*x_tilde + field_y[i, j]*x_tilde_inv)*(1.  - y_tilde)
 
@@ -53,13 +51,11 @@ end
 
     x_tilde_inv = 1. - x_tilde
 
-    @views interp_val[1] = 
+    @views interp_val .= 
     (field_x[i+1, j+1, k, it]*x_tilde + 
      field_x[i, j+1, k, it]*x_tilde_inv)*y_tilde + 
     (field_x[i+1, j, k, it]*x_tilde + 
-     field_x[i, j, k, it]*x_tilde_inv)*(1. - y_tilde)
-
-    @views interp_val[2] = 
+     field_x[i, j, k, it]*x_tilde_inv)*(1. - y_tilde),
     (field_y[i+1, j+1, k, it]*x_tilde + 
      field_y[i, j+1, k, it]*x_tilde_inv)*y_tilde + 
     (field_y[i+1, j, k, it]*x_tilde + 
@@ -285,22 +281,19 @@ The function uses either an area-based approach (`method = "Area"`), or a
 conformal mapping approach (`method = "Conformal"`).  The area-based approach is 
 more robust.  This function returns `true` or `false`.
 """
-function isPointInCell(grid::Any, i::Int, j::Int, point::Vector{Float64},
-                       sw::Vector{Float64} = Vector{Float64}(2),
-                       se::Vector{Float64} = Vector{Float64}(2),
-                       ne::Vector{Float64} = Vector{Float64}(2),
-                       nw::Vector{Float64} = Vector{Float64}(2);
-                       method::String="Conformal")
+function isPointInCell(grid::Any, i::Int, j::Int,
+                                 point::Vector{Float64},
+                                 sw::Vector{Float64} = Vector{Float64}(2),
+                                 se::Vector{Float64} = Vector{Float64}(2),
+                                 ne::Vector{Float64} = Vector{Float64}(2),
+                                 nw::Vector{Float64} = Vector{Float64}(2);
+                                 method::String="Conformal")
 
     #sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
-    @views sw[1] = grid.xq[  i,   j]
-    @views sw[2] = grid.yq[  i,   j]
-    @views se[1] = grid.xq[i+1,   j]
-    @views se[2] = grid.yq[i+1,   j]
-    @views ne[1] = grid.xq[i+1, j+1]
-    @views ne[2] = grid.yq[i+1, j+1]
-    @views nw[1] = grid.xq[  i, j+1]
-    @views nw[2] = grid.yq[  i, j+1]
+    @views sw .= grid.xq[   i,   j], grid.yq[   i,   j]
+    @views se .= grid.xq[ i+1,   j], grid.yq[ i+1,   j]
+    @views ne .= grid.xq[ i+1, j+1], grid.yq[ i+1, j+1]
+    @views nw .= grid.xq[   i, j+1], grid.yq[   i, j+1]
 
     if method == "Area"
         if areaOfQuadrilateral(sw, se, ne, nw) ≈
@@ -342,14 +335,10 @@ function isPointInGrid(grid::Any, point::Vector{Float64},
 
     #sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
     nx, ny = size(grid.xq)
-    @views sw[1] = grid.xq[  1,  1]
-    @views sw[2] = grid.yq[  1,  1]
-    @views se[1] = grid.xq[ nx,  1]
-    @views se[2] = grid.yq[ nx,  1]
-    @views ne[1] = grid.xq[ nx, ny]
-    @views ne[2] = grid.yq[ nx, ny]
-    @views nw[1] = grid.xq[  1, ny]
-    @views nw[2] = grid.yq[  1, ny]
+    @views sw .= grid.xq[  1,  1], grid.yq[  1,  1]
+    @views se .= grid.xq[ nx,  1], grid.yq[ nx,  1]
+    @views ne .= grid.xq[ nx, ny], grid.yq[ nx, ny]
+    @views nw .= grid.xq[  1, ny], grid.yq[  1, ny]
 
     if method == "Area"
         if areaOfQuadrilateral(sw, se, ne, nw) ≈

@@ -29,7 +29,7 @@ described by [Robert Bridson (2007)](http://www.cs.ubc.ca/~rbridson/docs/bridson
 
 """
 function poissonDiscSampling(simulation::Simulation;
-                             ;radius_max::Real=.1,
+                             radius_max::Real=.1,
                              radius_min::Real=.1,
                              sample_limit::Integer=30,
                              max_padding_factor::Real=2.,
