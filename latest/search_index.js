@@ -313,10 +313,10 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "lib/public.html#SeaIce.findCellContainingPoint-Tuple{Any,Array{Float64,1}}",
+    "location": "lib/public.html#SeaIce.findCellContainingPoint",
     "page": "Public API",
     "title": "SeaIce.findCellContainingPoint",
-    "category": "Method",
+    "category": "Function",
     "text": "findCellContainingPoint(grid, point[, method])\n\nReturns the i, j index of the grid cell containing the point. The function uses either an area-based approach (method = \"Area\"), or a  conformal mapping approach (method = \"Conformal\").  The area-based approach is  more robust.  This function returns the coordinates of the cell.  If no match is  found the function returns (0,0).\n\nArguments\n\ngrid::Any: grid object containing ocean or atmosphere data.\npoint::Vector{Float64}: two-dimensional vector of point to check.\nmethod::String: approach to use for determining if point is inside cell or    not, can be \"Conformal\" (default) or \"Areal\".\n\n\n\n"
 },
 
@@ -381,7 +381,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "SeaIce.getCellCornerCoordinates",
     "category": "Method",
-    "text": "getCellCornerCoordinates(xq, yq, i, j)\n\nReturns grid corner coordinates in the following order (south-west corner,  south-east corner, north-east corner, north-west corner).\n\nArguments\n\nxq::Array{Float64, 2}: nominal longitude of q-points [degrees_E]\nyq::Array{Float64, 2}: nominal latitude of q-points [degrees_N]\ni::Int: x-index of cell.\nj::Int: y-index of cell.\n\n\n\n"
+    "text": "getCellCornerCoordinates(xq, yq, i, j)\n\nReturns grid-cell corner coordinates in the following order (south-west corner,  south-east corner, north-east corner, north-west corner).\n\nArguments\n\nxq::Array{Float64, 2}: nominal longitude of q-points [degrees_E]\nyq::Array{Float64, 2}: nominal latitude of q-points [degrees_N]\ni::Int: x-index of cell.\nj::Int: y-index of cell.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#SeaIce.getGridCornerCoordinates-Tuple{Array{Float64,2},Array{Float64,2}}",
+    "page": "Public API",
+    "title": "SeaIce.getGridCornerCoordinates",
+    "category": "Method",
+    "text": "getGridCornerCoordinates(xq, yq)\n\nReturns grid corner coordinates in the following order (south-west corner,  south-east corner, north-east corner, north-west corner).\n\nArguments\n\nxq::Array{Float64, 2}: nominal longitude of q-points [degrees_E]\nyq::Array{Float64, 2}: nominal latitude of q-points [degrees_N]\n\n\n\n"
 },
 
 {
@@ -537,11 +545,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/public.html#SeaIce.isPointInGrid",
+    "page": "Public API",
+    "title": "SeaIce.isPointInGrid",
+    "category": "Function",
+    "text": "Check if a 2d point is contained inside the grid.  The function uses either an area-based approach (method = \"Area\"), or a conformal mapping approach (method = \"Conformal\").  The area-based approach is more robust.  This function returns true or false.\n\n\n\n"
+},
+
+{
     "location": "lib/public.html#SeaIce.plotIceFloeSizeDistribution-Tuple{SeaIce.Simulation}",
     "page": "Public API",
     "title": "SeaIce.plotIceFloeSizeDistribution",
     "category": "Method",
     "text": "plotIceFloeSizeDistribution(simulation, [filename_postfix], [nbins],\n                            [size_type], [figsize], [filetype])\n\nPlot the ice-floe size distribution as a histogram and save it to the disk.  The  plot is saved accoring to the simulation id, the optional filename_postfix  string, and the filetype, and is written to the current folder.\n\nArguments\n\nsimulation::Simulation: the simulation object containing the ice floes.\nfilename_postfix::String: optional string for the output filename.\nnbins::Int: number of bins in the histogram (default = 12).\nsize_type::String: specify whether to use the contact or areal radius    for the ice-floe size.  The default is contact.\nfigsize::Tuple: the output figure size in inches (default = (6,4).\nfiletype::String: the output file type (default = \"png\").\nverbose::String: show output file as info message in stdout (default =    true).\nskip_fixed::Bool: ommit ice floes that are fixed in space from the size    distribution (default = true).\nlogy::Bool: plot y-axis in log scale.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#SeaIce.poissonDiscSampling-Tuple{SeaIce.Simulation}",
+    "page": "Public API",
+    "title": "SeaIce.poissonDiscSampling",
+    "category": "Method",
+    "text": "Generate disc packing in 2D using Poisson disc sampling with O(N) complexity, as described by Robert Bridson (2007).\n\nArguments\n\nsimulation::Simulation: simulation object where ice floes are inserted.\nradius_max::Real: largest ice-floe radius to use.\nradius_min::Real: smallest ice-floe radius to use.\nsample_limit::Integer=30: number of points to sample around each ice floe   before giving up.\nmax_padding_factor::Real=2.: this factor scales the padding to use during ice   floe generation in numbers of grain diameters.\nverbose::Bool=true: show diagnostic information to stdout.\n\n\n\n"
 },
 
 {
@@ -841,6 +865,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/internals.html#SeaIce.generateNeighboringPoint-Tuple{Array{T,1} where T,Real,Real,Real}",
+    "page": "Internals",
+    "title": "SeaIce.generateNeighboringPoint",
+    "category": "Method",
+    "text": "Return random point in spherical annulus between (r_i + r_j) and 2.*(r_i + r_j) around x_i.  Note: there is slightly higher point density towards (r_i + r_j).\n\n\n\n"
+},
+
+{
     "location": "lib/internals.html#SeaIce.writeGridVTK-Tuple{Any,String}",
     "page": "Internals",
     "title": "SeaIce.writeGridVTK",
@@ -910,6 +942,14 @@ var documenterSearchIndex = {"docs": [
     "title": "SeaIce.findOverlap",
     "category": "Method",
     "text": "position_ij is the inter-grain position vector, and can be found with interIceFloePositionVector().\n\n\n\n"
+},
+
+{
+    "location": "lib/internals.html#SeaIce.generateNeighboringPoint-Tuple{Array{T,1} where T,Real,Real,Real}",
+    "page": "Package-internal documentation",
+    "title": "SeaIce.generateNeighboringPoint",
+    "category": "Method",
+    "text": "Return random point in spherical annulus between (r_i + r_j) and 2.*(r_i + r_j) around x_i.  Note: there is slightly higher point density towards (r_i + r_j).\n\n\n\n"
 },
 
 {
