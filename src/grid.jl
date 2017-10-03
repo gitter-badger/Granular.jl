@@ -25,41 +25,37 @@ south-west (-x, -y)-facing corner.
         #error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
     #end
 
-    x_tilde_inv = 1. - x_tilde
-
     @views interp_val .= 
-    (field_x[i+1, j+1]*x_tilde + field_x[i, j+1]*x_tilde_inv)*y_tilde + 
-    (field_x[i+1, j]*x_tilde + field_x[i, j]*x_tilde_inv)*(1. - y_tilde),
-    (field_y[i+1, j+1]*x_tilde + field_y[i, j+1]*x_tilde_inv)*y_tilde + 
-    (field_y[i+1, j]*x_tilde + field_y[i, j]*x_tilde_inv)*(1.  - y_tilde)
+    (field_x[i+1, j+1]*x_tilde + field_x[i, j+1]*(1. - x_tilde))*y_tilde + 
+    (field_x[i+1, j]*x_tilde + field_x[i, j]*(1. - x_tilde))*(1. - y_tilde),
+    (field_y[i+1, j+1]*x_tilde + field_y[i, j+1]*(1. - x_tilde))*y_tilde + 
+    (field_y[i+1, j]*x_tilde + field_y[i, j]*(1. - x_tilde))*(1.  - y_tilde)
 
     nothing
 end
-@inline function bilinearInterpolation!(interp_val::Vector{Float64},
-                                field_x::Array{Float64, 4},
-                                field_y::Array{Float64, 4},
-                                x_tilde::Float64,
-                                y_tilde::Float64,
-                                i::Int,
-                                j::Int,
-                                k::Int,
-                                it::Int)
+@inbounds @inline function bilinearInterpolation!(interp_val::Vector{Float64},
+                                                  field_x::Array{Float64, 4},
+                                                  field_y::Array{Float64, 4},
+                                                  x_tilde::Float64,
+                                                  y_tilde::Float64,
+                                                  i::Int,
+                                                  j::Int,
+                                                  k::Int,
+                                                  it::Int)
 
     #if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
         #error("relative coordinates outside bounds ($(x_tilde), $(y_tilde))")
     #end
 
-    x_tilde_inv = 1. - x_tilde
-
     @views interp_val .= 
     (field_x[i+1, j+1, k, it]*x_tilde + 
-     field_x[i, j+1, k, it]*x_tilde_inv)*y_tilde + 
+     field_x[i, j+1, k, it]*(1. - x_tilde))*y_tilde + 
     (field_x[i+1, j, k, it]*x_tilde + 
-     field_x[i, j, k, it]*x_tilde_inv)*(1. - y_tilde),
+     field_x[i, j, k, it]*(1. - x_tilde))*(1. - y_tilde),
     (field_y[i+1, j+1, k, it]*x_tilde + 
-     field_y[i, j+1, k, it]*x_tilde_inv)*y_tilde + 
+     field_y[i, j+1, k, it]*(1. - x_tilde))*y_tilde + 
     (field_y[i+1, j, k, it]*x_tilde + 
-     field_y[i, j, k, it]*x_tilde_inv)*(1. - y_tilde)
+     field_y[i, j, k, it]*(1. - x_tilde))*(1. - y_tilde)
 
     nothing
 end
@@ -194,7 +190,8 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=true)
             if !found
                 i, j = findCellContainingPoint(grid,
                                                simulation.ice_floes[idx].
-                                               lin_pos)
+                                               lin_pos,
+                                               sw, se, ne, nw)
             end
 
             # remove ice floe if it is outside of the grid
@@ -209,9 +206,9 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=true)
 
             # add cell to ice floe
             if typeof(grid) == Ocean
-                @inbounds simulation.ice_floes[idx].ocean_grid_pos = [i, j]
+                @inbounds simulation.ice_floes[idx].ocean_grid_pos .= i, j
             elseif typeof(grid) == Atmosphere
-                @inbounds simulation.ice_floes[idx].atmosphere_grid_pos = [i, j]
+                @inbounds simulation.ice_floes[idx].atmosphere_grid_pos .= i, j
             else
                 error("grid type not understood.")
             end
@@ -239,14 +236,12 @@ found the function returns `(0,0)`.
 * `method::String`: approach to use for determining if point is inside cell or 
     not, can be "Conformal" (default) or "Areal".
 """
-function findCellContainingPoint(grid::Any, point::Vector{Float64};
+function findCellContainingPoint(grid::Any, point::Vector{Float64},
+                                 sw = Vector{Float64}(2),
+                                 se = Vector{Float64}(2),
+                                 ne = Vector{Float64}(2),
+                                 nw = Vector{Float64}(2);
                                  method::String="Conformal")
-
-    sw = Vector{Float64}(2)
-    se = Vector{Float64}(2)
-    ne = Vector{Float64}(2)
-    nw = Vector{Float64}(2)
-
     for i=1:size(grid.xh, 1)
         for j=1:size(grid.yh, 2)
             if isPointInCell(grid, i, j, point,
@@ -282,14 +277,13 @@ conformal mapping approach (`method = "Conformal"`).  The area-based approach is
 more robust.  This function returns `true` or `false`.
 """
 function isPointInCell(grid::Any, i::Int, j::Int,
-                                 point::Vector{Float64},
-                                 sw::Vector{Float64} = Vector{Float64}(2),
-                                 se::Vector{Float64} = Vector{Float64}(2),
-                                 ne::Vector{Float64} = Vector{Float64}(2),
-                                 nw::Vector{Float64} = Vector{Float64}(2);
-                                 method::String="Conformal")
+                       point::Vector{Float64},
+                       sw::Vector{Float64} = Vector{Float64}(2),
+                       se::Vector{Float64} = Vector{Float64}(2),
+                       ne::Vector{Float64} = Vector{Float64}(2),
+                       nw::Vector{Float64} = Vector{Float64}(2);
+                       method::String="Conformal")
 
-    #sw, se, ne, nw = getCellCornerCoordinates(grid.xq, grid.yq, i, j)
     @views sw .= grid.xq[   i,   j], grid.yq[   i,   j]
     @views se .= grid.xq[ i+1,   j], grid.yq[ i+1,   j]
     @views ne .= grid.xq[ i+1, j+1], grid.yq[ i+1, j+1]
