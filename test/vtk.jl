@@ -13,11 +13,11 @@ SeaIce.findContacts!(sim, method="all to all")
 SeaIce.writeVTK(sim, verbose=false)
 
 cmd_post = ""
-if Base.is_linux()
+if is_linux()
     cmd = "sha256sum"
-elseif Base.is_apple()
+elseif is_apple()
     cmd = ["shasum", "-a", "256"]
-elseif Base.is_windows()
+elseif is_windows()
     info("checksum verification not yet implemented on Windows")
     exit()
     cmd = ["powershell", "-Command", "\"Get-FileHash", "-Algorithm", "SHA256"]
@@ -59,6 +59,35 @@ SeaIce.setOutputFileInterval!(sim, 0.1)
 SeaIce.run!(sim)
 
 SeaIce.status()
+
+info("Testing generation of Paraview Python script")
+SeaIce.writeParaviewPythonScript(sim,
+                                 save_animation=true,
+                                 save_images=false)
+@test isfile("$(sim.id)/$(sim.id).py") && filesize("$(sim.id)/$(sim.id).py") > 0
+
+info("Testing Paraview rendering if `pvpython` is present")
+try
+    run(`pvpython $(sim.id)/$(sim.id).py`)
+catch return_signal
+    if !isa(return_signal, UVError)
+        @test isfile("$(sim.id)/$(sim.id).avi")
+    end
+end
+
+SeaIce.writeParaviewPythonScript(sim,
+                                 save_animation=false,
+                                 save_images=true)
+try
+    run(`pvpython $(sim.id)/$(sim.id).py`)
+catch return_signal
+    if !isa(return_signal, UVError)
+        @test isfile("$(sim.id)/$(sim.id).0000.png")
+        @test isfile("$(sim.id)/$(sim.id).0014.png")
+        SeaIce.render(sim)
+        @test isfile("$(sim.id)/$(sim.id).0001.png")
+    end
+end
 
 @test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
 @test readstring(`$(cmd) $(icefloeinteractionpath)$(cmd_post)`) == 
