@@ -641,6 +641,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/public.html#SeaIce.render-Tuple{SeaIce.Simulation}",
+    "page": "Public API",
+    "title": "SeaIce.render",
+    "category": "Method",
+    "text": "render(simulation[, pvpython, images, animation])\n\nWrapper function which calls writeParaviewPythonScript(...) and executes it from the shell using the supplied pvpython argument.\n\nArguments\n\nsimulation::Simulation: simulation object containing the ice-floe data.\npvpython::String: path to the pvpython executable to use.  By default, the   script uses the pvpython in the system PATH.\nimages::Bool: render images to disk (default: true)\nanimation::Bool: render animation to disk (default: false)\n\n\n\n"
+},
+
+{
     "location": "lib/public.html#SeaIce.reportSimulationTimeToStdout-Tuple{SeaIce.Simulation}",
     "page": "Public API",
     "title": "SeaIce.reportSimulationTimeToStdout",
@@ -761,11 +769,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "lib/public.html#SeaIce.writeParaviewStateFile-Tuple{SeaIce.Simulation}",
+    "location": "lib/public.html#SeaIce.writeParaviewPythonScript-Tuple{SeaIce.Simulation}",
     "page": "Public API",
-    "title": "SeaIce.writeParaviewStateFile",
+    "title": "SeaIce.writeParaviewPythonScript",
     "category": "Method",
-    "text": "Create a Paraview State File (.pvsm) for the simulation, which reads simulation  output VTK files and applies appropriate glyph filters to the data.\n\n\n\n"
+    "text": "function writeParaviewPythonScript(simulation,                                    [filename, folder, vtk_folder, verbose])\n\nCreate a \".py\" script for visualizing the simulation VTK files in Paraview. The script can be run from the command line with pvpython (bundled with Paraview), or from the interactive Python shell inside Paraview.\n\nArguments\n\nsimulation::Simulation: input simulation file containing the data.\nfilename::String: output file name for the Python script. At its default   (blank) value, the script is named after the simulation id (simulation.id).\nfolder::String: output directory, current directory the default.\nvtk_folder::String: directory containing the VTK output files, by default   \"./<simulation.id>/\".\nsave_animation::Bool: make the generated script immediately save a rendered   animation to disk when the \".py\" script is called.\nverbose::Bool: show diagnostic information during\n\nfunction call, on by     default.\n\n\n\n"
 },
 
 {
