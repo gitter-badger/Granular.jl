@@ -70,7 +70,7 @@ info("Testing Paraview rendering if `pvpython` is present")
 try
     run(`pvpython $(sim.id)/$(sim.id).py`)
 catch return_signal
-    if !isa(return_signal, UVError)
+    if !isa(return_signal, Base.UVError)
         @test isfile("$(sim.id)/$(sim.id).avi")
     end
 end
@@ -81,7 +81,7 @@ SeaIce.writeParaviewPythonScript(sim,
 try
     run(`pvpython $(sim.id)/$(sim.id).py`)
 catch return_signal
-    if !isa(return_signal, UVError)
+    if !isa(return_signal, Base.UVError)
         @test isfile("$(sim.id)/$(sim.id).0000.png")
         @test isfile("$(sim.id)/$(sim.id).0014.png")
         SeaIce.render(sim)

@@ -930,7 +930,7 @@ function render(simulation::Simulation; pvpython::String="pvpython",
     try
         run(`$(pvpython) $(simulation.id)/$(simulation.id).py`)
     catch return_signal
-        if isa(return_signal, UVError)
+        if isa(return_signal, Base.UVError)
             error("`pvpython` was not found.")
         end
     end
