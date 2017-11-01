@@ -91,6 +91,10 @@ Perform an O(n*log(n)) cell-based contact search between all grains in the
 """
 function findContactsInGrid!(simulation::Simulation, grid::Any)
 
+    distance_modifier = [0., 0.]
+    i_corrected = 0
+    j_corrected = 0
+
     for idx_i = 1:length(simulation.grains)
 
         if typeof(grid) == Ocean
@@ -98,19 +102,50 @@ function findContactsInGrid!(simulation::Simulation, grid::Any)
         elseif typeof(grid) == Atmosphere
             grid_pos = simulation.grains[idx_i].atmosphere_grid_pos
         else
-            error("grid type not understood")
+            error("Grid type not understood")
         end
         nx, ny = size(grid.xh)
 
         for i=(grid_pos[1] - 1):(grid_pos[1] + 1)
             for j=(grid_pos[2] - 1):(grid_pos[2] + 1)
 
-                # only check for contacts within grid boundaries
+                # i and j are not corrected for periodic boundaries
+                i_corrected = i
+                j_corrected = j
+
+                # vector for correcting inter-particle distance in case of
+                # boundary periodicity
+                distance_modifier .= [0., 0.]
+
+                # only check for contacts within grid boundaries, and wrap
+                # around if they are periodic
                 if i < 1 || i > nx || j < 1 || j > ny
-                    continue
+
+                    if i < 1 && grid.bc_west == 1  # periodic -x
+                        distance_modifier[1] = grid.xq[end] - grid.xq[1]
+                        i_corrected = nx
+                    elseif i > nx && grid.bc_east == 1  # periodic +x
+                        distance_modifier[1] = -(grid.xq[end] - grid.xq[1])
+                        i_corrected = 1
+                    end
+
+                    if j < 1 && grid.bc_south == 1  # periodic -y
+                        distance_modifier[2] = grid.yq[end] - grid.yq[1]
+                        j_corrected = ny
+                    elseif j > ny && grid.bc_north == 1  # periodic +y
+                        distance_modifier[2] = -(grid.yq[end] - grid.yq[1])
+                        j_corrected = 1
+                    end
+
+                    # skip iteration if target still falls outside grid after
+                    # periodicity correction
+                    if i_corrected < 1 || i_corrected > nx ||
+                        j_corrected < 1 || j_corrected > ny
+                        continue
+                    end
                 end
 
-                @inbounds for idx_j in grid.grain_list[i, j]
+                @inbounds for idx_j in grid.grain_list[i_corrected, j_corrected]
                     checkAndAddContact!(simulation, idx_i, idx_j)
                 end
             end
