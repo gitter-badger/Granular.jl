@@ -188,7 +188,14 @@ mutable struct Ocean
     h::Array{Float64, 4}
     e::Array{Float64, 4}
 
+    # Grains in grid cells
     grain_list::Array{Vector{Int}, 2}
+
+    # Boundary conditions for grains
+    bc_west::Integer
+    bc_south::Integer
+    bc_east::Integer
+    bc_north::Integer
 end
 
 #=
@@ -244,6 +251,12 @@ mutable struct Atmosphere
     v::Array{Float64, 4}
 
     grain_list::Array{Vector{Int}, 2}
+
+    # Boundary conditions for grains
+    bc_west::Integer
+    bc_south::Integer
+    bc_east::Integer
+    bc_north::Integer
 
     # If true the grid positions are identical to the ocean grid
     collocated_with_ocean_grid::Bool

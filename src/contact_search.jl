@@ -3,8 +3,8 @@ export findContacts!
 """
     findContacts!(simulation[, method])
     
-Top-level function to perform an inter-grain contact search, based on ice 
-floe linear positions and contact radii.
+Top-level function to perform an inter-grain contact search, based on grain 
+linear positions and contact radii.
 
 The simplest contact search algorithm (`method="all to all"`) is the most 
 computationally expensive (O(n^2)).  The method "ocean grid" bins the grains 
