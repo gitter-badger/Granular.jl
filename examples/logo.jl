@@ -165,3 +165,5 @@ SeaIce.setOutputFileInterval!(sim, .1)
 
 SeaIce.removeSimulationFiles(sim)
 SeaIce.run!(sim, verbose=verbose)
+
+SeaIce.render(sim, images=true, animation=false)

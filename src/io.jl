@@ -681,12 +681,11 @@ function writeParaviewPythonScript(simulation::Simulation;
                                    ice_floes_color_scheme::String="X Ray",
                                    verbose::Bool=true)
     if filename == ""
-        folder = folder * "/" * simulation.id
         mkpath(folder)
         filename = string(folder, "/", simulation.id, ".py")
     end
     if vtk_folder == ""
-        vtk_folder = "./"
+        vtk_folder = "."
     end
 
     open(filename, "w") do f
@@ -927,9 +926,22 @@ function render(simulation::Simulation; pvpython::String="pvpython",
                 animation::Bool=false)
 
     writeParaviewPythonScript(simulation, save_animation=animation,
-                              save_images=images)
+                              save_images=images, verbose=false)
     try
-        run(`$(pvpython) $(simulation.id)/$(simulation.id).py`)
+        cd(simulation.id)
+        run(`$(pvpython) $(simulation.id).py`)
+
+        # if available, use imagemagick to create gif from images
+        if images
+            try
+                run(`convert -trim +repage -delay 10 -transparent-color white 
+                    -loop 0 $(simulation.id)*.png $(simulation.id).gif`)
+            catch return_signal
+                if isa(return_signal, Base.UVError)
+                    error("skipping gif merge since `convert` was not found.")
+                end
+            end
+        end
     catch return_signal
         if isa(return_signal, Base.UVError)
             error("`pvpython` was not found.")
