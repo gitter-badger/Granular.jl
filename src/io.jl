@@ -886,7 +886,7 @@ renderView1.InteractionMode = '2D'
 """)
         if save_animation
             write(f, """
-SaveAnimation('./$(simulation.id).avi', renderView1,
+SaveAnimation('$(folder)/$(simulation.id).avi', renderView1,
 ImageResolution=[$(width), $(height)],
 FrameRate=$(framerate),
 FrameWindow=[0, $(simulation.file_number)])
@@ -895,7 +895,7 @@ FrameWindow=[0, $(simulation.file_number)])
 
         if save_images
             write(f, """
-SaveAnimation('./$(simulation.id).png', renderView1,
+SaveAnimation('$(folder)/$(simulation.id).png', renderView1,
 ImageResolution=[$(width), $(height)],
 FrameRate=$(framerate),
 FrameWindow=[0, $(simulation.file_number)])
@@ -929,21 +929,20 @@ function render(simulation::Simulation; pvpython::String="pvpython",
     writeParaviewPythonScript(simulation, save_animation=animation,
                               save_images=images, verbose=false)
     try
-        cd(simulation.id)
-        run(`$(pvpython) $(simulation.id).py`)
+        run(`$(pvpython) $(simulation.id)/$(simulation.id).py`)
 
         # if available, use imagemagick to create gif from images
         if images
             try
                 run(`convert -trim +repage -delay 10 -transparent-color white 
-                    -loop 0 $(simulation.id)*.png $(simulation.id).gif`)
+                    -loop 0 $(simulation.id)/$(simulation.id)'*'.png 
+                    $(simulation.id)/$(simulation.id).gif`)
             catch return_signal
                 if isa(return_signal, Base.UVError)
-                    error("skipping gif merge since `convert` was not found.")
+                    info("Skipping gif merge since `convert` was not found.")
                 end
             end
         end
-        cd("..")
     catch return_signal
         if isa(return_signal, Base.UVError)
             error("`pvpython` was not found.")
