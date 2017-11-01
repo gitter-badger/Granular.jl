@@ -886,7 +886,7 @@ renderView1.InteractionMode = '2D'
 """)
         if save_animation
             write(f, """
-SaveAnimation('$(folder)/$(simulation.id).avi', renderView1,
+SaveAnimation('$(vtk_folder)/$(simulation.id).avi', renderView1,
 ImageResolution=[$(width), $(height)],
 FrameRate=$(framerate),
 FrameWindow=[0, $(simulation.file_number)])
@@ -904,7 +904,7 @@ FrameWindow=[0, $(simulation.file_number)])
     end
     if verbose
         info("$(filename) written, execute with " *
-             "'pvpython $(folder)/$(simulation.id).py'")
+             "'pvpython $(vtk_folder)/$(simulation.id).py'")
     end
 end
 
@@ -935,7 +935,7 @@ function render(simulation::Simulation; pvpython::String="pvpython",
         if images
             try
                 run(`convert -trim +repage -delay 10 -transparent-color white 
-                    -loop 0 $(simulation.id)/$(simulation.id)'*'.png 
+                    -loop 0 $(simulation.id)/$(simulation.id).'*'.png 
                     $(simulation.id)/$(simulation.id).gif`)
             catch return_signal
                 if isa(return_signal, Base.UVError)
