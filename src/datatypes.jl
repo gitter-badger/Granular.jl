@@ -1,5 +1,5 @@
 ## Particle composite types
-type IceFloeCylindrical
+mutable struct IceFloeCylindrical
 
     # Material properties
     density::Float64
@@ -67,7 +67,7 @@ type IceFloeCylindrical
 end
 
 # Type for gathering data from ice floe objects into single arrays
-type IceFloeArrays
+mutable struct IceFloeArrays
 
     # Material properties
     density::Vector{Float64}
@@ -165,7 +165,7 @@ h-points.  During read, the velocities are interpolated to the cell corners
 * `ice_floe_list::Array{Float64, Int}`: indexes of ice floes contained in the 
     ocean grid cells.
 =#
-type Ocean
+mutable struct Ocean
     input_file::Any
 
     time::Vector{Float64}
@@ -223,7 +223,7 @@ cell corners (q-points).
 * `ice_floe_list::Array{Float64, Int}`: interface height relative to mean sea 
     level [m],  dimensions correspond to placement in `[xh, yh, zi, time]`.
 =#
-type Atmosphere
+mutable struct Atmosphere
     input_file::Any
 
     time::Vector{Float64}
@@ -250,7 +250,7 @@ type Atmosphere
 end
 
 # Top-level simulation type
-type Simulation
+mutable struct Simulation
     id::String
 
     time_iteration::Int
