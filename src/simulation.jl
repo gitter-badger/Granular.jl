@@ -9,12 +9,12 @@ export createSimulation
                       time_step::Float64=-1.,
                       file_time_step::Float64=-1.,
                       file_number::Int=0,
-                      ice_floes=Array{IceFloeCylindrical, 1}[],
+                      grains=Array{GrainCylindrical, 1}[],
                       ocean::Ocean,
                       atmosphere::Atmosphere)
 
 Create a simulation object containing all relevant variables such as temporal 
-parameters, and lists of ice floes and contacts.
+parameters, and lists of grains and contacts.
 
 The parameter `id` is used to uniquely identify the simulation when it is 
 written to disk.
@@ -27,7 +27,7 @@ function createSimulation(;id::String="unnamed",
                           file_time_step::Float64=-1.,
                           file_number::Int=0,
                           file_time_since_output_file::Float64=0.,
-                          ice_floes=Array{IceFloeCylindrical, 1}[],
+                          grains=Array{GrainCylindrical, 1}[],
                           ocean::Ocean=createEmptyOcean(),
                           atmosphere::Atmosphere=createEmptyAtmosphere(),
                           Nc_max::Int=16)
@@ -40,7 +40,7 @@ function createSimulation(;id::String="unnamed",
                       file_time_step,
                       file_number,
                       file_time_since_output_file,
-                      ice_floes,
+                      grains,
                       ocean,
                       atmosphere,
                       Nc_max)
@@ -57,7 +57,7 @@ export run!
          write_jld = false)
 
 Run the `simulation` through time until `simulation.time` equals or exceeds 
-`simulatim.time_total`.  This function requires that all ice floes are added to 
+`simulatim.time_total`.  This function requires that all grains are added to 
 the simulation and that the length of the computational time step is adjusted 
 accordingly.
 
@@ -77,9 +77,9 @@ to disk.
     this causes `simulation.time` to exceed `simulation.time_total`, the latter 
     is increased accordingly.
 * `temporal_integration_method::String="Three-term Taylor"`: type of integration 
-    method to use.  See `updateIceFloeKinematics` for details.
+    method to use.  See `updateGrainKinematics` for details.
 * `write_jld::Bool=false`: write simulation state to disk as JLD files (see 
-    `SeaIce.writeSimulation(...)` whenever saving VTK output.
+    `Granular.writeSimulation(...)` whenever saving VTK output.
 """
 function run!(simulation::Simulation;
               verbose::Bool=true,
@@ -139,16 +139,16 @@ function run!(simulation::Simulation;
 
         if typeof(simulation.atmosphere.input_file) != Bool && 
             !simulation.atmosphere.collocated_with_ocean_grid
-            sortIceFloesInGrid!(simulation, simulation.atmosphere)
+            sortGrainsInGrid!(simulation, simulation.atmosphere)
         end
 
         if typeof(simulation.ocean.input_file) != Bool
-            sortIceFloesInGrid!(simulation, simulation.ocean)
+            sortGrainsInGrid!(simulation, simulation.ocean)
             findContacts!(simulation, method="ocean grid")
 
             if simulation.atmosphere.collocated_with_ocean_grid
                 copyGridSortingInfo!(simulation.ocean, simulation.atmosphere,
-                                     simulation.ice_floes)
+                                     simulation.grains)
             end
 
         elseif typeof(simulation.atmosphere.input_file) != Bool
@@ -168,7 +168,7 @@ function run!(simulation::Simulation;
             addAtmosphereDrag!(simulation)
         end
 
-        updateIceFloeKinematics!(simulation, method=temporal_integration_method)
+        updateGrainKinematics!(simulation, method=temporal_integration_method)
 
         # Update time variables
         simulation.time_iteration += 1
@@ -195,43 +195,43 @@ function run!(simulation::Simulation;
     nothing
 end
 
-export addIceFloe!
+export addGrain!
 """
-    addIceFloe!(simulation::Simulation,
-                icefloe::IceFloeCylindrical,
+    addGrain!(simulation::Simulation,
+                grain::GrainCylindrical,
                 verbose::Bool = False)
 
-Add an `icefloe` to the `simulation` object.  If `verbose` is true, a short 
+Add an `grain` to the `simulation` object.  If `verbose` is true, a short 
 confirmation message will be printed to stdout.
 """
-function addIceFloe!(simulation::Simulation,
-                     icefloe::IceFloeCylindrical,
+function addGrain!(simulation::Simulation,
+                     grain::GrainCylindrical,
                      verbose::Bool = False)
-    push!(simulation.ice_floes, icefloe)
+    push!(simulation.grains, grain)
 
     if verbose
-        info("Added IceFloe $(length(simulation.ice_floes))")
+        info("Added Grain $(length(simulation.grains))")
     end
     nothing
 end
 
-export disableIceFloe!
-"Disable ice floe with index `i` in the `simulation` object."
-function disableIceFloe!(simulation::Simulation, i::Int)
+export disableGrain!
+"Disable grain with index `i` in the `simulation` object."
+function disableGrain!(simulation::Simulation, i::Int)
     if i < 1
         error("Index must be greater than 0 (i = $i)")
     end
-    simulation.ice_floes[i].enabled = false
+    simulation.grains[i].enabled = false
     nothing
 end
 
 export zeroForcesAndTorques!
-"Sets the `force` and `torque` values of all ice floes to zero."
+"Sets the `force` and `torque` values of all grains to zero."
 function zeroForcesAndTorques!(simulation::Simulation)
-    for icefloe in simulation.ice_floes
-        fill!(icefloe.force, 0.)
-        icefloe.torque = 0.
-        icefloe.pressure = 0.
+    for grain in simulation.grains
+        fill!(grain.force, 0.)
+        grain.torque = 0.
+        grain.pressure = 0.
     end
     nothing
 end
@@ -263,8 +263,8 @@ function compareSimulations(sim1::Simulation, sim2::Simulation)
     Base.Test.@test sim1.file_time_since_output_file ≈ 
         sim2.file_time_since_output_file
 
-    for i=1:length(sim1.ice_floes)
-        compareIceFloes(sim1.ice_floes[i], sim2.ice_floes[i])
+    for i=1:length(sim1.grains)
+        compareGrains(sim1.grains[i], sim2.grains[i])
     end
     compareOceans(sim1.ocean, sim2.ocean)
     compareAtmospheres(sim1.atmosphere, sim2.atmosphere)
@@ -284,8 +284,8 @@ function printMemoryUsage(sim::Simulation)
     reportMemory(sim, "sim")
     println("  where:")
 
-    reportMemory(sim.ice_floes, "    sim.ice_floes", 
-                 "(N=$(length(sim.ice_floes)))")
+    reportMemory(sim.grains, "    sim.grains", 
+                 "(N=$(length(sim.grains)))")
 
     reportMemory(sim.ocean, "    sim.ocean",
                  "($(size(sim.ocean.xh, 1))x" *

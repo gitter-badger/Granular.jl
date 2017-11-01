@@ -259,74 +259,74 @@ function addOceanDrag!(simulation::Simulation)
     ne = Vector{Float64}(2)
     nw = Vector{Float64}(2)
 
-    for ice_floe in simulation.ice_floes
+    for grain in simulation.grains
 
-        if !ice_floe.enabled
+        if !grain.enabled
             continue
         end
 
-        i, j = ice_floe.ocean_grid_pos
+        i, j = grain.ocean_grid_pos
         k = 1
 
         x_tilde, y_tilde = getNonDimensionalCellCoordinates(simulation.ocean,
                                                             i, j,
-                                                            ice_floe.lin_pos)
+                                                            grain.lin_pos)
         if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
             warn("""
                  relative coordinates outside bounds ($(x_tilde), $(y_tilde)),
-                 pos = $(ice_floe.lin_pos) at i,j = $(i), $(j).
+                 pos = $(grain.lin_pos) at i,j = $(i), $(j).
 
                  """)
         end
 
         bilinearInterpolation!(uv_interp, u, v, x_tilde, y_tilde, i, j, k, 1)
-        applyOceanDragToIceFloe!(ice_floe, uv_interp[1], uv_interp[2])
-        applyOceanVorticityToIceFloe!(ice_floe,
+        applyOceanDragToGrain!(grain, uv_interp[1], uv_interp[2])
+        applyOceanVorticityToGrain!(grain,
                                       curl(simulation.ocean, x_tilde, y_tilde,
                                            i, j, k, 1, sw, se, ne, nw))
     end
     nothing
 end
 
-export applyOceanDragToIceFloe!
+export applyOceanDragToGrain!
 """
 Add Stokes-type drag from velocity difference between ocean and a single ice 
 floe.
 """
-function applyOceanDragToIceFloe!(ice_floe::IceFloeCylindrical,
+function applyOceanDragToGrain!(grain::GrainCylindrical,
                                   u::Float64, v::Float64)
-    freeboard = .1*ice_floe.thickness  # height above water
+    freeboard = .1*grain.thickness  # height above water
     rho_o = 1000.   # ocean density
-    draft = ice_floe.thickness - freeboard  # height of submerged thickness
-    length = ice_floe.areal_radius*2.
-    width = ice_floe.areal_radius*2.
+    draft = grain.thickness - freeboard  # height of submerged thickness
+    length = grain.areal_radius*2.
+    width = grain.areal_radius*2.
 
-    drag_force = rho_o * (.5*ice_floe.ocean_drag_coeff_vert*width*draft + 
-        ice_floe.ocean_drag_coeff_horiz*length*width) *
-        ([u, v] - ice_floe.lin_vel)*norm([u, v] - ice_floe.lin_vel)
+    drag_force = rho_o * (.5*grain.ocean_drag_coeff_vert*width*draft + 
+        grain.ocean_drag_coeff_horiz*length*width) *
+        ([u, v] - grain.lin_vel)*norm([u, v] - grain.lin_vel)
 
-    ice_floe.force += drag_force
-    ice_floe.ocean_stress = drag_force/ice_floe.horizontal_surface_area
+    grain.force += drag_force
+    grain.ocean_stress = drag_force/grain.horizontal_surface_area
     nothing
 end
 
-export applyOceanVorticityToIceFloe!
+export applyOceanVorticityToGrain!
 """
 Add Stokes-type torque from angular velocity difference between ocean and a 
-single ice floe.  See Eq. 9.28 in "Introduction to Fluid Mechanics" by Nakayama 
+single grain.  See Eq. 9.28 in "Introduction to Fluid Mechanics" by Nakayama 
 and Boucher, 1999.
 """
-function applyOceanVorticityToIceFloe!(ice_floe::IceFloeCylindrical, 
+function applyOceanVorticityToGrain!(grain::GrainCylindrical, 
                                        ocean_curl::Float64)
-    freeboard = .1*ice_floe.thickness  # height above water
+    freeboard = .1*grain.thickness  # height above water
     rho_o = 1000.   # ocean density
-    draft = ice_floe.thickness - freeboard  # height of submerged thickness
+    draft = grain.thickness - freeboard  # height of submerged thickness
 
-    ice_floe.torque +=
-        pi*ice_floe.areal_radius^4.*rho_o*
-        (ice_floe.areal_radius/5.*ice_floe.ocean_drag_coeff_horiz + 
-        draft*ice_floe.ocean_drag_coeff_vert)*
-        abs(.5*ocean_curl - ice_floe.ang_vel)*(.5*ocean_curl - ice_floe.ang_vel)
+    grain.torque +=
+        pi*grain.areal_radius^4.*rho_o*
+        (grain.areal_radius/5.*grain.ocean_drag_coeff_horiz + 
+        draft*grain.ocean_drag_coeff_vert)*
+        abs(.5*ocean_curl - grain.ang_vel)*(.5*ocean_curl - grain.ang_vel)
     nothing
 end
 
@@ -355,8 +355,8 @@ function compareOceans(ocean1::Ocean, ocean2::Ocean)
     Base.Test.@test ocean1.h ≈ ocean2.h
     Base.Test.@test ocean1.e ≈ ocean2.e
 
-    if isassigned(ocean1.ice_floe_list, 1)
-        Base.Test.@test ocean1.ice_floe_list == ocean2.ice_floe_list
+    if isassigned(ocean1.grain_list, 1)
+        Base.Test.@test ocean1.grain_list == ocean2.grain_list
     end
     nothing
 end

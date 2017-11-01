@@ -1,5 +1,5 @@
 <CustomFilterDefinitions>
-  <CustomProxyDefinition name="SeaIceGranularInteraction" group="filters">
+  <CustomProxyDefinition name="GranularInteraction" group="filters">
     <CompoundSourceProxy id="6731" servers="1">
       <Proxy group="filters" type="TubeFilter" id="6634" servers="1" compound_name="Tube1">
         <Property name="Capping" id="6634.Capping" number_of_elements="1">

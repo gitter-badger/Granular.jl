@@ -82,41 +82,41 @@ function checkTimeParameters(simulation::Simulation; single_step::Bool=false)
     nothing
 end
 
-export findSmallestIceFloeMass
-"Finds the smallest mass of all ice floes in a simulation.  Used to determine 
+export findSmallestGrainMass
+"Finds the smallest mass of all grains in a simulation.  Used to determine 
 the optimal time step length."
-function findSmallestIceFloeMass(simulation::Simulation)
+function findSmallestGrainMass(simulation::Simulation)
     m_min = 1e20
     i_min = -1
-    for i=1:length(simulation.ice_floes)
-        @inbounds icefloe = simulation.ice_floes[i]
-        if icefloe.mass < m_min
-            m_min = icefloe.mass
+    for i=1:length(simulation.grains)
+        @inbounds grain = simulation.grains[i]
+        if grain.mass < m_min
+            m_min = grain.mass
             i_min = i
         end
     end
     return m_min, i_min
 end
 
-export findLargestIceFloeStiffness
-"Finds the largest elastic stiffness of all ice floes in a simulation.  Used to 
+export findLargestGrainStiffness
+"Finds the largest elastic stiffness of all grains in a simulation.  Used to 
 determine the optimal time step length."
-function findLargestIceFloeStiffness(simulation::Simulation)
+function findLargestGrainStiffness(simulation::Simulation)
     k_n_max = 0.
     k_t_max = 0.
     i_n_max = -1
     i_t_max = -1
-    for i=1:length(simulation.ice_floes)
+    for i=1:length(simulation.grains)
 
-        @inbounds icefloe = simulation.ice_floes[i]
+        @inbounds grain = simulation.grains[i]
 
-        if icefloe.youngs_modulus > 0.
-            k_n = icefloe.youngs_modulus*icefloe.thickness  # A = h*r
-            k_t = k_n*2.*(1. - icefloe.poissons_ratio^2.)/
-                ((2. - icefloe.poissons_ratio)*(1. + icefloe.poissons_ratio))
+        if grain.youngs_modulus > 0.
+            k_n = grain.youngs_modulus*grain.thickness  # A = h*r
+            k_t = k_n*2.*(1. - grain.poissons_ratio^2.)/
+                ((2. - grain.poissons_ratio)*(1. + grain.poissons_ratio))
         else
-            k_n = icefloe.contact_stiffness_normal
-            k_t = icefloe.contact_stiffness_tangential
+            k_n = grain.contact_stiffness_normal
+            k_t = grain.contact_stiffness_tangential
         end
 
         if k_n > k_n_max
@@ -139,12 +139,12 @@ stiffnesses, and grain density. Uses the scheme by Radjaii et al. 2011.
 function setTimeStep!(simulation::Simulation;
                       epsilon::Float64=0.07, verbose::Bool=true)
 
-    if length(simulation.ice_floes) < 1
+    if length(simulation.grains) < 1
         error("At least 1 grain is needed to find the computational time step.")
     end
 
-    k_n_max, k_t_max, _, _ = findLargestIceFloeStiffness(simulation)
-    m_min, _ = findSmallestIceFloeMass(simulation)
+    k_n_max, k_t_max, _, _ = findLargestGrainStiffness(simulation)
+    m_min, _ = findSmallestGrainMass(simulation)
 
     simulation.time_step = epsilon/(sqrt(maximum([k_n_max, k_t_max])/m_min))
 

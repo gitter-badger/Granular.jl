@@ -1,5 +1,5 @@
 <CustomFilterDefinitions>
-  <CustomProxyDefinition name="SeaIce" group="filters">
+  <CustomProxyDefinition name="Granular" group="filters">
     <CompoundSourceProxy id="6702" servers="1">
       <Proxy group="filters" type="Glyph" id="6613" servers="1" compound_name="Glyph1">
         <Property name="GlyphMode" id="6613.GlyphMode" number_of_elements="1">

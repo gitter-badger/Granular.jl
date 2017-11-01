@@ -1,13 +1,13 @@
-## Manage icefloes in the model
+## Manage grains in the model
 hasPyPlot = false
 if typeof(Pkg.installed("PyPlot")) == VersionNumber
     import PyPlot
     hasPyPlot = true
 end
 
-export addIceFloeCylindrical!
+export addGrainCylindrical!
 """
-    function addIceFloeCylindrical!(simulation, lin_pos, contact_radius,
+    function addGrainCylindrical!(simulation, lin_pos, contact_radius,
                                     thickness[, areal_radius, lin_vel, lin_acc,
                                     force, ang_pos, ang_vel, ang_acc, torque,
                                     density, contact_stiffness_normal,
@@ -28,17 +28,17 @@ export addIceFloeCylindrical!
                                     n_contact, granular_stress, ocean_stress,
                                     atmosphere_stress])
 
-Creates and adds a cylindrical icefloe to a simulation. Most of the arguments 
+Creates and adds a cylindrical grain to a simulation. Most of the arguments 
 are optional, and come with default values.  The only required arguments are 
 `simulation`, `lin_pos`, `contact_radius`, and `thickness`.
 
 # Arguments
-* `simulation::Simulation`: the simulation object where the ice floe should be
+* `simulation::Simulation`: the simulation object where the grain should be
     added to.
-* `lin_pos::Vector{Float64}`: linear position of ice-floe center [m].
-* `contact_radius::Float64`: ice-floe radius for granular interaction [m].
-* `thickness::Float64`: ice-floe thickness [m].
-* `areal_radius = false`: ice-floe radius for determining sea-ice concentration
+* `lin_pos::Vector{Float64}`: linear position of grain center [m].
+* `contact_radius::Float64`: grain radius for granular interaction [m].
+* `thickness::Float64`: grain thickness [m].
+* `areal_radius = false`: grain radius for determining sea-ice concentration
     [m].
 * `lin_vel::Vector{Float64} = [0., 0.]`: linear velocity [m/s].
 * `lin_acc::Vector{Float64} = [0., 0.]`: linear acceleration [m/s^2].
@@ -50,7 +50,7 @@ are optional, and come with default values.  The only required arguments are
 * `ang_acc::Float64 = 0.`: angular acceleration around its center vertical axis
     [rad/s^2].
 * `torque::Float64 = 0.`: torque around its center vertical axis [N*m]
-* `density::Float64 = 934.`: ice-floe mean density [kg/m^3].
+* `density::Float64 = 934.`: grain mean density [kg/m^3].
 * `contact_stiffness_normal::Float64 = 1e7`: contact-normal stiffness [N/m];
     overridden if `youngs_modulus` is set to a positive value.
 * `contact_stiffness_tangential::Float64 = 0.`: contact-tangential stiffness
@@ -73,59 +73,59 @@ are optional, and come with default values.  The only required arguments are
 * `compressive_strength_prefactor::Float64 = 1285e3`: maximum compressive
     strength on granular contact (not currently enforced) [m*Pa].
 * `ocean_drag_coeff_vert::Float64 = 0.85`: vertical drag coefficient for ocean
-    against ice-floe sides [-].
+    against grain sides [-].
 * `ocean_drag_coeff_horiz::Float64 = 5e-4`: horizontal drag coefficient for
-    ocean against ice-floe bottom [-].
+    ocean against grain bottom [-].
 * `atmosphere_drag_coeff_vert::Float64 = 0.4`: vertical drag coefficient for
-    atmosphere against ice-floe sides [-].
+    atmosphere against grain sides [-].
 * `atmosphere_drag_coeff_horiz::Float64 = 2.5e-4`: horizontal drag coefficient
-    for atmosphere against ice-floe bottom [-].
-* `pressure::Float64 = 0.`: current compressive stress on ice floe [Pa].
-* `fixed::Bool = false`: ice floe is fixed in space.
-* `rotating::Bool = true`: ice floe is allowed to rotate.
-* `enabled::Bool = true`: ice floe interacts with other ice floes.
+    for atmosphere against grain bottom [-].
+* `pressure::Float64 = 0.`: current compressive stress on grain [Pa].
+* `fixed::Bool = false`: grain is fixed in space.
+* `rotating::Bool = true`: grain is allowed to rotate.
+* `enabled::Bool = true`: grain interacts with other grains.
 * `verbose::Bool = true`: display diagnostic information during the function
     call.
-* `ocean_grid_pos::Array{Int, 1} = [0, 0]`: position of ice floe in the ocean
+* `ocean_grid_pos::Array{Int, 1} = [0, 0]`: position of grain in the ocean
     grid.
-* `atmosphere_grid_pos::Array{Int, 1} = [0, 0]`: position of ice floe in the
+* `atmosphere_grid_pos::Array{Int, 1} = [0, 0]`: position of grain in the
     atmosphere grid.
-* `n_contacts::Int = 0`: number of contacts with other ice floes.
-* `granular_stress::Vector{Float64} = [0., 0.]`: resultant stress on ice floe
+* `n_contacts::Int = 0`: number of contacts with other grains.
+* `granular_stress::Vector{Float64} = [0., 0.]`: resultant stress on grain
     from granular interactions [Pa].
-* `ocean_stress::Vector{Float64} = [0., 0.]`: resultant stress on ice floe from
+* `ocean_stress::Vector{Float64} = [0., 0.]`: resultant stress on grain from
     ocean drag [Pa].
-* `atmosphere_stress::Vector{Float64} = [0., 0.]`: resultant stress on ice floe
+* `atmosphere_stress::Vector{Float64} = [0., 0.]`: resultant stress on grain
     from atmosphere drag [Pa].
 
 # Examples
-The most basic example adds a new ice floe to the simulation `sim`, with a 
+The most basic example adds a new grain to the simulation `sim`, with a 
 center at `[1., 2.]`, a radius of `1.` meter, and a thickness of `0.5` 
 meter:
 
 ```julia
-SeaIce.addIceFloeCylindrical!(sim, [1., 2.], 1., .5)
+Granular.addGrainCylindrical!(sim, [1., 2.], 1., .5)
 ```
 
-The following example will create a ice floe with tensile strength (cohesion),
+The following example will create a grain with tensile strength (cohesion),
 and a velocity of 0.5 m/s towards -x:
 
 ```julia
-SeaIce.addIceFloeCylindrical!(sim, [4., 2.], 1., .5,
+Granular.addGrainCylindrical!(sim, [4., 2.], 1., .5,
                               tensile_strength = 200e3,
                               lin_vel = [-.5, 0.])
 ```
 
-Fixed ice floes are useful for creating walls or coasts, and loops are useful
+Fixed grains are useful for creating walls or coasts, and loops are useful
 for creating regular arrangements:
 
 ```julia
 for i=1:5
-    SeaIce.addIceFloeCylindrical!(sim, [i*2., 0., 3.], 1., .5, fixed=true)
+    Granular.addGrainCylindrical!(sim, [i*2., 0., 3.], 1., .5, fixed=true)
 end
 ```
 """
-function addIceFloeCylindrical!(simulation::Simulation,
+function addGrainCylindrical!(simulation::Simulation,
                                 lin_pos::Vector{Float64},
                                 contact_radius::Float64,
                                 thickness::Float64;
@@ -202,9 +202,9 @@ function addIceFloeCylindrical!(simulation::Simulation,
         contact_parallel_displacement[i] = zeros(2)
     end
 
-    # Create icefloe object with placeholder values for surface area, volume, 
+    # Create grain object with placeholder values for surface area, volume, 
     # mass, and moment of inertia.
-    icefloe = IceFloeCylindrical(density,
+    grain = GrainCylindrical(density,
 
                                  thickness,
                                  contact_radius,
@@ -261,183 +261,183 @@ function addIceFloeCylindrical!(simulation::Simulation,
                                 )
 
     # Overwrite previous placeholder values
-    icefloe.circumreference = iceFloeCircumreference(icefloe)
-    icefloe.horizontal_surface_area = iceFloeHorizontalSurfaceArea(icefloe)
-    icefloe.side_surface_area = iceFloeSideSurfaceArea(icefloe)
-    icefloe.volume = iceFloeVolume(icefloe)
-    icefloe.mass = iceFloeMass(icefloe)
-    icefloe.moment_of_inertia = iceFloeMomentOfInertia(icefloe)
+    grain.circumreference = grainCircumreference(grain)
+    grain.horizontal_surface_area = grainHorizontalSurfaceArea(grain)
+    grain.side_surface_area = grainSideSurfaceArea(grain)
+    grain.volume = grainVolume(grain)
+    grain.mass = grainMass(grain)
+    grain.moment_of_inertia = grainMomentOfInertia(grain)
 
     # Add to simulation object
-    addIceFloe!(simulation, icefloe, verbose)
+    addGrain!(simulation, grain, verbose)
     nothing
 end
 
-export iceFloeCircumreference
-"Returns the circumreference of the ice floe"
-function iceFloeCircumreference(icefloe::IceFloeCylindrical)
-    return pi*icefloe.areal_radius*2.
+export grainCircumreference
+"Returns the circumreference of the grain"
+function grainCircumreference(grain::GrainCylindrical)
+    return pi*grain.areal_radius*2.
 end
 
-export iceFloeHorizontalSurfaceArea
-"Returns the top or bottom (horizontal) surface area of the ice floe"
-function iceFloeHorizontalSurfaceArea(icefloe::IceFloeCylindrical)
-    return pi*icefloe.areal_radius^2.
+export grainHorizontalSurfaceArea
+"Returns the top or bottom (horizontal) surface area of the grain"
+function grainHorizontalSurfaceArea(grain::GrainCylindrical)
+    return pi*grain.areal_radius^2.
 end
 
-export iceFloeSideSurfaceArea
-"Returns the surface area of the ice-floe sides"
-function iceFloeSideSurfaceArea(icefloe::IceFloeCylindrical)
-    return iceFloeCircumreference(icefloe)*icefloe.thickness
+export grainSideSurfaceArea
+"Returns the surface area of the grain sides"
+function grainSideSurfaceArea(grain::GrainCylindrical)
+    return grainCircumreference(grain)*grain.thickness
 end
 
-export iceFloeVolume
-"Returns the volume of the ice floe"
-function iceFloeVolume(icefloe::IceFloeCylindrical)
-    return iceFloeHorizontalSurfaceArea(icefloe)*icefloe.thickness
+export grainVolume
+"Returns the volume of the grain"
+function grainVolume(grain::GrainCylindrical)
+    return grainHorizontalSurfaceArea(grain)*grain.thickness
 end
 
-export iceFloeMass
-"Returns the mass of the ice floe"
-function iceFloeMass(icefloe::IceFloeCylindrical)
-    return iceFloeVolume(icefloe)*icefloe.density
+export grainMass
+"Returns the mass of the grain"
+function grainMass(grain::GrainCylindrical)
+    return grainVolume(grain)*grain.density
 end
 
-export iceFloeMomentOfInertia
-"Returns the moment of inertia of the ice floe"
-function iceFloeMomentOfInertia(icefloe::IceFloeCylindrical)
-    return 0.5*iceFloeMass(icefloe)*icefloe.areal_radius^2.
+export grainMomentOfInertia
+"Returns the moment of inertia of the grain"
+function grainMomentOfInertia(grain::GrainCylindrical)
+    return 0.5*grainMass(grain)*grain.areal_radius^2.
 end
 
-export convertIceFloeDataToArrays
+export convertGrainDataToArrays
 """
-Gathers all ice-floe parameters from the `IceFloeCylindrical` type in continuous 
-arrays in an `IceFloeArrays` structure.
+Gathers all grain parameters from the `GrainCylindrical` type in continuous 
+arrays in an `GrainArrays` structure.
 """
-function convertIceFloeDataToArrays(simulation::Simulation)
+function convertGrainDataToArrays(simulation::Simulation)
 
-    ifarr = IceFloeArrays(
-                          Array{Float64}(length(simulation.ice_floes)),
+    ifarr = GrainArrays(
+                          Array{Float64}(length(simulation.grains)),
 
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
 
-                          zeros(Float64, 3, length(simulation.ice_floes)),
-                          zeros(Float64, 3, length(simulation.ice_floes)),
-                          zeros(Float64, 3, length(simulation.ice_floes)),
-                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.grains)),
+                          zeros(Float64, 3, length(simulation.grains)),
+                          zeros(Float64, 3, length(simulation.grains)),
+                          zeros(Float64, 3, length(simulation.grains)),
 
-                          zeros(Float64, 3, length(simulation.ice_floes)),
-                          zeros(Float64, 3, length(simulation.ice_floes)),
-                          zeros(Float64, 3, length(simulation.ice_floes)),
-                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.grains)),
+                          zeros(Float64, 3, length(simulation.grains)),
+                          zeros(Float64, 3, length(simulation.grains)),
+                          zeros(Float64, 3, length(simulation.grains)),
 
-                          Array{Int}(length(simulation.ice_floes)),
-                          Array{Int}(length(simulation.ice_floes)),
-                          Array{Int}(length(simulation.ice_floes)),
+                          Array{Int}(length(simulation.grains)),
+                          Array{Int}(length(simulation.grains)),
+                          Array{Int}(length(simulation.grains)),
 
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
 
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
 
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Float64}(length(simulation.ice_floes)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Float64}(length(simulation.grains)),
 
-                          Array{Float64}(length(simulation.ice_floes)),
-                          Array{Int}(length(simulation.ice_floes)),
+                          Array{Float64}(length(simulation.grains)),
+                          Array{Int}(length(simulation.grains)),
 
-                          zeros(Float64, 3, length(simulation.ice_floes)),
-                          zeros(Float64, 3, length(simulation.ice_floes)),
-                          zeros(Float64, 3, length(simulation.ice_floes)),
+                          zeros(Float64, 3, length(simulation.grains)),
+                          zeros(Float64, 3, length(simulation.grains)),
+                          zeros(Float64, 3, length(simulation.grains)),
                          )
 
     # fill arrays
-    for i=1:length(simulation.ice_floes)
-        ifarr.density[i] = simulation.ice_floes[i].density
+    for i=1:length(simulation.grains)
+        ifarr.density[i] = simulation.grains[i].density
 
-        ifarr.thickness[i] = simulation.ice_floes[i].thickness
-        ifarr.contact_radius[i] = simulation.ice_floes[i].contact_radius
-        ifarr.areal_radius[i] = simulation.ice_floes[i].areal_radius
-        ifarr.circumreference[i] = simulation.ice_floes[i].circumreference
+        ifarr.thickness[i] = simulation.grains[i].thickness
+        ifarr.contact_radius[i] = simulation.grains[i].contact_radius
+        ifarr.areal_radius[i] = simulation.grains[i].areal_radius
+        ifarr.circumreference[i] = simulation.grains[i].circumreference
         ifarr.horizontal_surface_area[i] =
-            simulation.ice_floes[i].horizontal_surface_area
-        ifarr.side_surface_area[i] = simulation.ice_floes[i].side_surface_area
-        ifarr.volume[i] = simulation.ice_floes[i].volume
-        ifarr.mass[i] = simulation.ice_floes[i].mass
-        ifarr.moment_of_inertia[i] = simulation.ice_floes[i].moment_of_inertia
+            simulation.grains[i].horizontal_surface_area
+        ifarr.side_surface_area[i] = simulation.grains[i].side_surface_area
+        ifarr.volume[i] = simulation.grains[i].volume
+        ifarr.mass[i] = simulation.grains[i].mass
+        ifarr.moment_of_inertia[i] = simulation.grains[i].moment_of_inertia
 
-        ifarr.lin_pos[1:2, i] = simulation.ice_floes[i].lin_pos
-        ifarr.lin_vel[1:2, i] = simulation.ice_floes[i].lin_vel
-        ifarr.lin_acc[1:2, i] = simulation.ice_floes[i].lin_acc
-        ifarr.force[1:2, i] = simulation.ice_floes[i].force
+        ifarr.lin_pos[1:2, i] = simulation.grains[i].lin_pos
+        ifarr.lin_vel[1:2, i] = simulation.grains[i].lin_vel
+        ifarr.lin_acc[1:2, i] = simulation.grains[i].lin_acc
+        ifarr.force[1:2, i] = simulation.grains[i].force
 
-        ifarr.ang_pos[3, i] = simulation.ice_floes[i].ang_pos
-        ifarr.ang_vel[3, i] = simulation.ice_floes[i].ang_vel
-        ifarr.ang_acc[3, i] = simulation.ice_floes[i].ang_acc
-        ifarr.torque[3, i] = simulation.ice_floes[i].torque
+        ifarr.ang_pos[3, i] = simulation.grains[i].ang_pos
+        ifarr.ang_vel[3, i] = simulation.grains[i].ang_vel
+        ifarr.ang_acc[3, i] = simulation.grains[i].ang_acc
+        ifarr.torque[3, i] = simulation.grains[i].torque
 
-        ifarr.fixed[i] = Int(simulation.ice_floes[i].fixed)
-        ifarr.rotating[i] = Int(simulation.ice_floes[i].rotating)
-        ifarr.enabled[i] = Int(simulation.ice_floes[i].enabled)
+        ifarr.fixed[i] = Int(simulation.grains[i].fixed)
+        ifarr.rotating[i] = Int(simulation.grains[i].rotating)
+        ifarr.enabled[i] = Int(simulation.grains[i].enabled)
 
         ifarr.contact_stiffness_normal[i] = 
-            simulation.ice_floes[i].contact_stiffness_normal
+            simulation.grains[i].contact_stiffness_normal
         ifarr.contact_stiffness_tangential[i] = 
-            simulation.ice_floes[i].contact_stiffness_tangential
+            simulation.grains[i].contact_stiffness_tangential
         ifarr.contact_viscosity_normal[i] = 
-            simulation.ice_floes[i].contact_viscosity_normal
+            simulation.grains[i].contact_viscosity_normal
         ifarr.contact_viscosity_tangential[i] = 
-            simulation.ice_floes[i].contact_viscosity_tangential
+            simulation.grains[i].contact_viscosity_tangential
         ifarr.contact_static_friction[i] = 
-            simulation.ice_floes[i].contact_static_friction
+            simulation.grains[i].contact_static_friction
         ifarr.contact_dynamic_friction[i] = 
-            simulation.ice_floes[i].contact_dynamic_friction
+            simulation.grains[i].contact_dynamic_friction
 
-        ifarr.youngs_modulus[i] = simulation.ice_floes[i].youngs_modulus
-        ifarr.poissons_ratio[i] = simulation.ice_floes[i].poissons_ratio
-        ifarr.tensile_strength[i] = simulation.ice_floes[i].tensile_strength
+        ifarr.youngs_modulus[i] = simulation.grains[i].youngs_modulus
+        ifarr.poissons_ratio[i] = simulation.grains[i].poissons_ratio
+        ifarr.tensile_strength[i] = simulation.grains[i].tensile_strength
         ifarr.compressive_strength_prefactor[i] = 
-            simulation.ice_floes[i].compressive_strength_prefactor
+            simulation.grains[i].compressive_strength_prefactor
 
         ifarr.ocean_drag_coeff_vert[i] = 
-            simulation.ice_floes[i].ocean_drag_coeff_vert
+            simulation.grains[i].ocean_drag_coeff_vert
         ifarr.ocean_drag_coeff_horiz[i] = 
-            simulation.ice_floes[i].ocean_drag_coeff_horiz
+            simulation.grains[i].ocean_drag_coeff_horiz
         ifarr.atmosphere_drag_coeff_vert[i] = 
-            simulation.ice_floes[i].atmosphere_drag_coeff_vert
+            simulation.grains[i].atmosphere_drag_coeff_vert
         ifarr.atmosphere_drag_coeff_horiz[i] = 
-            simulation.ice_floes[i].atmosphere_drag_coeff_horiz
+            simulation.grains[i].atmosphere_drag_coeff_horiz
 
-        ifarr.pressure[i] = simulation.ice_floes[i].pressure
-        ifarr.n_contacts[i] = simulation.ice_floes[i].n_contacts
+        ifarr.pressure[i] = simulation.grains[i].pressure
+        ifarr.n_contacts[i] = simulation.grains[i].n_contacts
 
-        ifarr.granular_stress[1:2, i] = simulation.ice_floes[i].granular_stress
-        ifarr.ocean_stress[1:2, i] = simulation.ice_floes[i].ocean_stress
+        ifarr.granular_stress[1:2, i] = simulation.grains[i].granular_stress
+        ifarr.ocean_stress[1:2, i] = simulation.grains[i].ocean_stress
         ifarr.atmosphere_stress[1:2, i] =
-            simulation.ice_floes[i].atmosphere_stress
+            simulation.grains[i].atmosphere_stress
     end
 
     return ifarr
 end
 
-function deleteIceFloeArrays!(ifarr::IceFloeArrays)
+function deleteGrainArrays!(ifarr::GrainArrays)
     f1 = zeros(1)
     f2 = zeros(1,1)
     i1 = zeros(Int, 1)
@@ -496,13 +496,13 @@ function deleteIceFloeArrays!(ifarr::IceFloeArrays)
     nothing
 end
 
-export printIceFloeInfo
+export printGrainInfo
 """
-    printIceFloeInfo(icefloe::IceFloeCylindrical)
+    printGrainInfo(grain::GrainCylindrical)
 
-Prints the contents of an ice floe to stdout in a formatted style.
+Prints the contents of an grain to stdout in a formatted style.
 """
-function printIceFloeInfo(f::IceFloeCylindrical)
+function printGrainInfo(f::GrainCylindrical)
     println("  density:                 $(f.density) kg/m^3")
     println("  thickness:               $(f.thickness) m")
     println("  contact_radius:          $(f.contact_radius) m")
@@ -556,50 +556,50 @@ function printIceFloeInfo(f::IceFloeCylindrical)
     nothing
 end
 
-export iceFloeKineticTranslationalEnergy
-"Returns the translational kinetic energy of the ice floe"
-function iceFloeKineticTranslationalEnergy(icefloe::IceFloeCylindrical)
-    return 0.5*icefloe.mass*norm(icefloe.lin_vel)^2.
+export grainKineticTranslationalEnergy
+"Returns the translational kinetic energy of the grain"
+function grainKineticTranslationalEnergy(grain::GrainCylindrical)
+    return 0.5*grain.mass*norm(grain.lin_vel)^2.
 end
 
-export totalIceFloeKineticTranslationalEnergy
+export totalGrainKineticTranslationalEnergy
 """
-Returns the sum of translational kinetic energies of all ice floes in a 
+Returns the sum of translational kinetic energies of all grains in a 
 simulation
 """
-function totalIceFloeKineticTranslationalEnergy(simulation::Simulation)
+function totalGrainKineticTranslationalEnergy(simulation::Simulation)
     E_sum = 0.
-    for icefloe in simulation.ice_floes
-        E_sum += iceFloeKineticTranslationalEnergy(icefloe)
+    for grain in simulation.grains
+        E_sum += grainKineticTranslationalEnergy(grain)
     end
     return E_sum
 end
 
-export iceFloeKineticRotationalEnergy
-"Returns the rotational kinetic energy of the ice floe"
-function iceFloeKineticRotationalEnergy(icefloe::IceFloeCylindrical)
-    return 0.5*icefloe.moment_of_inertia*norm(icefloe.ang_vel)^2.
+export grainKineticRotationalEnergy
+"Returns the rotational kinetic energy of the grain"
+function grainKineticRotationalEnergy(grain::GrainCylindrical)
+    return 0.5*grain.moment_of_inertia*norm(grain.ang_vel)^2.
 end
 
-export totalIceFloeKineticRotationalEnergy
+export totalGrainKineticRotationalEnergy
 """
-Returns the sum of rotational kinetic energies of all ice floes in a simulation
+Returns the sum of rotational kinetic energies of all grains in a simulation
 """
-function totalIceFloeKineticRotationalEnergy(simulation::Simulation)
+function totalGrainKineticRotationalEnergy(simulation::Simulation)
     E_sum = 0.
-    for icefloe in simulation.ice_floes
-        E_sum += iceFloeKineticRotationalEnergy(icefloe)
+    for grain in simulation.grains
+        E_sum += grainKineticRotationalEnergy(grain)
     end
     return E_sum
 end
 
-export compareIceFloes
+export compareGrains
 """
-    compareIceFloes(if1::IceFloeCylindrical, if2::IceFloeCylindrical)
+    compareGrains(if1::GrainCylindrical, if2::GrainCylindrical)
 
-Compare values of two ice floe objects using the `Base.Test` framework.
+Compare values of two grain objects using the `Base.Test` framework.
 """
-function compareIceFloes(if1::IceFloeCylindrical, if2::IceFloeCylindrical)
+function compareGrains(if1::GrainCylindrical, if2::GrainCylindrical)
 
     Base.Test.@test if1.density ≈ if2.density
     Base.Test.@test if1.thickness ≈ if2.thickness
@@ -665,30 +665,30 @@ function compareIceFloes(if1::IceFloeCylindrical, if2::IceFloeCylindrical)
     nothing
 end
 
-export plotIceFloeSizeDistribution
+export plotGrainSizeDistribution
 """
-    plotIceFloeSizeDistribution(simulation, [filename_postfix], [nbins],
+    plotGrainSizeDistribution(simulation, [filename_postfix], [nbins],
                                 [size_type], [figsize], [filetype])
 
-Plot the ice-floe size distribution as a histogram and save it to the disk.  The 
+Plot the grain size distribution as a histogram and save it to the disk.  The 
 plot is saved accoring to the simulation id, the optional `filename_postfix` 
 string, and the `filetype`, and is written to the current folder.
 
 # Arguments
-* `simulation::Simulation`: the simulation object containing the ice floes.
+* `simulation::Simulation`: the simulation object containing the grains.
 * `filename_postfix::String`: optional string for the output filename.
 * `nbins::Int`: number of bins in the histogram (default = 12).
 * `size_type::String`: specify whether to use the `contact` or `areal` radius 
-    for the ice-floe size.  The default is `contact`.
+    for the grain size.  The default is `contact`.
 * `figsize::Tuple`: the output figure size in inches (default = (6,4).
 * `filetype::String`: the output file type (default = "png").
 * `verbose::String`: show output file as info message in stdout (default = 
     true).
-* `skip_fixed::Bool`: ommit ice floes that are fixed in space from the size 
+* `skip_fixed::Bool`: ommit grains that are fixed in space from the size 
     distribution (default = true).
 * `logy::Bool`: plot y-axis in log scale.
 """
-function plotIceFloeSizeDistribution(simulation::Simulation;
+function plotGrainSizeDistribution(simulation::Simulation;
                                      filename_postfix::String = "",
                                      nbins::Int=12,
                                      size_type::String = "contact",
@@ -703,14 +703,14 @@ function plotIceFloeSizeDistribution(simulation::Simulation;
         return
     end
     diameters = Float64[]
-    for i=1:length(simulation.ice_floes)
-        if simulation.ice_floes[i].fixed && skip_fixed
+    for i=1:length(simulation.grains)
+        if simulation.grains[i].fixed && skip_fixed
             continue
         end
         if size_type == "contact"
-            push!(diameters, simulation.ice_floes[i].contact_radius*2.)
+            push!(diameters, simulation.grains[i].contact_radius*2.)
         elseif size_type == "areal"
-            push!(diameters, simulation.ice_floes[i].areal_radius*2.)
+            push!(diameters, simulation.grains[i].areal_radius*2.)
         else
             error("size_type '$size_type' not understood")
         end
@@ -721,7 +721,7 @@ function plotIceFloeSizeDistribution(simulation::Simulation;
     PyPlot.xlabel("Diameter [m]")
     PyPlot.ylabel("Count [-]")
     filename = string(simulation.id * filename_postfix * 
-                      "-ice-floe-size-distribution." * filetype)
+                      "-grain-size-distribution." * filetype)
     PyPlot.savefig(filename)
     if verbose
         info(filename)

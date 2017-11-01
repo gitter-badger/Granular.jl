@@ -133,7 +133,7 @@ end
 export addAtmosphereDrag!
 """
 Add drag from linear and angular velocity difference between atmosphere and all 
-ice floes.
+grains.
 """
 function addAtmosphereDrag!(simulation::Simulation)
     if typeof(simulation.atmosphere.input_file) == Bool
@@ -147,73 +147,73 @@ function addAtmosphereDrag!(simulation::Simulation)
     ne = Vector{Float64}(2)
     nw = Vector{Float64}(2)
 
-    for ice_floe in simulation.ice_floes
+    for grain in simulation.grains
 
-        if !ice_floe.enabled
+        if !grain.enabled
             continue
         end
 
-        i, j = ice_floe.atmosphere_grid_pos
+        i, j = grain.atmosphere_grid_pos
         k = 1
 
         x_tilde, y_tilde = getNonDimensionalCellCoordinates(simulation.
                                                             atmosphere,
                                                             i, j,
-                                                            ice_floe.lin_pos)
+                                                            grain.lin_pos)
         if x_tilde < 0. || x_tilde > 1. || y_tilde < 0. || y_tilde > 1.
             warn("""
                  relative coordinates outside bounds ($(x_tilde), $(y_tilde)),
-                 pos = $(ice_floe.lin_pos) at i,j = $(i), $(j).
+                 pos = $(grain.lin_pos) at i,j = $(i), $(j).
 
                  """)
         end
 
         bilinearInterpolation!(uv_interp, u, v, x_tilde, y_tilde, i, j, k, 1)
-        applyAtmosphereDragToIceFloe!(ice_floe, uv_interp[1], uv_interp[2])
-        applyAtmosphereVorticityToIceFloe!(ice_floe,
+        applyAtmosphereDragToGrain!(grain, uv_interp[1], uv_interp[2])
+        applyAtmosphereVorticityToGrain!(grain,
                                       curl(simulation.atmosphere, x_tilde, y_tilde,
                                            i, j, k, 1, sw, se, ne, nw))
     end
     nothing
 end
 
-export applyAtmosphereDragToIceFloe!
+export applyAtmosphereDragToGrain!
 """
 Add Stokes-type drag from velocity difference between atmosphere and a single 
-ice floe.
+grain.
 """
-function applyAtmosphereDragToIceFloe!(ice_floe::IceFloeCylindrical,
+function applyAtmosphereDragToGrain!(grain::GrainCylindrical,
                                   u::Float64, v::Float64)
     rho_a = 1.2754   # atmosphere density
-    length = ice_floe.areal_radius*2.
-    width = ice_floe.areal_radius*2.
+    length = grain.areal_radius*2.
+    width = grain.areal_radius*2.
 
     drag_force = rho_a * 
-    (.5*ice_floe.ocean_drag_coeff_vert*width*.1*ice_floe.thickness + 
-     ice_floe.atmosphere_drag_coeff_horiz*length*width) *
-        ([u, v] - ice_floe.lin_vel)*norm([u, v] - ice_floe.lin_vel)
+    (.5*grain.ocean_drag_coeff_vert*width*.1*grain.thickness + 
+     grain.atmosphere_drag_coeff_horiz*length*width) *
+        ([u, v] - grain.lin_vel)*norm([u, v] - grain.lin_vel)
 
-    ice_floe.force += drag_force
-    ice_floe.atmosphere_stress = drag_force/ice_floe.horizontal_surface_area
+    grain.force += drag_force
+    grain.atmosphere_stress = drag_force/grain.horizontal_surface_area
     nothing
 end
 
-export applyAtmosphereVorticityToIceFloe!
+export applyAtmosphereVorticityToGrain!
 """
 Add Stokes-type torque from angular velocity difference between atmosphere and a 
-single ice floe.  See Eq. 9.28 in "Introduction to Fluid Mechanics" by Nakayama 
+single grain.  See Eq. 9.28 in "Introduction to Fluid Mechanics" by Nakayama 
 and Boucher, 1999.
 """
-function applyAtmosphereVorticityToIceFloe!(ice_floe::IceFloeCylindrical, 
+function applyAtmosphereVorticityToGrain!(grain::GrainCylindrical, 
                                             atmosphere_curl::Float64)
     rho_a = 1.2754   # atmosphere density
 
-    ice_floe.torque +=
-        pi*ice_floe.areal_radius^4.*rho_a*
-        (ice_floe.areal_radius/5.*ice_floe.atmosphere_drag_coeff_horiz + 
-        .1*ice_floe.thickness*ice_floe.atmosphere_drag_coeff_vert)*
-        abs(.5*atmosphere_curl - ice_floe.ang_vel)*
-        (.5*atmosphere_curl - ice_floe.ang_vel)
+    grain.torque +=
+        pi*grain.areal_radius^4.*rho_a*
+        (grain.areal_radius/5.*grain.atmosphere_drag_coeff_horiz + 
+        .1*grain.thickness*grain.atmosphere_drag_coeff_vert)*
+        abs(.5*atmosphere_curl - grain.ang_vel)*
+        (.5*atmosphere_curl - grain.ang_vel)
     nothing
 end
 
@@ -239,8 +239,8 @@ function compareAtmospheres(atmosphere1::Atmosphere, atmosphere2::Atmosphere)
     Base.Test.@test atmosphere1.u ≈ atmosphere2.u
     Base.Test.@test atmosphere1.v ≈ atmosphere2.v
 
-    if isassigned(atmosphere1.ice_floe_list, 1)
-        Base.Test.@test atmosphere1.ice_floe_list == atmosphere2.ice_floe_list
+    if isassigned(atmosphere1.grain_list, 1)
+        Base.Test.@test atmosphere1.grain_list == atmosphere2.grain_list
     end
     nothing
 end

@@ -1,5 +1,5 @@
 ## Particle composite types
-mutable struct IceFloeCylindrical
+mutable struct GrainCylindrical
 
     # Material properties
     density::Float64
@@ -66,8 +66,8 @@ mutable struct IceFloeCylindrical
     atmosphere_stress::Vector{Float64}
 end
 
-# Type for gathering data from ice floe objects into single arrays
-mutable struct IceFloeArrays
+# Type for gathering data from grain objects into single arrays
+mutable struct GrainArrays
 
     # Material properties
     density::Vector{Float64}
@@ -162,7 +162,7 @@ h-points.  During read, the velocities are interpolated to the cell corners
     placement in `[xh, yh, zl, time]`.
 * `e::Array{Float64, Int}`: interface height relative to mean sea level [m],  
     dimensions correspond to placement in `[xh, yh, zi, time]`.
-* `ice_floe_list::Array{Float64, Int}`: indexes of ice floes contained in the 
+* `grain_list::Array{Float64, Int}`: indexes of grains contained in the 
     ocean grid cells.
 =#
 mutable struct Ocean
@@ -188,7 +188,7 @@ mutable struct Ocean
     h::Array{Float64, 4}
     e::Array{Float64, 4}
 
-    ice_floe_list::Array{Vector{Int}, 2}
+    grain_list::Array{Vector{Int}, 2}
 end
 
 #=
@@ -220,7 +220,7 @@ cell corners (q-points).
     dimensions correspond to placement in `[xq, yq, zl, time]`.
 * `v::Array{Float64, Int}`: meridional velocity (positive towards north) [m/s], 
     dimensions correspond to placement in `[xq, yq, zl, time]`.
-* `ice_floe_list::Array{Float64, Int}`: interface height relative to mean sea 
+* `grain_list::Array{Float64, Int}`: interface height relative to mean sea 
     level [m],  dimensions correspond to placement in `[xh, yh, zi, time]`.
 =#
 mutable struct Atmosphere
@@ -243,7 +243,7 @@ mutable struct Atmosphere
     u::Array{Float64, 4}
     v::Array{Float64, 4}
 
-    ice_floe_list::Array{Vector{Int}, 2}
+    grain_list::Array{Vector{Int}, 2}
 
     # If true the grid positions are identical to the ocean grid
     collocated_with_ocean_grid::Bool
@@ -261,7 +261,7 @@ mutable struct Simulation
     file_number::Int
     file_time_since_output_file::Float64
 
-    ice_floes::Vector{IceFloeCylindrical}
+    grains::Vector{GrainCylindrical}
 
     ocean::Ocean
     atmosphere::Atmosphere

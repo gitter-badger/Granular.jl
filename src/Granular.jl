@@ -1,13 +1,13 @@
 #!/usr/bin/env julia
 
 """
-# SeaIce.jl
-Offline sea-ice dynamics simulator module.
+# Granular.jl
+Offline granular dynamics simulator module.
 """
-module SeaIce
+module Granular
 
 include("datatypes.jl")
-include("icefloe.jl")
+include("grain.jl")
 include("simulation.jl")
 include("grid.jl")
 include("packing.jl")

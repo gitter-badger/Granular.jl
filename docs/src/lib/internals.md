@@ -1,6 +1,6 @@
 # Package-internal documentation
 
-This page lists all the documented internals of the `SeaIce` module.
+This page lists all the documented internals of the `Granular` module.
 
 ## Index
 A list of all internal documentation sorted by module.
@@ -11,7 +11,7 @@ Pages = ["internals.md"]
 
 ## Internal Interface
 ```@autodocs
-Modules = [SeaIce]
+Modules = [Granular]
 Public = false
 Private = true
-```
+a``

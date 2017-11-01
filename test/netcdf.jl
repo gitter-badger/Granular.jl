@@ -4,11 +4,11 @@
 
 info("#### $(basename(@__FILE__)) ####")
 
-@test_throws ErrorException SeaIce.readOceanStateNetCDF("nonexistentfile")
-@test_throws ErrorException SeaIce.readOceanGridNetCDF("nonexistentfile")
+@test_throws ErrorException Granular.readOceanStateNetCDF("nonexistentfile")
+@test_throws ErrorException Granular.readOceanGridNetCDF("nonexistentfile")
 
 info("Testing dimensions of content read from Baltic test case")
-ocean = SeaIce.readOceanNetCDF("Baltic/00010101.ocean_month.nc",
+ocean = Granular.readOceanNetCDF("Baltic/00010101.ocean_month.nc",
                                "Baltic/ocean_hgrid.nc")
 @test ocean.time/(24.*60.*60.) ≈ [.5, 1.5, 2.5, 3.5, 4.5]
 @test size(ocean.xq) == (24, 15)
@@ -21,12 +21,12 @@ ocean = SeaIce.readOceanNetCDF("Baltic/00010101.ocean_month.nc",
 @test size(ocean.e) == (23, 14, 64, 5)
 
 info("Testing ocean state interpolation")
-@test_throws ErrorException SeaIce.interpolateOceanState(ocean, time=0.)
-@test_throws ErrorException SeaIce.interpolateOceanState(ocean, time=1.e34)
-u1, v1, h1, e1 = SeaIce.interpolateOceanState(ocean, ocean.time[1])
-u2, v2, h2, e2 = SeaIce.interpolateOceanState(ocean, ocean.time[2])
-@test_throws ErrorException SeaIce.interpolateOceanState(ocean, -1.)
-u1_5, v1_5, h1_5, e1_5 = SeaIce.interpolateOceanState(ocean,
+@test_throws ErrorException Granular.interpolateOceanState(ocean, time=0.)
+@test_throws ErrorException Granular.interpolateOceanState(ocean, time=1.e34)
+u1, v1, h1, e1 = Granular.interpolateOceanState(ocean, ocean.time[1])
+u2, v2, h2, e2 = Granular.interpolateOceanState(ocean, ocean.time[2])
+@test_throws ErrorException Granular.interpolateOceanState(ocean, -1.)
+u1_5, v1_5, h1_5, e1_5 = Granular.interpolateOceanState(ocean,
     ocean.time[1] + (ocean.time[2] - ocean.time[1])/2.)
 @test u1 ≈ ocean.u[:, :, :, 1]
 @test v1 ≈ ocean.v[:, :, :, 1]

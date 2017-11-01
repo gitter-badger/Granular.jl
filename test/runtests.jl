@@ -1,7 +1,7 @@
-import SeaIce
+import Granular
 using Base.Test
 
-include("icefloe.jl")
+include("grain.jl")
 include("packing.jl")
 include("util.jl")
 include("temporal.jl")

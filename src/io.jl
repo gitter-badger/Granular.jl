@@ -205,7 +205,7 @@ end
 
 export writeVTK
 """
-Write a VTK file to disk containing all ice floes in the `simulation` in an 
+Write a VTK file to disk containing all grains in the `simulation` in an 
 unstructured mesh (file type `.vtu`).  These files can be read by ParaView and 
 can be visualized by applying a *Glyph* filter.
 
@@ -225,13 +225,13 @@ function writeVTK(simulation::Simulation;
     folder = folder * "/" * simulation.id
     mkpath(folder)
 
-    filename = string(folder, "/", simulation.id, ".icefloes.", 
+    filename = string(folder, "/", simulation.id, ".grains.", 
                       simulation.file_number)
-    writeIceFloeVTK(simulation, filename, verbose=verbose)
+    writeGrainVTK(simulation, filename, verbose=verbose)
 
-    filename = string(folder, "/", simulation.id, ".icefloe-interaction.", 
+    filename = string(folder, "/", simulation.id, ".grain-interaction.", 
                       simulation.file_number)
-    writeIceFloeInteractionVTK(simulation, filename, verbose=verbose)
+    writeGrainInteractionVTK(simulation, filename, verbose=verbose)
 
     if typeof(simulation.ocean.input_file) != Bool && ocean
         filename = string(folder, "/", simulation.id, ".ocean.", 
@@ -247,18 +247,18 @@ function writeVTK(simulation::Simulation;
     nothing
 end
 
-export writeIceFloeVTK
+export writeGrainVTK
 """
-Write a VTK file to disk containing all ice floes in the `simulation` in an 
+Write a VTK file to disk containing all grains in the `simulation` in an 
 unstructured mesh (file type `.vtu`).  These files can be read by ParaView and 
 can be visualized by applying a *Glyph* filter.  This function is called by 
 `writeVTK()`.
 """
-function writeIceFloeVTK(simulation::Simulation,
+function writeGrainVTK(simulation::Simulation,
                          filename::String;
                          verbose::Bool=false)
 
-    ifarr = convertIceFloeDataToArrays(simulation)
+    ifarr = convertGrainDataToArrays(simulation)
     
     # add arrays to VTK file
     vtkfile = WriteVTK.vtk_grid(filename, ifarr.lin_pos, WriteVTK.MeshCell[])
@@ -341,7 +341,7 @@ function writeIceFloeVTK(simulation::Simulation,
     WriteVTK.vtk_point_data(vtkfile, ifarr.atmosphere_stress,
                             "Atmosphere stress [Pa]")
 
-    deleteIceFloeArrays!(ifarr)
+    deleteGrainArrays!(ifarr)
     ifarr = 0
     gc()
 
@@ -352,16 +352,16 @@ function writeIceFloeVTK(simulation::Simulation,
     nothing
 end
 
-export writeIceFloeInteractionVTK
+export writeGrainInteractionVTK
 """
-    writeIceFloeInteractionVTK(simulation::Simulation,
+    writeGrainInteractionVTK(simulation::Simulation,
                                filename::String;
                                verbose::Bool=false)
 
-Saves ice-floe interactions to `.vtp` files for visualization with VTK, for 
+Saves grain interactions to `.vtp` files for visualization with VTK, for 
 example in Paraview.  Convert Cell Data to Point Data and use with Tube filter.
 """
-function writeIceFloeInteractionVTK(simulation::Simulation,
+function writeGrainInteractionVTK(simulation::Simulation,
                                     filename::String;
                                     verbose::Bool=false)
 
@@ -375,38 +375,38 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
     tensile_stress = Float64[]
     shear_displacement = Vector{Float64}[]
     contact_age = Float64[]
-    for i=1:length(simulation.ice_floes)
+    for i=1:length(simulation.grains)
         for ic=1:simulation.Nc_max
-            if simulation.ice_floes[i].contacts[ic] > 0
-                j = simulation.ice_floes[i].contacts[ic]
+            if simulation.grains[i].contacts[ic] > 0
+                j = simulation.grains[i].contacts[ic]
 
-                if !simulation.ice_floes[i].enabled ||
-                    !simulation.ice_floes[j].enabled
+                if !simulation.grains[i].enabled ||
+                    !simulation.grains[j].enabled
                     continue
                 end
 
-                p = simulation.ice_floes[i].lin_pos -
-                    simulation.ice_floes[j].lin_pos
+                p = simulation.grains[i].lin_pos -
+                    simulation.grains[j].lin_pos
                 dist = norm(p)
 
-                r_i = simulation.ice_floes[i].contact_radius
-                r_j = simulation.ice_floes[j].contact_radius
+                r_i = simulation.grains[i].contact_radius
+                r_j = simulation.grains[j].contact_radius
                 δ_n = dist - (r_i + r_j)
                 R_ij = harmonicMean(r_i, r_j)
 
-                if simulation.ice_floes[i].youngs_modulus > 0. &&
-                    simulation.ice_floes[j].youngs_modulus > 0.
-                    E_ij = harmonicMean(simulation.ice_floes[i].
+                if simulation.grains[i].youngs_modulus > 0. &&
+                    simulation.grains[j].youngs_modulus > 0.
+                    E_ij = harmonicMean(simulation.grains[i].
                                         youngs_modulus,
-                                        simulation.ice_floes[j].
+                                        simulation.grains[j].
                                         youngs_modulus)
-                    A_ij = R_ij*min(simulation.ice_floes[i].thickness, 
-                                    simulation.ice_floes[j].thickness)
+                    A_ij = R_ij*min(simulation.grains[i].thickness, 
+                                    simulation.grains[j].thickness)
                     k_n = E_ij*A_ij/R_ij
                 else
-                    k_n = harmonicMean(simulation.ice_floes[i].
+                    k_n = harmonicMean(simulation.grains[i].
                                        contact_stiffness_normal,
-                                       simulation.ice_floes[j].
+                                       simulation.grains[j].
                                        contact_stiffness_normal)
                 end
 
@@ -421,15 +421,15 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
                 push!(contact_stiffness, k_n)
                 push!(tensile_stress, k_n*δ_n/A_ij)
 
-                push!(shear_displacement, simulation.ice_floes[i].
+                push!(shear_displacement, simulation.grains[i].
                       contact_parallel_displacement[ic])
 
-                push!(contact_age, simulation.ice_floes[i].contact_age[ic])
+                push!(contact_age, simulation.grains[i].contact_age[ic])
             end
         end
     end
 
-    # Insert a piece for each ice floe interaction using ice floe positions as 
+    # Insert a piece for each grain interaction using grain positions as 
     # coordinates and connect them with lines by referencing their indexes.
     open(filename * ".vtp", "w") do f
         write(f, "<?xml version=\"1.0\"?>\n")
@@ -437,7 +437,7 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
               "byte_order=\"LittleEndian\">\n")
         write(f, "  <PolyData>\n")
         write(f, "    <Piece " *
-              "NumberOfPoints=\"$(length(simulation.ice_floes))\" " *
+              "NumberOfPoints=\"$(length(simulation.grains))\" " *
               "NumberOfVerts=\"0\" " *
               "NumberOfLines=\"$(length(i1))\" " *
               "NumberOfStrips=\"0\" " *
@@ -524,11 +524,11 @@ function writeIceFloeInteractionVTK(simulation::Simulation,
         write(f, "      </CellData>\n")
         write(f, "      <Points>\n")
 
-        # Write line endpoints (ice floe centers)
+        # Write line endpoints (grain centers)
         #write(f, "        <DataArray Name=\"Position [m]\" type=\"Float32\" " *
         write(f, "        <DataArray type=\"Float32\" Name=\"Points\" " *
               "NumberOfComponents=\"3\" format=\"ascii\">\n")
-        for i in simulation.ice_floes
+        for i in simulation.grains
             @inbounds write(f, "$(i.lin_pos[1]) $(i.lin_pos[2]) 0.0 ")
         end
         write(f, "\n")
@@ -678,7 +678,7 @@ function writeParaviewPythonScript(simulation::Simulation;
                                    width::Integer=1920,
                                    height::Integer=1080,
                                    framerate::Integer=10,
-                                   ice_floes_color_scheme::String="X Ray",
+                                   grains_color_scheme::String="X Ray",
                                    verbose::Bool=true)
     if filename == ""
         folder = string(folder, "/", simulation.id)
@@ -694,12 +694,12 @@ function writeParaviewPythonScript(simulation::Simulation;
 paraview.simple._DisableFirstRenderCameraReset()
 FileName=[""")
         for i=1:simulation.file_number
-            write(f, "'$(vtk_folder)/$(simulation.id).icefloes.$(i).vtu', ")
+            write(f, "'$(vtk_folder)/$(simulation.id).grains.$(i).vtu', ")
         end
         write(f, """]
-imageicefloes = XMLUnstructuredGridReader(FileName=FileName)
+imagegrains = XMLUnstructuredGridReader(FileName=FileName)
 
-imageicefloes.PointArrayStatus = [
+imagegrains.PointArrayStatus = [
 'Density [kg m^-3]',
 'Thickness [m]',
 'Diameter (contact) [m]',
@@ -751,41 +751,41 @@ renderView1 = GetActiveViewOrCreate('RenderView')
 # renderView1.ViewSize = [2478, 1570]
 
 # show data in view
-imageicefloesDisplay = Show(imageicefloes, renderView1)
+imagegrainsDisplay = Show(imagegrains, renderView1)
 # trace defaults for the display properties.
-imageicefloesDisplay.Representation = 'Surface'
-imageicefloesDisplay.AmbientColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.ColorArrayName = [None, '']
-imageicefloesDisplay.OSPRayScaleArray = 'Angular acceleration [rad s^-2]'
-imageicefloesDisplay.OSPRayScaleFunction = 'PiecewiseFunction'
-imageicefloesDisplay.SelectOrientationVectors = 'Angular acceleration [rad s^-2]'
-imageicefloesDisplay.ScaleFactor = 6.050000000000001
-imageicefloesDisplay.SelectScaleArray = 'Angular acceleration [rad s^-2]'
-imageicefloesDisplay.GlyphType = 'Arrow'
-imageicefloesDisplay.GlyphTableIndexArray = 'Angular acceleration [rad s^-2]'
-imageicefloesDisplay.DataAxesGrid = 'GridAxesRepresentation'
-imageicefloesDisplay.PolarAxes = 'PolarAxesRepresentation'
-imageicefloesDisplay.ScalarOpacityUnitDistance = 64.20669746996803
-imageicefloesDisplay.GaussianRadius = 3.0250000000000004
-imageicefloesDisplay.SetScaleArray = ['POINTS', 'Atmosphere drag coefficient (horizontal) [-]']
-imageicefloesDisplay.ScaleTransferFunction = 'PiecewiseFunction'
-imageicefloesDisplay.OpacityArray = ['POINTS', 'Atmosphere drag coefficient (horizontal) [-]']
-imageicefloesDisplay.OpacityTransferFunction = 'PiecewiseFunction'
+imagegrainsDisplay.Representation = 'Surface'
+imagegrainsDisplay.AmbientColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.ColorArrayName = [None, '']
+imagegrainsDisplay.OSPRayScaleArray = 'Angular acceleration [rad s^-2]'
+imagegrainsDisplay.OSPRayScaleFunction = 'PiecewiseFunction'
+imagegrainsDisplay.SelectOrientationVectors = 'Angular acceleration [rad s^-2]'
+imagegrainsDisplay.ScaleFactor = 6.050000000000001
+imagegrainsDisplay.SelectScaleArray = 'Angular acceleration [rad s^-2]'
+imagegrainsDisplay.GlyphType = 'Arrow'
+imagegrainsDisplay.GlyphTableIndexArray = 'Angular acceleration [rad s^-2]'
+imagegrainsDisplay.DataAxesGrid = 'GridAxesRepresentation'
+imagegrainsDisplay.PolarAxes = 'PolarAxesRepresentation'
+imagegrainsDisplay.ScalarOpacityUnitDistance = 64.20669746996803
+imagegrainsDisplay.GaussianRadius = 3.0250000000000004
+imagegrainsDisplay.SetScaleArray = ['POINTS', 'Atmosphere drag coefficient (horizontal) [-]']
+imagegrainsDisplay.ScaleTransferFunction = 'PiecewiseFunction'
+imagegrainsDisplay.OpacityArray = ['POINTS', 'Atmosphere drag coefficient (horizontal) [-]']
+imagegrainsDisplay.OpacityTransferFunction = 'PiecewiseFunction'
 
 # init the 'GridAxesRepresentation' selected for 'DataAxesGrid'
-imageicefloesDisplay.DataAxesGrid.XTitleColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.DataAxesGrid.YTitleColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.DataAxesGrid.ZTitleColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.DataAxesGrid.GridColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.DataAxesGrid.XLabelColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.DataAxesGrid.YLabelColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.DataAxesGrid.ZLabelColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.DataAxesGrid.XTitleColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.DataAxesGrid.YTitleColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.DataAxesGrid.ZTitleColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.DataAxesGrid.GridColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.DataAxesGrid.XLabelColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.DataAxesGrid.YLabelColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.DataAxesGrid.ZLabelColor = [0.0, 0.0, 0.0]
 
 # init the 'PolarAxesRepresentation' selected for 'PolarAxes'
-imageicefloesDisplay.PolarAxes.PolarAxisTitleColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.PolarAxes.PolarAxisLabelColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.PolarAxes.LastRadialAxisTextColor = [0.0, 0.0, 0.0]
-imageicefloesDisplay.PolarAxes.SecondaryRadialAxesTextColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.PolarAxes.PolarAxisTitleColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.PolarAxes.PolarAxisLabelColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.PolarAxes.LastRadialAxisTextColor = [0.0, 0.0, 0.0]
+imagegrainsDisplay.PolarAxes.SecondaryRadialAxesTextColor = [0.0, 0.0, 0.0]
 
 # reset view to fit data
 renderView1.ResetCamera()
@@ -797,7 +797,7 @@ renderView1.InteractionMode = '2D'
 renderView1.Update()
 
 # create a new 'Glyph'
-glyph1 = Glyph(Input=imageicefloes,
+glyph1 = Glyph(Input=imagegrains,
     GlyphType='Arrow')
 glyph1.Scalars = ['POINTS', 'Atmosphere drag coefficient (horizontal) [-]']
 glyph1.Vectors = ['POINTS', 'Angular acceleration [rad s^-2]']
@@ -876,7 +876,7 @@ glyph1Display.RescaleTransferFunctionToDataRange(False, True)
 diameterarealmPWF = GetOpacityTransferFunction('Diameterarealm')
 
 # Apply a preset using its name. Note this may not work as expected when presets have duplicate names.
-diameterarealmLUT.ApplyPreset('$(ice_floes_color_scheme)', True)
+diameterarealmLUT.ApplyPreset('$(grains_color_scheme)', True)
 
 # Hide orientation axes
 renderView1.OrientationAxesVisibility = 0
@@ -916,7 +916,7 @@ Wrapper function which calls `writeParaviewPythonScript(...)` and executes it
 from the shell using the supplied `pvpython` argument.
 
 # Arguments
-* `simulation::Simulation`: simulation object containing the ice-floe data.
+* `simulation::Simulation`: simulation object containing the grain data.
 * `pvpython::String`: path to the `pvpython` executable to use.  By default, the
     script uses the pvpython in the system PATH.
 * `images::Bool`: render images to disk (default: true)

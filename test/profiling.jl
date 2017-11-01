@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 import Plots
-import SeaIce
+import Granular
 import CurveFit
 using Base.Test
 
@@ -8,29 +8,29 @@ info("#### $(basename(@__FILE__)) ####")
 
 verbose=false
 
-info("Testing performance with many interacting ice floes")
+info("Testing performance with many interacting grains")
 
 function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
                                          profile::Bool=false,
                                          grid_sorting::Bool=true,
                                          include_atmosphere::Bool=false)
 
-    sim = SeaIce.createSimulation()
+    sim = Granular.createSimulation()
     #nx, ny = 25, 25
     #nx, ny = 250, 250
     ny = nx
     dx, dy = 40., 40.
-    sim.ocean = SeaIce.createRegularOceanGrid([nx, ny, 2], [nx*dx, ny*dy, 10.])
+    sim.ocean = Granular.createRegularOceanGrid([nx, ny, 2], [nx*dx, ny*dy, 10.])
     if !grid_sorting
         sim.ocean.input_file = false  # fallback to all-to-all contact search
     end
     r = min(dx, dy)/2.
     if include_atmosphere
-        sim.atmosphere = SeaIce.createRegularAtmosphereGrid([nx, ny, 2],
+        sim.atmosphere = Granular.createRegularAtmosphereGrid([nx, ny, 2],
                                                             [nx*dx, ny*dy, 10.])
     end
 
-    # add ice floes in regular packing
+    # add grains in regular packing
     for iy=1:ny
         for ix=1:nx
             x = r + (ix - 1)*dx
@@ -39,11 +39,11 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
             if ix == 1 || iy == 1 || ix == nx || iy == ny
                 fixed = true
             end
-            SeaIce.addIceFloeCylindrical!(sim, [x, y], r*1.1, 1.,
+            Granular.addGrainCylindrical!(sim, [x, y], r*1.1, 1.,
                                           fixed=fixed, verbose=false)
         end
     end
-    print_with_color(:green, "number of ice floes: $(length(sim.ice_floes))\n")
+    print_with_color(:green, "number of grains: $(length(sim.grains))\n")
     if grid_sorting
         if include_atmosphere
             print_with_color(:green, "using cell-based spatial decomposition " *
@@ -56,35 +56,35 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
         print_with_color(:green, "using all-to-all contact search\n")
     end
 
-    SeaIce.setTotalTime!(sim, 1.0)
-    SeaIce.setTimeStep!(sim)
-    SeaIce.run!(sim, single_step=true, verbose=true)
+    Granular.setTotalTime!(sim, 1.0)
+    Granular.setTimeStep!(sim)
+    Granular.run!(sim, single_step=true, verbose=true)
     if profile
-        @profile SeaIce.run!(sim, single_step=true, verbose=true)
+        @profile Granular.run!(sim, single_step=true, verbose=true)
         if verbose
             Profile.print()
         end
-        SeaIce.run!(sim, single_step=true, verbose=true)
+        Granular.run!(sim, single_step=true, verbose=true)
     end
     n_runs = 4
     t_elapsed = 1e12
     for i=1:n_runs
         tic()
-        @time SeaIce.run!(sim, single_step=true, verbose=true)
+        @time Granular.run!(sim, single_step=true, verbose=true)
         t = toc()
         if t < t_elapsed
             t_elapsed = t
         end
     end
 
-    #SeaIce.writeVTK(sim)
+    #Granular.writeVTK(sim)
 
-    @test sim.ice_floes[1].n_contacts == 0
-    @test sim.ice_floes[2].n_contacts == 1
-    @test sim.ice_floes[3].n_contacts == 1
-    @test sim.ice_floes[nx].n_contacts == 0
-    @test sim.ice_floes[nx + 1].n_contacts == 1
-    @test sim.ice_floes[nx + 2].n_contacts == 4
+    @test sim.grains[1].n_contacts == 0
+    @test sim.grains[2].n_contacts == 1
+    @test sim.grains[3].n_contacts == 1
+    @test sim.grains[nx].n_contacts == 0
+    @test sim.grains[nx + 1].n_contacts == 1
+    @test sim.grains[nx + 2].n_contacts == 4
     return t_elapsed, Base.summarysize(sim)
 end
 
@@ -149,7 +149,7 @@ Plots.plot!(elements, fit_cell_sorting2(elements),
             label=label_cell_sorting2)
 
 Plots.title!("Dense granular system " * "(host: $(gethostname()))")
-Plots.xaxis!("Number of ice floes")
+Plots.xaxis!("Number of grains")
 Plots.yaxis!("Wall time per time step [s]")
 Plots.savefig("profiling-cpu.pdf")
 
@@ -191,6 +191,6 @@ Plots.plot!(elements, fit_cell_sorting2(elements),
             label=label_cell_sorting2)
 
 Plots.title!("Dense granular system " * "(host: $(gethostname()))")
-Plots.xaxis!("Number of ice floes")
+Plots.xaxis!("Number of grains")
 Plots.yaxis!("Memory usage [kb]")
 Plots.savefig("profiling-memory-usage.pdf")

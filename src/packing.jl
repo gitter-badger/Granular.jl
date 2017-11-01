@@ -1,4 +1,4 @@
-## Functions for creating ice-floe packings
+## Functions for creating grain packings
 """
 Return random point in spherical annulus between `(r_i + r_j)` and `2.*(r_i +
 r_j)` around `x_i`.  Note: there is slightly higher point density towards (r_i +
@@ -18,10 +18,10 @@ Generate disc packing in 2D using Poisson disc sampling with O(N) complexity, as
 described by [Robert Bridson (2007)](http://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf).
 
 # Arguments
-* `simulation::Simulation`: simulation object where ice floes are inserted.
-* `radius_max::Real`: largest ice-floe radius to use.
-* `radius_min::Real`: smallest ice-floe radius to use.
-* `sample_limit::Integer=30`: number of points to sample around each ice floe
+* `simulation::Simulation`: simulation object where grains are inserted.
+* `radius_max::Real`: largest grain radius to use.
+* `radius_min::Real`: smallest grain radius to use.
+* `sample_limit::Integer=30`: number of points to sample around each grain
     before giving up.
 * `max_padding_factor::Real=2.`: this factor scales the padding to use during ice
     floe generation in numbers of grain diameters.
@@ -52,15 +52,15 @@ function poissonDiscSampling(simulation::Simulation;
     width_y = nw[2] - sw[2]  # assume regular grid
 
     # Step 1: If grid is empty: select random initial sample and save its index
-    # to the background grid. Else: Make all ice floes active for search
-    if isempty(simulation.ice_floes)
+    # to the background grid. Else: Make all grains active for search
+    if isempty(simulation.grains)
         r = rand()*(radius_max - radius_min) + radius_min
         x0 = rand(2).*[width_x, width_y] + sw
-        addIceFloeCylindrical!(simulation, x0, r, thickness)
-        sortIceFloesInGrid!(simulation, grid)
+        addGrainCylindrical!(simulation, x0, r, thickness)
+        sortGrainsInGrid!(simulation, grid)
         push!(active_list, 1)
     else
-        for i=1:length(simulation.ice_floes)
+        for i=1:length(simulation.grains)
             push!(active_list, i)
         end
     end
@@ -75,8 +75,8 @@ function poissonDiscSampling(simulation::Simulation;
         i = rand(1:length(active_list))
         deleteat!(active_list, i)
 
-        x_i = simulation.ice_floes[i].lin_pos
-        r_i = simulation.ice_floes[i].contact_radius
+        x_i = simulation.grains[i].lin_pos
+        r_i = simulation.grains[i].contact_radius
         r_j = rand()*(radius_max - radius_min) + radius_min
 
         for j=1:sample_limit

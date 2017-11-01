@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-import SeaIce
+import Granular
 import FileIO
 import Colors
 
@@ -41,7 +41,7 @@ const youngs_modulus = 2e7
 const tensile_strength = 0e3
 const h = .5
 
-sim = SeaIce.createSimulation(id="image")
+sim = Granular.createSimulation(id="image")
 
 info("nx = $nx, ny = $ny")
 
@@ -56,7 +56,7 @@ for iy=1:size(img_bw, 1)
         r = .5*dx*((1. - Float64(img_bw[iy, ix])))
 
         if r > .1*dx
-            SeaIce.addIceFloeCylindrical!(sim, [x + dx, y - dy], r, h,
+            Granular.addGrainCylindrical!(sim, [x + dx, y - dy], r, h,
                                           tensile_strength=tensile_strength,
                                           youngs_modulus=youngs_modulus,
                                           verbose=verbose)
@@ -65,7 +65,7 @@ for iy=1:size(img_bw, 1)
 end
 
 # set ocean forcing
-sim.ocean = SeaIce.createRegularOceanGrid([nx, ny, 1], [Lx, Ly, 1.],
+sim.ocean = Granular.createRegularOceanGrid([nx, ny, 1], [Lx, Ly, 1.],
                                           name="image_ocean")
 
 if forcing == "gyres"
@@ -108,30 +108,30 @@ r = dx/4.
 
 ## N-S wall segments
 for y in linspace(r, Ly-r, Int(round((Ly - 2.*r)/(r*2))))
-    SeaIce.addIceFloeCylindrical!(sim, [r, y], r, h, fixed=true,
+    Granular.addGrainCylindrical!(sim, [r, y], r, h, fixed=true,
                                   youngs_modulus=youngs_modulus,
                                   verbose=false)
-    SeaIce.addIceFloeCylindrical!(sim, [Lx-r, y], r, h, fixed=true,
+    Granular.addGrainCylindrical!(sim, [Lx-r, y], r, h, fixed=true,
                                   youngs_modulus=youngs_modulus,
                                   verbose=false)
 end
 
 ## E-W wall segments
 for x in linspace(3.*r, Lx-3.*r, Int(round((Lx - 6.*r)/(r*2))))
-    SeaIce.addIceFloeCylindrical!(sim, [x, r], r, h, fixed=true,
+    Granular.addGrainCylindrical!(sim, [x, r], r, h, fixed=true,
                                   youngs_modulus=youngs_modulus,
                                   verbose=false)
-    SeaIce.addIceFloeCylindrical!(sim, [x, Ly-r], r, h, fixed=true,
+    Granular.addGrainCylindrical!(sim, [x, Ly-r], r, h, fixed=true,
                                   youngs_modulus=youngs_modulus,
                                   verbose=false)
 end
 
 
 # Finalize setup and start simulation
-SeaIce.setTimeStep!(sim, verbose=verbose)
+Granular.setTimeStep!(sim, verbose=verbose)
 
-SeaIce.setTotalTime!(sim, 5.)
-SeaIce.setOutputFileInterval!(sim, .1)
+Granular.setTotalTime!(sim, 5.)
+Granular.setOutputFileInterval!(sim, .1)
 
-SeaIce.removeSimulationFiles(sim)
-SeaIce.run!(sim, verbose=verbose)
+Granular.removeSimulationFiles(sim)
+Granular.run!(sim, verbose=verbose)

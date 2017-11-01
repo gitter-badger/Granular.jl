@@ -108,25 +108,25 @@ function curl(grid::Any,
      ((grid.u[i+1, j+1, k,it] - grid.u[i+1, j  , k,it])/se_ne)*x_tilde))
 end
 
-export sortIceFloesInGrid!
+export sortGrainsInGrid!
 """
-Find ice-floe positions in grid, based on their center positions.
+Find grain positions in grid, based on their center positions.
 """
-function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=true)
+function sortGrainsInGrid!(simulation::Simulation, grid::Any; verbose=true)
 
     if simulation.time_iteration == 0
-        grid.ice_floe_list =
+        grid.grain_list =
             Array{Array{Int, 1}}(size(grid.xh, 1), size(grid.xh, 2))
 
         for i=1:size(grid.xh, 1)
             for j=1:size(grid.xh, 2)
-                @inbounds grid.ice_floe_list[i, j] = Int[]
+                @inbounds grid.grain_list[i, j] = Int[]
             end
         end
     else
         for i=1:size(grid.xh, 1)
             for j=1:size(grid.xh, 2)
-                @inbounds empty!(grid.ice_floe_list[i, j])
+                @inbounds empty!(grid.grain_list[i, j])
             end
         end
     end
@@ -136,26 +136,26 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=true)
     ne = Vector{Float64}(2)
     nw = Vector{Float64}(2)
 
-    for idx=1:length(simulation.ice_floes)
+    for idx=1:length(simulation.grains)
 
-        @inbounds if !simulation.ice_floes[idx].enabled
+        @inbounds if !simulation.grains[idx].enabled
             continue
         end
 
-        # After first iteration, check if ice floe is in same cell before 
+        # After first iteration, check if grain is in same cell before 
         # traversing entire grid
         if typeof(grid) == Ocean
-            @inbounds i_old, j_old = simulation.ice_floes[idx].ocean_grid_pos
+            @inbounds i_old, j_old = simulation.grains[idx].ocean_grid_pos
         elseif typeof(grid) == Atmosphere
             @inbounds i_old, j_old = 
-                simulation.ice_floes[idx].atmosphere_grid_pos
+                simulation.grains[idx].atmosphere_grid_pos
         else
             error("grid type not understood.")
         end
         if simulation.time > 0. &&
             i_old > 0 && j_old > 0 &&
             isPointInCell(grid, i_old, j_old,
-                          simulation.ice_floes[idx].lin_pos, sw, se, ne, nw)
+                          simulation.grains[idx].lin_pos, sw, se, ne, nw)
             i = i_old
             j = j_old
 
@@ -174,7 +174,7 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=true)
                     j_t = max(min(j_old + j_rel, ny), 1)
                     
                     @inbounds if isPointInCell(grid, i_t, j_t,
-                                     simulation.ice_floes[idx].lin_pos,
+                                     simulation.grains[idx].lin_pos,
                                      sw, se, ne, nw)
                         i = i_t
                         j = j_t
@@ -189,33 +189,33 @@ function sortIceFloesInGrid!(simulation::Simulation, grid::Any; verbose=true)
 
             if !found
                 i, j = findCellContainingPoint(grid,
-                                               simulation.ice_floes[idx].
+                                               simulation.grains[idx].
                                                lin_pos,
                                                sw, se, ne, nw)
             end
 
-            # remove ice floe if it is outside of the grid
+            # remove grain if it is outside of the grid
             if i == 0 && j == 0
                 if verbose
-                    info("Disabling ice floe $idx at pos (" *
-                         "$(simulation.ice_floes[idx].lin_pos))")
+                    info("Disabling grain $idx at pos (" *
+                         "$(simulation.grains[idx].lin_pos))")
                 end
-                disableIceFloe!(simulation, idx)
+                disableGrain!(simulation, idx)
                 continue
             end
 
-            # add cell to ice floe
+            # add cell to grain
             if typeof(grid) == Ocean
-                @inbounds simulation.ice_floes[idx].ocean_grid_pos .= i, j
+                @inbounds simulation.grains[idx].ocean_grid_pos .= i, j
             elseif typeof(grid) == Atmosphere
-                @inbounds simulation.ice_floes[idx].atmosphere_grid_pos .= i, j
+                @inbounds simulation.grains[idx].atmosphere_grid_pos .= i, j
             else
                 error("grid type not understood.")
             end
         end
 
-        # add ice floe to cell
-        @inbounds push!(grid.ice_floe_list[i, j], idx)
+        # add grain to cell
+        @inbounds push!(grid.grain_list[i, j], idx)
     end
     nothing
 end
@@ -512,13 +512,13 @@ end
 
 export findEmptyPositionInGridCell
 """
-Attempt locate an empty spot for an ice floe with radius `r` with center 
+Attempt locate an empty spot for an grain with radius `r` with center 
 coordinates in a specified grid cell (`i`, `j`) without overlapping any other 
-ice floes in that cell or the neighboring cells.  This function will stop 
+grains in that cell or the neighboring cells.  This function will stop 
 attempting after `n_iter` iterations, each with randomly generated positions.
 
-This function assumes that existing ice floes have been binned according to the 
-grid (e.g., using `sortIceFloesInGrid()`).
+This function assumes that existing grains have been binned according to the 
+grid (e.g., using `sortGrainsInGrid()`).
 """
 function findEmptyPositionInGridCell(simulation::Simulation,
                                      grid::Any,
@@ -559,16 +559,16 @@ function findEmptyPositionInGridCell(simulation::Simulation,
                     continue
                 end
 
-                # traverse list of ice floes in the target cell and check 
+                # traverse list of grains in the target cell and check 
                 # for overlaps
-                for icefloe_idx in grid.ice_floe_list[it, jt]
-                    overlap = norm(simulation.ice_floes[icefloe_idx].lin_pos - 
+                for grain_idx in grid.grain_list[it, jt]
+                    overlap = norm(simulation.grains[grain_idx].lin_pos - 
                                    pos) -
-                        (simulation.ice_floes[icefloe_idx].contact_radius + r)
+                        (simulation.grains[grain_idx].contact_radius + r)
 
                     if overlap < 0.
                         if verbose
-                            info("overlap with $icefloe_idx in cell $i,$j")
+                            info("overlap with $grain_idx in cell $i,$j")
                         end
                         overlap_found = true
                         break
@@ -596,7 +596,7 @@ function findEmptyPositionInGridCell(simulation::Simulation,
         return pos
     else
         if verbose
-            warn("could not insert an ice floe into " *
+            warn("could not insert an grain into " *
                  "$(typeof(grid)) grid cell ($i, $j)")
         end
         return false
@@ -604,16 +604,16 @@ function findEmptyPositionInGridCell(simulation::Simulation,
 end
 
 """
-Copy ice floe related information from ocean to atmosphere grid.  This is useful 
+Copy grain related information from ocean to atmosphere grid.  This is useful 
 when the two grids are of identical geometry, meaning only only one sorting 
 phase is necessary.
 """
 function copyGridSortingInfo!(ocean::Ocean, atmosphere::Atmosphere,
-                              icefloes::Array{IceFloeCylindrical, 1})
+                              grains::Array{GrainCylindrical, 1})
 
-    for icefloe in icefloes
-        icefloe.atmosphere_grid_pos = deepcopy(icefloe.ocean_grid_pos)
+    for grain in grains
+        grain.atmosphere_grid_pos = deepcopy(grain.ocean_grid_pos)
     end
-    atmosphere.ice_floe_list = deepcopy(ocean.ice_floe_list)
+    atmosphere.grain_list = deepcopy(ocean.grain_list)
     nothing
 end

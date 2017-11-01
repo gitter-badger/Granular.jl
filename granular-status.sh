@@ -4,8 +4,8 @@
 # simulations.  You may want to add this to your shell's PATH variable.
 
 set -e
-cmd_sing='julia --color=yes -e "import SeaIce; SeaIce.status()"'
-cmd_loop='julia --color=yes -e "import SeaIce; SeaIce.status(loop=true, t_int=10)"'
+cmd_sing='julia --color=yes -e "import Granular; Granular.status()"'
+cmd_loop='julia --color=yes -e "import Granular; Granular.status(loop=true, t_int=10)"'
 
 if [[ "$1" == "loop" ]]; then
     eval $cmd_loop

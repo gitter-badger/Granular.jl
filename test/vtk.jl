@@ -5,12 +5,12 @@
 info("#### $(basename(@__FILE__)) ####")
 
 info("Writing simple simulation to VTK file")
-sim = SeaIce.createSimulation(id="test")
-SeaIce.addIceFloeCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
-SeaIce.addIceFloeCylindrical!(sim, [18., 0.], 10., 1., verbose=false)
-sim.ocean = SeaIce.createRegularOceanGrid([10, 20, 5], [10., 25., 2.])  
-SeaIce.findContacts!(sim, method="all to all")
-SeaIce.writeVTK(sim, verbose=false)
+sim = Granular.createSimulation(id="test")
+Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
+Granular.addGrainCylindrical!(sim, [18., 0.], 10., 1., verbose=false)
+sim.ocean = Granular.createRegularOceanGrid([10, 20, 5], [10., 25., 2.])  
+Granular.findContacts!(sim, method="all to all")
+Granular.writeVTK(sim, verbose=false)
 
 cmd_post = ""
 if is_linux()
@@ -26,42 +26,42 @@ else
     error("checksum verification of VTK file not supported on this platform")
 end
 
-icefloepath = "test/test.icefloes.1.vtu"
-icefloechecksum = 
+grainpath = "test/test.grains.1.vtu"
+grainchecksum = 
 "c75ffde29fbdd80161dafd524e690fbcbae2136d4f68c29f725d2d2454c6a162  " *
-icefloepath * "\n"
+grainpath * "\n"
 
-icefloeinteractionpath = "test/test.icefloe-interaction.1.vtp"
-icefloeinteractionchecksum = 
+graininteractionpath = "test/test.grain-interaction.1.vtp"
+graininteractionchecksum = 
 "881598f8f7279ece4301f6c94cb8f9146eb695f8c710edb446f49c1f7a061b84  " *
-icefloeinteractionpath * "\n"
+graininteractionpath * "\n"
 
 oceanpath = "test/test.ocean.1.vts"
 oceanchecksum =
 "d56ffb109841a803f2b2b94c74c87f7a497237204841d557d2b1043694d51f0d  " *
 oceanpath * "\n"
 
-@test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
-@test readstring(`$(cmd) $(icefloeinteractionpath)$(cmd_post)`) == 
-    icefloeinteractionchecksum
+@test readstring(`$(cmd) $(grainpath)$(cmd_post)`) == grainchecksum
+@test readstring(`$(cmd) $(graininteractionpath)$(cmd_post)`) == 
+    graininteractionchecksum
 @test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
-SeaIce.removeSimulationFiles(sim)
+Granular.removeSimulationFiles(sim)
 
 info("Testing VTK write during run!()")
-SeaIce.setOutputFileInterval!(sim, 1e-9)
-SeaIce.setTotalTime!(sim, 1.5)
-SeaIce.setTimeStep!(sim)
+Granular.setOutputFileInterval!(sim, 1e-9)
+Granular.setTotalTime!(sim, 1.5)
+Granular.setTimeStep!(sim)
 sim.file_number = 0
-SeaIce.run!(sim, single_step=true)
-@test SeaIce.readSimulationStatus(sim.id) == 1
-SeaIce.setOutputFileInterval!(sim, 0.1)
-SeaIce.run!(sim)
+Granular.run!(sim, single_step=true)
+@test Granular.readSimulationStatus(sim.id) == 1
+Granular.setOutputFileInterval!(sim, 0.1)
+Granular.run!(sim)
 
-SeaIce.status()
+Granular.status()
 
 info("Testing generation of Paraview Python script")
-SeaIce.writeParaviewPythonScript(sim,
+Granular.writeParaviewPythonScript(sim,
                                  save_animation=true,
                                  save_images=false)
 @test isfile("$(sim.id)/$(sim.id).py") && filesize("$(sim.id)/$(sim.id).py") > 0
@@ -75,7 +75,7 @@ catch return_signal
     end
 end
 
-SeaIce.writeParaviewPythonScript(sim,
+Granular.writeParaviewPythonScript(sim,
                                  save_animation=false,
                                  save_images=true)
 try
@@ -84,14 +84,14 @@ catch return_signal
     if !isa(return_signal, Base.UVError)
         @test isfile("$(sim.id)/$(sim.id).0000.png")
         @test isfile("$(sim.id)/$(sim.id).0014.png")
-        SeaIce.render(sim)
+        Granular.render(sim)
         @test isfile("$(sim.id)/$(sim.id).0001.png")
     end
 end
 
-@test readstring(`$(cmd) $(icefloepath)$(cmd_post)`) == icefloechecksum
-@test readstring(`$(cmd) $(icefloeinteractionpath)$(cmd_post)`) == 
-    icefloeinteractionchecksum
+@test readstring(`$(cmd) $(grainpath)$(cmd_post)`) == grainchecksum
+@test readstring(`$(cmd) $(graininteractionpath)$(cmd_post)`) == 
+    graininteractionchecksum
 @test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
-SeaIce.removeSimulationFiles(sim)
+Granular.removeSimulationFiles(sim)

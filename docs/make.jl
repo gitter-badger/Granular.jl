@@ -1,10 +1,10 @@
-using Documenter, SeaIce
+using Documenter, Granular
 
 makedocs(
-    modules = [SeaIce],
+    modules = [Granular],
     clean = false,
     format = :html,
-    sitename = "SeaIce.jl",
+    sitename = "Granular.jl",
     authors = "Anders Damsgaard",
     pages = Any[ # Compat: `Any` for 0.4 compat
         "Home" => "index.md",
@@ -22,7 +22,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/anders-dc/SeaIce.jl.git",
+    repo = "github.com/anders-dc/Granular.jl.git",
     julia = "0.6",
     deps = nothing,
     make = nothing,
