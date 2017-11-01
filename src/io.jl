@@ -924,7 +924,8 @@ from the shell using the supplied `pvpython` argument.
 """
 function render(simulation::Simulation; pvpython::String="pvpython",
                 images::Bool=true,
-                animation::Bool=false)
+                animation::Bool=false,
+                reverse::Bool=false)
 
     writeParaviewPythonScript(simulation, save_animation=animation,
                               save_images=images, verbose=false)
@@ -937,6 +938,12 @@ function render(simulation::Simulation; pvpython::String="pvpython",
                 run(`convert -trim +repage -delay 10 -transparent-color white 
                     -loop 0 $(simulation.id)/$(simulation.id).'*'.png 
                     $(simulation.id)/$(simulation.id).gif`)
+                if reverse
+                    run(`convert -trim +repage -delay 10 -transparent-color white 
+                        -loop 0 -reverse
+                        $(simulation.id)/$(simulation.id).'*'.png 
+                        $(simulation.id)/$(simulation.id)-reverse.gif`)
+                end
             catch return_signal
                 if isa(return_signal, Base.UVError)
                     info("Skipping gif merge since `convert` was not found.")

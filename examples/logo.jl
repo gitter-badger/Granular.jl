@@ -166,4 +166,4 @@ Granular.setOutputFileInterval!(sim, .1)
 Granular.removeSimulationFiles(sim)
 Granular.run!(sim, verbose=verbose)
 
-Granular.render(sim, images=true, animation=false)
+Granular.render(sim, images=true, animation=false, reverse=true)
