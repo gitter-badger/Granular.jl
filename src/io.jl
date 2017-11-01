@@ -903,7 +903,8 @@ FrameWindow=[0, $(simulation.file_number)])
         end
     end
     if verbose
-        info("$(filename) written, execute with `pvpython $(filename)`")
+        info("$(filename) written, execute with " *
+             "`cd $folder && pvpython $(simulation.id).py`")
     end
 end
 
