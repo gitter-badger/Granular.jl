@@ -662,7 +662,7 @@ Paraview), or from the interactive Python shell inside Paraview.
     (blank) value, the script is named after the simulation id (`simulation.id`).
 * `folder::String`: output directory, current directory the default.
 * `vtk_folder::String`: directory containing the VTK output files, by default
-    `"./<simulation.id>/"`.
+    points to the full system path equivalent to `"./<simulation.id>/"`.
 * `save_animation::Bool`: make the generated script immediately save a rendered
     animation to disk when the `".py"` script is called.
 * `verbose::Bool`: show diagnostic information during
@@ -686,7 +686,7 @@ function writeParaviewPythonScript(simulation::Simulation;
         filename = string(folder, "/", simulation.id, ".py")
     end
     if vtk_folder == ""
-        vtk_folder = "."
+        vtk_folder = string(pwd(), "/", simulation.id)
     end
 
     open(filename, "w") do f
@@ -904,7 +904,7 @@ FrameWindow=[0, $(simulation.file_number)])
     end
     if verbose
         info("$(filename) written, execute with " *
-             "`cd $folder && pvpython $(simulation.id).py`")
+             "'pvpython $(folder)/$(simulation.id).py'")
     end
 end
 
