@@ -10,9 +10,9 @@ A [Julia](https://julialang.org) package for granular mechanics.
 |[![Granular.jl Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://anders-dc.github.io/Granular.jl/latest) | [![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) | [![Build Status](https://ci.appveyor.com/api/projects/status/github/anders-dc/SeaIce.jl?svg=true)](https://ci.appveyor.com/project/anders-dc/seaice-jl/) | [![codecov.io](http://codecov.io/github/anders-dc/SeaIce.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/SeaIce.jl?branch=master) |
 
 ## Installation
-[Granular.jl](https://github.com/anders-dc/Granular.jl) is in heavy development and 
-not yet ready for third-party use.  If you know better install it directly from 
-the Julia shell by:
+[Granular.jl](https://github.com/anders-dc/Granular.jl) is not yet registered 
+in the [official Julia package repository](https://pkg.julialang.org), but can 
+be installed directly from the Julia shell by:
 
 ```julia
 julia> Pkg.clone("git://github.com/anders-dc/Granular.jl")
