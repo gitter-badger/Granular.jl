@@ -921,6 +921,8 @@ from the shell using the supplied `pvpython` argument.
     script uses the pvpython in the system PATH.
 * `images::Bool`: render images to disk (default: true)
 * `animation::Bool`: render animation to disk (default: false)
+* `reverse::Bool`: if `images=true` additionally render reverse-animated gif
+    (default: false)
 """
 function render(simulation::Simulation; pvpython::String="pvpython",
                 images::Bool=true,
