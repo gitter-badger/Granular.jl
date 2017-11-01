@@ -2,7 +2,7 @@
 import Plots
 import SeaIce
 import CurveFit
-using Base.Test
+using Test
 
 info("#### $(basename(@__FILE__)) ####")
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 import SeaIce
-using Base.Test
+using Test
 
 info("#### $(basename(@__FILE__)) ####")
 
