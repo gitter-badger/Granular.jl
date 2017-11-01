@@ -686,7 +686,7 @@ function writeParaviewPythonScript(simulation::Simulation;
         filename = string(folder, "/", simulation.id, ".py")
     end
     if vtk_folder == ""
-        vtk_folder = "./$(simulation.id)"
+        vtk_folder = "./"
     end
 
     open(filename, "w") do f
