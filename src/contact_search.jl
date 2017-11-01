@@ -146,7 +146,8 @@ function findContactsInGrid!(simulation::Simulation, grid::Any)
                 end
 
                 @inbounds for idx_j in grid.grain_list[i_corrected, j_corrected]
-                    checkAndAddContact!(simulation, idx_i, idx_j)
+                    checkAndAddContact!(simulation, idx_i, idx_j,
+                                        distance_modifier)
                 end
             end
         end
@@ -169,8 +170,12 @@ written to `simulation.contact_parallel_displacement`.
 * `simulation::Simulation`: the simulation object containing the grains.
 * `i::Int`: index of the first grain.
 * `j::Int`: index of the second grain.
+* `distance_Modifier::Vector{Float64}`: vector modifying percieved
+    inter-particle distance, which is used for contact search across periodic
+    boundaries.
 """
-function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
+function checkAndAddContact!(sim::Simulation, i::Int, j::Int,
+                             distance_modifier::Vector{Float64} = [0., 0.])
     if i < j
 
         @inbounds if (sim.grains[i].fixed && sim.grains[j].fixed) ||
@@ -179,7 +184,7 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int)
         end
 
         # Inter-grain position vector and grain overlap
-        position_ij = interGrainPositionVector(sim, i, j)
+        position_ij = interGrainPositionVector(sim, i, j) + distance_modifier
         overlap_ij = findOverlap(sim, i, j, position_ij)
 
         contact_found = false
