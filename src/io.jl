@@ -681,6 +681,7 @@ function writeParaviewPythonScript(simulation::Simulation;
                                    ice_floes_color_scheme::String="X Ray",
                                    verbose::Bool=true)
     if filename == ""
+        folder = string(folder, "/", simulation.id)
         mkpath(folder)
         filename = string(folder, "/", simulation.id, ".py")
     end
@@ -885,7 +886,7 @@ renderView1.InteractionMode = '2D'
 """)
         if save_animation
             write(f, """
-SaveAnimation('$(folder)/$(simulation.id).avi', renderView1,
+SaveAnimation('./$(simulation.id).avi', renderView1,
 ImageResolution=[$(width), $(height)],
 FrameRate=$(framerate),
 FrameWindow=[0, $(simulation.file_number)])
@@ -894,7 +895,7 @@ FrameWindow=[0, $(simulation.file_number)])
 
         if save_images
             write(f, """
-SaveAnimation('$(folder)/$(simulation.id).png', renderView1,
+SaveAnimation('./$(simulation.id).png', renderView1,
 ImageResolution=[$(width), $(height)],
 FrameRate=$(framerate),
 FrameWindow=[0, $(simulation.file_number)])
@@ -942,6 +943,7 @@ function render(simulation::Simulation; pvpython::String="pvpython",
                 end
             end
         end
+        cd("..")
     catch return_signal
         if isa(return_signal, Base.UVError)
             error("`pvpython` was not found.")
