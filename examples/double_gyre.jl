@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
-import SeaIce
+import Granular
 
-sim = SeaIce.createSimulation(id="double_gyre")
+sim = Granular.createSimulation(id="double_gyre")
 
 # Initialize ocean
 L = [100e3, 50e3, 1e3]
@@ -9,7 +9,7 @@ Ly_constriction = 20e3
 #n = [750, 500, 2]  # high resolution
 n = [30, 15, 2]  # intermedite resolution
 #n = [8, 5, 2]  # coarse resolution
-sim.ocean = SeaIce.createRegularOceanGrid(n, L, name="double_gyre")
+sim.ocean = Granular.createRegularOceanGrid(n, L, name="double_gyre")
 
 epsilon = 0.25  # amplitude of periodic oscillations
 t = 0.
@@ -35,21 +35,21 @@ h = 1.
 
 ## N-S wall segments
 for y in linspace(r, L[2]-r, Int(round((L[2] - 2.*r)/(r*2))))
-    SeaIce.addIceFloeCylindrical!(sim, [r, y], r, h, fixed=true,
+    Granular.addGrainCylindrical!(sim, [r, y], r, h, fixed=true,
                                   verbose=false)
-    SeaIce.addIceFloeCylindrical!(sim, [L[1]-r, y], r, h, fixed=true,
+    Granular.addGrainCylindrical!(sim, [L[1]-r, y], r, h, fixed=true,
                                   verbose=false)
 end
 
 ## E-W wall segments
 for x in linspace(3.*r, L[1]-3.*r, Int(round((L[1] - 6.*r)/(r*2))))
-    SeaIce.addIceFloeCylindrical!(sim, [x, r], r, h, fixed=true,
+    Granular.addGrainCylindrical!(sim, [x, r], r, h, fixed=true,
                                   verbose=false)
-    SeaIce.addIceFloeCylindrical!(sim, [x, L[2]-r], r, h, fixed=true,
+    Granular.addGrainCylindrical!(sim, [x, L[2]-r], r, h, fixed=true,
                                   verbose=false)
 end
 
-n_walls = length(sim.ice_floes)
+n_walls = length(sim.grains)
 info("added $(n_walls) fixed ice floes as walls")
 
 
@@ -70,31 +70,31 @@ for y in (4.*r + noise_amplitude):(2.*r + floe_padding):(L[2] - 4.*r -
         x_ = x + noise_amplitude*(0.5 - rand())
         y_ = y + noise_amplitude*(0.5 - rand())
 
-        SeaIce.addIceFloeCylindrical!(sim, [x_, y_], r, h, verbose=false)
+        Granular.addGrainCylindrical!(sim, [x_, y_], r, h, verbose=false)
     end
 end
-n = length(sim.ice_floes) - n_walls
+n = length(sim.grains) - n_walls
 info("added $(n) ice floes")
 
 # Remove old simulation files
-SeaIce.removeSimulationFiles(sim)
+Granular.removeSimulationFiles(sim)
 
 k_n = 1e6  # N/m
 gamma_t = 1e7  # N/(m/s)
 mu_d = 0.7
 rotating = false
-for i=1:length(sim.ice_floes)
-    sim.ice_floes[i].contact_stiffness_normal = k_n
-    sim.ice_floes[i].contact_stiffness_tangential = k_n
-    sim.ice_floes[i].contact_viscosity_tangential = gamma_t
-    sim.ice_floes[i].contact_dynamic_friction = mu_d
-    sim.ice_floes[i].rotating = rotating
+for i=1:length(sim.grains)
+    sim.grains[i].contact_stiffness_normal = k_n
+    sim.grains[i].contact_stiffness_tangential = k_n
+    sim.grains[i].contact_viscosity_tangential = gamma_t
+    sim.grains[i].contact_dynamic_friction = mu_d
+    sim.grains[i].rotating = rotating
 end
 
 # Set temporal parameters
-SeaIce.setTotalTime!(sim, 12.*60.*60.)
-SeaIce.setOutputFileInterval!(sim, 60.)
-SeaIce.setTimeStep!(sim)
+Granular.setTotalTime!(sim, 12.*60.*60.)
+Granular.setOutputFileInterval!(sim, 60.)
+Granular.setTimeStep!(sim)
 
-SeaIce.run!(sim, status_interval=1,
+Granular.run!(sim, status_interval=1,
             contact_tangential_rheology="Linear Viscous Frictional")

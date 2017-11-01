@@ -1,10 +1,15 @@
-# SeaIce.jl
+# Granular.jl
 
 *A [Julia](https://julialang.org) package for particle-based simulation of sea-ice dynamics.*
 
-`SeaIce.jl` is a flexible and computationally efficient 2d implementation of the discrete element method, made for simulating sea ice in a Lagrangian manner.  Sea-ice floes are represented as particles, which can be forced by ocean and atmospheric velocity fields.  The ice floes interact through elasto-viscous-frictional contact rheologies and obtain time-dependent tensile strength.
+`Granular.jl` is a flexible and computationally efficient 2d implementation of 
+the discrete element method, made for simulating sea ice in a Lagrangian 
+manner.  Sea-ice floes are represented as particles, which can be forced by 
+ocean and atmospheric velocity fields.  The grains interact through 
+elasto-viscous-frictional contact rheologies and obtain time-dependent tensile 
+strength.
 
-The source code for SeaIce.jl is hosted on [Github](https://github.com/anders-dc/SeaIce.jl).
+The source code for Granular.jl is hosted on [Github](https://github.com/anders-dc/Granular.jl).
 
 See the [Public API Index](@ref main-index) for the complete list of documented functions and types.
 
@@ -14,7 +19,7 @@ See the [Public API Index](@ref main-index) for the complete list of documented 
 [Anders Damsgaard](https://adamsgaard.dk), Geophysical Fluid Dynamics Laboratory, Princeton University.
 
 ### License
-SeaIce.jl is licensed under the GPLv3; see [LICENSE](https://github.com/anders-dc/SeaIce.jl/blob/master/LICENSE.md) for the full license text.
+Granular.jl is licensed under the GPLv3; see [LICENSE](https://github.com/anders-dc/Granular.jl/blob/master/LICENSE.md) for the full license text.
 
 ## Manual Outline
 

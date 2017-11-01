@@ -7,7 +7,7 @@ A [Julia](https://julialang.org) package for granular mechanics.
 
 | Documentation | Build Status (Linux/Mac) | Build Status (Win) | Test Coverage |
 |:-------------:|:------------------------:|:------------------:|:-------------:|
-|[![Granular.jl Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://anders-dc.github.io/Granular.jl/latest) | [![Build Status](https://travis-ci.org/anders-dc/SeaIce.jl.svg?branch=master)](https://travis-ci.org/anders-dc/SeaIce.jl) | [![Build Status](https://ci.appveyor.com/api/projects/status/github/anders-dc/SeaIce.jl?svg=true)](https://ci.appveyor.com/project/anders-dc/seaice-jl/) | [![codecov.io](http://codecov.io/github/anders-dc/SeaIce.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/SeaIce.jl?branch=master) |
+|[![Granular.jl Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://anders-dc.github.io/Granular.jl/latest) | [![Build Status](https://travis-ci.org/anders-dc/Granular.jl.svg?branch=master)](https://travis-ci.org/anders-dc/Granular.jl) | [![Build Status](https://ci.appveyor.com/api/projects/status/github/anders-dc/Granular.jl?svg=true)](https://ci.appveyor.com/project/anders-dc/seaice-jl/) | [![codecov.io](http://codecov.io/github/anders-dc/Granular.jl/coverage.svg?branch=master)](http://codecov.io/github/anders-dc/Granular.jl?branch=master) |
 
 ## Installation
 [Granular.jl](https://github.com/anders-dc/Granular.jl) is not yet registered 
