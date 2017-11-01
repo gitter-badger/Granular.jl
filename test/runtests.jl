@@ -1,5 +1,5 @@
 import SeaIce
-using Test
+using Base.Test
 
 include("icefloe.jl")
 include("packing.jl")
