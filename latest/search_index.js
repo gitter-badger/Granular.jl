@@ -193,11 +193,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "lib/public.html#Granular.checkAndAddContact!-Tuple{Granular.Simulation,Int64,Int64}",
+    "location": "lib/public.html#Granular.checkAndAddContact!",
     "page": "Public API",
     "title": "Granular.checkAndAddContact!",
-    "category": "Method",
-    "text": "checkAndAddContact!(simulation, i, j)\n\nCheck for contact between two grains and register the interaction in the  simulation object.  The indexes of the two grains is stored in  simulation.contact_pairs as [i, j].  The overlap vector is parallel to a  straight line connecting the grain centers, points away from grain i and  towards j, and is stored in simulation.overlaps.  A zero-length vector is  written to simulation.contact_parallel_displacement.\n\nArguments\n\nsimulation::Simulation: the simulation object containing the grains.\ni::Int: index of the first grain.\nj::Int: index of the second grain.\n\n\n\n"
+    "category": "Function",
+    "text": "checkAndAddContact!(simulation, i, j)\n\nCheck for contact between two grains and register the interaction in the  simulation object.  The indexes of the two grains is stored in  simulation.contact_pairs as [i, j].  The overlap vector is parallel to a  straight line connecting the grain centers, points away from grain i and  towards j, and is stored in simulation.overlaps.  A zero-length vector is  written to simulation.contact_parallel_displacement.\n\nArguments\n\nsimulation::Simulation: the simulation object containing the grains.\ni::Int: index of the first grain.\nj::Int: index of the second grain.\ndistance_Modifier::Vector{Float64}: vector modifying percieved   inter-particle distance, which is used for contact search across periodic   boundaries.\n\n\n\n"
 },
 
 {
@@ -325,7 +325,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.findContacts!",
     "category": "Method",
-    "text": "findContacts!(simulation[, method])\n\nTop-level function to perform an inter-grain contact search, based on ice  floe linear positions and contact radii.\n\nThe simplest contact search algorithm (method=\"all to all\") is the most  computationally expensive (O(n^2)).  The method \"ocean grid\" bins the grains  into their corresponding cells on the ocean grid and searches for contacts only  within the vicinity.  When this method is applied, it is assumed that the  contact_radius values of the grains are smaller than half the cell size.\n\nArguments\n\nsimulation::Simulation: the simulation object containing the grains.\nmethod::String: the contact-search method to apply.  Valid options are \"all    to all\" and \"ocean grid\".\n\n\n\n"
+    "text": "findContacts!(simulation[, method])\n\nTop-level function to perform an inter-grain contact search, based on grain  linear positions and contact radii.\n\nThe simplest contact search algorithm (method=\"all to all\") is the most  computationally expensive (O(n^2)).  The method \"ocean grid\" bins the grains  into their corresponding cells on the ocean grid and searches for contacts only  within the vicinity.  When this method is applied, it is assumed that the  contact_radius values of the grains are smaller than half the cell size.\n\nArguments\n\nsimulation::Simulation: the simulation object containing the grains.\nmethod::String: the contact-search method to apply.  Valid options are \"all    to all\" and \"ocean grid\".\n\n\n\n"
 },
 
 {
