@@ -189,17 +189,17 @@ function checkAndAddContact!(sim::Simulation, i::Int, j::Int,
 
         contact_found = false
 
+        # Check if contact is already registered, and update position if so
+        for ic=1:sim.Nc_max
+            @inbounds if sim.grains[i].contacts[ic] == j
+                contact_found = true
+                @inbounds sim.grains[i].position_vector[ic] .= position_ij
+                nothing  # contact already registered
+            end
+        end
+
         # Check if grains overlap (overlap when negative)
         if overlap_ij < 0.
-
-            # Check if contact is already registered, and update position if so
-            for ic=1:sim.Nc_max
-                @inbounds if sim.grains[i].contacts[ic] == j
-                    contact_found = true
-                    @inbounds sim.grains[i].position_vector[ic] .= position_ij
-                    break  # contact already registered
-                end
-            end
 
             # Register as new contact in first empty position
             if !contact_found

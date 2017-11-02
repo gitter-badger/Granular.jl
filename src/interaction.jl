@@ -16,17 +16,7 @@ function interact!(simulation::Simulation)
                 continue
             end
 
-            #=if norm(simulation.grains[i].lin_pos - 
-                    simulation.grains[j].lin_pos) - 
-                    (simulation.grains[i].contact_radius + 
-                    simulation.grains[j].contact_radius) > 0.
-
-                simulation.grains[i].contacts[ic] = 0  # remove contact
-                simulation.grains[i].n_contacts -= 1
-                simulation.grains[j].n_contacts -= 1
-            else=#
             interactGrains!(simulation, i, j, ic)
-            #end
         end
     end
 
@@ -58,8 +48,9 @@ function interactGrains!(simulation::Simulation, i::Int, j::Int, ic::Int)
     force_n = 0.  # Contact-normal force
     force_t = 0.  # Contact-parallel (tangential) force
 
-    # Inter-position vector
-    p = simulation.grains[i].lin_pos - simulation.grains[j].lin_pos
+    # Inter-position vector, use stored value which is corrected for boundary
+    # periodicity
+    p = simulation.grains[i].position_vector[ic]
     dist = norm(p)
 
     r_i = simulation.grains[i].contact_radius
@@ -81,7 +72,7 @@ function interactGrains!(simulation::Simulation, i::Int, j::Int, ic::Int)
                                 simulation.grains[j].ang_vel)
 
     # Correct old tangential displacement for contact rotation and add new
-    δ_t0 =simulation.grains[i].contact_parallel_displacement[ic]
+    δ_t0 = simulation.grains[i].contact_parallel_displacement[ic]
     δ_t = dot(t, δ_t0 - (n*dot(n, δ_t0))) + vel_t*simulation.time_step
 
     # Effective radius

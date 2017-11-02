@@ -58,6 +58,7 @@ mutable struct GrainCylindrical
     ocean_grid_pos::Vector{Int}
     atmosphere_grid_pos::Vector{Int}
     contacts::Vector{Int}
+    position_vector::Vector{Vector{Float64}}
     contact_parallel_displacement::Vector{Vector{Float64}}
     contact_age::Vector{Float64}
 

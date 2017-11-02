@@ -195,10 +195,11 @@ function addGrainCylindrical!(simulation::Simulation,
     end
 
     contacts::Array{Int, 1} = zeros(Int, simulation.Nc_max)
-    contact_parallel_displacement =
-        Vector{Vector{Float64}}(simulation.Nc_max)
-        contact_age::Vector{Float64} = zeros(Float64, simulation.Nc_max)
+    position_vector = Vector{Vector{Float64}}(simulation.Nc_max)
+    contact_parallel_displacement = Vector{Vector{Float64}}(simulation.Nc_max)
+    contact_age::Vector{Float64} = zeros(Float64, simulation.Nc_max)
     for i=1:simulation.Nc_max
+        position_vector[i] = zeros(2)
         contact_parallel_displacement[i] = zeros(2)
     end
 
@@ -252,6 +253,7 @@ function addGrainCylindrical!(simulation::Simulation,
                                  ocean_grid_pos,
                                  atmosphere_grid_pos,
                                  contacts,
+                                 position_vector,
                                  contact_parallel_displacement,
                                  contact_age,
 
@@ -548,6 +550,7 @@ function printGrainInfo(f::GrainCylindrical)
     println("  pressure:   $(f.pressure) Pa")
     println("  n_contacts: $(f.n_contacts)")
     println("  contacts:   $(f.contacts)")
+    println("  pos_ij:     $(f.position_vector)\n")
     println("  delta_t:    $(f.contact_parallel_displacement)\n")
 
     println("  granular_stress:   $(f.granular_stress) Pa")
@@ -655,6 +658,7 @@ function compareGrains(if1::GrainCylindrical, if2::GrainCylindrical)
     Base.Test.@test if1.n_contacts == if2.n_contacts
     Base.Test.@test if1.ocean_grid_pos == if2.ocean_grid_pos
     Base.Test.@test if1.contacts == if2.contacts
+    Base.Test.@test if1.position_vector == if2.position_vector
     Base.Test.@test if1.contact_parallel_displacement == 
         if2.contact_parallel_displacement
     Base.Test.@test if1.contact_age ≈ if2.contact_age
