@@ -341,25 +341,25 @@ Compare values of two `Ocean` objects using the `Base.Test` framework.
 """
 function compareOceans(ocean1::Ocean, ocean2::Ocean)
 
-    Base.Test.@test ocean1.input_file == ocean2.input_file
-    Base.Test.@test ocean1.time ≈ ocean2.time
+    Test.@test ocean1.input_file == ocean2.input_file
+    Test.@test ocean1.time ≈ ocean2.time
 
-    Base.Test.@test ocean1.xq ≈ ocean2.xq
-    Base.Test.@test ocean1.yq ≈ ocean2.yq
+    Test.@test ocean1.xq ≈ ocean2.xq
+    Test.@test ocean1.yq ≈ ocean2.yq
 
-    Base.Test.@test ocean1.xh ≈ ocean2.xh
-    Base.Test.@test ocean1.yh ≈ ocean2.yh
+    Test.@test ocean1.xh ≈ ocean2.xh
+    Test.@test ocean1.yh ≈ ocean2.yh
 
-    Base.Test.@test ocean1.zl ≈ ocean2.zl
-    Base.Test.@test ocean1.zi ≈ ocean2.zi
+    Test.@test ocean1.zl ≈ ocean2.zl
+    Test.@test ocean1.zi ≈ ocean2.zi
 
-    Base.Test.@test ocean1.u ≈ ocean2.u
-    Base.Test.@test ocean1.v ≈ ocean2.v
-    Base.Test.@test ocean1.h ≈ ocean2.h
-    Base.Test.@test ocean1.e ≈ ocean2.e
+    Test.@test ocean1.u ≈ ocean2.u
+    Test.@test ocean1.v ≈ ocean2.v
+    Test.@test ocean1.h ≈ ocean2.h
+    Test.@test ocean1.e ≈ ocean2.e
 
     if isassigned(ocean1.grain_list, 1)
-        Base.Test.@test ocean1.grain_list == ocean2.grain_list
+        Test.@test ocean1.grain_list == ocean2.grain_list
     end
     nothing
 end

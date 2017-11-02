@@ -79,12 +79,12 @@ function timeSingleStepInDenseSimulation(nx::Int; verbose::Bool=true,
 
     #Granular.writeVTK(sim)
 
-    @test sim.grains[1].n_contacts == 0
-    @test sim.grains[2].n_contacts == 1
-    @test sim.grains[3].n_contacts == 1
-    @test sim.grains[nx].n_contacts == 0
-    @test sim.grains[nx + 1].n_contacts == 1
-    @test sim.grains[nx + 2].n_contacts == 4
+    Test.@test sim.grains[1].n_contacts == 0
+    Test.@test sim.grains[2].n_contacts == 1
+    Test.@test sim.grains[3].n_contacts == 1
+    Test.@test sim.grains[nx].n_contacts == 0
+    Test.@test sim.grains[nx + 1].n_contacts == 1
+    Test.@test sim.grains[nx + 2].n_contacts == 4
     return t_elapsed, Base.summarysize(sim)
 end
 

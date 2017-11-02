@@ -10,19 +10,19 @@ Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
 Granular.printGrainInfo(sim.grains[1])
 
 
-@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1, .1],
+Test.@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1, .1],
                                                           10., 1.)
-@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
+Test.@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
                                                           10., 1., 
                                                           lin_vel=[.2,.2,.2])
-@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
+Test.@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
                                                           10., 1., 
                                                           lin_acc=[.2,.2,.2])
-@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
+Test.@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
                                                           0., 1.)
-@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
+Test.@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
                                                           10., 1., density=-2.)
-@test_throws ErrorException Granular.disableGrain!(sim, 0)
+Test.@test_throws ErrorException Granular.disableGrain!(sim, 0)
 
 sim = Granular.createSimulation(id="test")
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
@@ -38,7 +38,7 @@ if typeof(Pkg.installed("PyPlot")) == VersionNumber
     rm("test-grain-size-distribution.png")
     Granular.plotGrainSizeDistribution(sim, size_type="areal")
     rm("test-grain-size-distribution.png")
-    @test_throws ErrorException Granular.plotGrainSizeDistribution(sim, size_type="asdf")
+    Test.@test_throws ErrorException Granular.plotGrainSizeDistribution(sim, size_type="asdf")
 else
-    @test_throws ErrorException Granular.plotGrainSizeDistribution(sim)
+    Test.@test_throws ErrorException Granular.plotGrainSizeDistribution(sim)
 end

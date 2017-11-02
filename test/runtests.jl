@@ -1,5 +1,4 @@
 import Granular
-using Base.Test
 
 include("grain.jl")
 include("packing.jl")

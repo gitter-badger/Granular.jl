@@ -228,22 +228,22 @@ Compare values of two `atmosphere` objects using the `Base.Test` framework.
 """
 function compareAtmospheres(atmosphere1::Atmosphere, atmosphere2::Atmosphere)
 
-    Base.Test.@test atmosphere1.input_file == atmosphere2.input_file
-    Base.Test.@test atmosphere1.time ≈ atmosphere2.time
+    Test.@test atmosphere1.input_file == atmosphere2.input_file
+    Test.@test atmosphere1.time ≈ atmosphere2.time
 
-    Base.Test.@test atmosphere1.xq ≈ atmosphere2.xq
-    Base.Test.@test atmosphere1.yq ≈ atmosphere2.yq
+    Test.@test atmosphere1.xq ≈ atmosphere2.xq
+    Test.@test atmosphere1.yq ≈ atmosphere2.yq
 
-    Base.Test.@test atmosphere1.xh ≈ atmosphere2.xh
-    Base.Test.@test atmosphere1.yh ≈ atmosphere2.yh
+    Test.@test atmosphere1.xh ≈ atmosphere2.xh
+    Test.@test atmosphere1.yh ≈ atmosphere2.yh
 
-    Base.Test.@test atmosphere1.zl ≈ atmosphere2.zl
+    Test.@test atmosphere1.zl ≈ atmosphere2.zl
 
-    Base.Test.@test atmosphere1.u ≈ atmosphere2.u
-    Base.Test.@test atmosphere1.v ≈ atmosphere2.v
+    Test.@test atmosphere1.u ≈ atmosphere2.u
+    Test.@test atmosphere1.v ≈ atmosphere2.v
 
     if isassigned(atmosphere1.grain_list, 1)
-        Base.Test.@test atmosphere1.grain_list == atmosphere2.grain_list
+        Test.@test atmosphere1.grain_list == atmosphere2.grain_list
     end
     nothing
 end

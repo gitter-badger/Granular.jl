@@ -252,16 +252,15 @@ Compare values of two `Simulation` objects using the `Base.Test` framework.
 """
 function compareSimulations(sim1::Simulation, sim2::Simulation)
 
-    Base.Test.@test sim1.id == sim2.id
+    Test.@test sim1.id == sim2.id
 
-    Base.Test.@test sim1.time_iteration == sim2.time_iteration
-    Base.Test.@test sim1.time ≈ sim2.time
-    Base.Test.@test sim1.time_total ≈ sim2.time_total
-    Base.Test.@test sim1.time_step ≈ sim2.time_step
-    Base.Test.@test sim1.file_time_step ≈ sim2.file_time_step
-    Base.Test.@test sim1.file_number == sim2.file_number
-    Base.Test.@test sim1.file_time_since_output_file ≈ 
-        sim2.file_time_since_output_file
+    Test.@test sim1.time_iteration == sim2.time_iteration
+    Test.@test sim1.time ≈ sim2.time
+    Test.@test sim1.time_total ≈ sim2.time_total
+    Test.@test sim1.time_step ≈ sim2.time_step
+    Test.@test sim1.file_time_step ≈ sim2.file_time_step
+    Test.@test sim1.file_number == sim2.file_number
+    Test.@test sim1.file_time_since_output_file ≈ sim2.file_time_since_output_file
 
     for i=1:length(sim1.grains)
         compareGrains(sim1.grains[i], sim2.grains[i])
@@ -269,7 +268,7 @@ function compareSimulations(sim1::Simulation, sim2::Simulation)
     compareOceans(sim1.ocean, sim2.ocean)
     compareAtmospheres(sim1.atmosphere, sim2.atmosphere)
 
-    Base.Test.@test sim1.Nc_max == sim2.Nc_max
+    Test.@test sim1.Nc_max == sim2.Nc_max
     nothing
 end
 
