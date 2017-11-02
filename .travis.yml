@@ -23,12 +23,8 @@ matrix:
 before_script:
   - julia -e 'info("Preparing Python"); ENV["PYTHON"]=""; Pkg.add("PyCall"); Pkg.build("PyCall")'
 
-after_success:
-  - julia -e 'Pkg.add("Documenter")'
-  - julia -e 'cd(Pkg.dir("Granular")); include(joinpath("docs", "make.jl"))'
-
 deploy:
   - provider: script
-    script: julia -e 'cd(Pkg.dir("Granular")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+    script: julia -e 'cd(Pkg.dir("Granular")); Pkg.add("Coverage"); Pkg.add("Documenter"); using Coverage; Codecov.submit(Codecov.process_folder()); cd(Pkg.dir("Granular")); include(joinpath("docs", "make.jl"))'
     on:
       os: linux
