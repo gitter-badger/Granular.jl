@@ -4,7 +4,9 @@ export updateGrainKinematics!
                              method::String = "Three-term Taylor"])
 
 Update the grain kinematic parameters using a temporal integration scheme,
-the current force and torque balance, and gravitational acceleration.
+the current force and torque balance, and gravitational acceleration.  If the
+simulation contains a grid with periodic boundaries, affected grain positions
+are adjusted accordingly.
 
 # Arguments
 * `simulation::Simulation`: update the grain positions in this object 
@@ -17,7 +19,7 @@ the current force and torque balance, and gravitational acceleration.
     precision if the time step is 1/10 the length.
 """
 function updateGrainKinematics!(simulation::Simulation;
-                                  method::String = "Three-term Taylor")
+                                method::String = "Three-term Taylor")
 
     if method == "Two-term Taylor"
         for grain in simulation.grains
@@ -36,6 +38,7 @@ function updateGrainKinematics!(simulation::Simulation;
     else
         error("Unknown integration method '$method'")
     end
+    moveGrainsAcrossPeriodicBoundaries!(simulation)
     nothing
 end
 

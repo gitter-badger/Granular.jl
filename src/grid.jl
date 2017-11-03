@@ -732,3 +732,63 @@ function reportGridBoundaryConditions(grid::Any)
             "\t($(grid.bc_north))")
     nothing
 end
+
+"""
+    moveGrainsAcrossPeriodicBoundaries!(simulation::Simulation)
+
+If the ocean or atmosphere grids are periodic, move grains that are placed
+outside the domain correspondingly across the domain.  This function is to be
+called after temporal integration of the grain positions.
+"""
+function moveGrainsAcrossPeriodicBoundaries!(sim::Simulation)
+
+
+    # return if grids are not enabled
+    if typeof(sim.ocean.input_file) == Bool && 
+        typeof(sim.atmosphere.input_file) == Bool
+        return nothing
+    end
+
+    # return immediately if no boundaries are periodic
+    if sim.ocean.bc_west != 2 && 
+        sim.ocean.bc_south != 2 && 
+        sim.ocean.bc_east != 2 && 
+        sim.ocean.bc_north != 2
+        return nothing
+    end
+
+    # throw error if ocean and atmosphere grid BCs are different and both are
+    # enabled
+    if (typeof(sim.ocean.input_file) != Bool &&
+        typeof(sim.atmosphere.input_file) != Bool) &&
+        (sim.ocean.bc_west != sim.atmosphere.bc_west &&
+         sim.ocean.bc_south != sim.atmosphere.bc_south &&
+         sim.ocean.bc_east != sim.atmosphere.bc_east &&
+         sim.ocean.bc_north != sim.atmosphere.bc_north)
+        error("Ocean and Atmosphere grid boundary conditions differ")
+    end
+
+    for grain in sim.grains
+
+        # -x -> +x
+        if sim.ocean.bc_west == 2 && grain.lin_pos[1] < sim.ocean.xq[1]
+            grain.lin_pos[1] += sim.ocean.xq[end] - sim.ocean.xq[1]
+        end
+
+        # -y -> +y
+        if sim.ocean.bc_south == 2 && grain.lin_pos[2] < sim.ocean.yq[1]
+            grain.lin_pos[2] += sim.ocean.yq[end] - sim.ocean.yq[1]
+        end
+
+        # +x -> -x
+        if sim.ocean.bc_east == 2 && grain.lin_pos[1] > sim.ocean.xq[end]
+            grain.lin_pos[1] -= sim.ocean.xq[end] - sim.ocean.xq[1]
+        end
+
+        # +y -> -y
+        if sim.ocean.bc_east == 2 && grain.lin_pos[2] > sim.ocean.yq[end]
+            grain.lin_pos[2] -= sim.ocean.yq[end] - sim.ocean.yq[1]
+        end
+    end
+    nothing
+end

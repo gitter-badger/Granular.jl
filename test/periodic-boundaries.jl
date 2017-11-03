@@ -122,3 +122,69 @@ Test.@test 2 == sim.grains[1].contacts[1]
 Test.@test 1 == sim.grains[1].n_contacts
 Test.@test 1 == sim.grains[2].n_contacts
 
+
+info("Test grain position adjustment across periodic boundaries")
+# do not readjust inside grid, inactive boundaries
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "inactive", verbose=false)
+Granular.addGrainCylindrical!(sim, [0.1, 0.5], 0.11, 0.1, verbose=false)
+Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+Test.@test [0.1, 0.5] ≈ sim.grains[1].lin_pos
+
+# do not readjust inside grid, periodic boundaries
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "periodic", verbose=false)
+Granular.addGrainCylindrical!(sim, [0.1, 0.5], 0.11, 0.1, verbose=false)
+Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+Test.@test [0.1, 0.5] ≈ sim.grains[1].lin_pos
+
+# do not readjust outside grid, inactive boundaries
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "inactive", verbose=false)
+Granular.addGrainCylindrical!(sim, [-0.1, 0.5], 0.11, 0.1, verbose=false)
+Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+Test.@test [-0.1, 0.5] ≈ sim.grains[1].lin_pos
+
+# readjust outside grid, periodic boundaries, -x
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "periodic", verbose=false)
+Granular.addGrainCylindrical!(sim, [-0.1, 0.5], 0.11, 0.1, verbose=false)
+Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+Test.@test [0.9, 0.5] ≈ sim.grains[1].lin_pos
+
+# readjust outside grid, periodic boundaries, +x
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "periodic", verbose=false)
+Granular.addGrainCylindrical!(sim, [1.1, 0.5], 0.11, 0.1, verbose=false)
+Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+Test.@test [0.1, 0.5] ≈ sim.grains[1].lin_pos
+
+# readjust outside grid, periodic boundaries, -y
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "periodic", verbose=false)
+Granular.addGrainCylindrical!(sim, [0.3, -0.1], 0.11, 0.1, verbose=false)
+Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+Test.@test [0.3, 0.9] ≈ sim.grains[1].lin_pos
+
+# readjust outside grid, periodic boundaries, +y
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "periodic", verbose=false)
+Granular.addGrainCylindrical!(sim, [0.3, 1.1], 0.11, 0.1, verbose=false)
+Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+Test.@test [0.3, 0.1] ≈ sim.grains[1].lin_pos
+
+# throw error if atmosphere and ocean BCs differ
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+sim.atmosphere = Granular.createRegularAtmosphereGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "periodic", verbose=false)
+Granular.addGrainCylindrical!(sim, [0.3, 1.1], 0.11, 0.1, verbose=false)
+Test.@test_throws ErrorException Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+
