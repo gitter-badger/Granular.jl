@@ -649,6 +649,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/public.html#Granular.reportGridBoundaryConditions-Tuple{Any}",
+    "page": "Public API",
+    "title": "Granular.reportGridBoundaryConditions",
+    "category": "Method",
+    "text": "reportGridBoundaryConditions(grid)\n\nReport the boundary conditions for the grid to the console.\n\n\n\n"
+},
+
+{
     "location": "lib/public.html#Granular.reportSimulationTimeToStdout-Tuple{Granular.Simulation}",
     "page": "Public API",
     "title": "Granular.reportSimulationTimeToStdout",
@@ -670,6 +678,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Granular.setCurrentTime!",
     "category": "Method",
     "text": "setCurrentTime!(simulation::Simulation, t::Float64)\n\nSets the current simulation time of the simulation object to t, with  parameter value checks.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.setGridBoundaryConditions!",
+    "page": "Public API",
+    "title": "Granular.setGridBoundaryConditions!",
+    "category": "Function",
+    "text": "setGridBoundaryConditions!(grid, grid_face, mode)\n\nSet boundary conditions for the granular phase at the edges of Ocean or Atmosphere grids.  The target boundary can be selected through the grid_face argument, or the same boundary condition can be applied to all grid boundaries at once.\n\nWhen the center coordinate of grains crosses an inactive boundary (mode = \"inactive\"), the grain is disabled (GrainCylindrical.enabled = false).  This keeps the grain in memory, but stops it from moving or interacting with other grains.  By default, all boundaries are inactive.\n\nIf the center coordinate of a grain crosses a periodic boundary (mode = periodic), the grain is repositioned to the opposite side of the model domain. Grains can interact mechanically across the periodic boundary.\n\nArguments\n\ngrid::Any: Ocean or Atmosphere grid to apply the boundary condition to.\ngrid_face::String: Grid face to apply the boundary condition to.  Valid   values are any combination and sequence of \"west\" (-x), \"south\" (-y),   \"east\" (+x), \"north\" (+y).  The values may be delimited in any way.   Also, and by default, all boundaries can be selected with \"all\" (-x, -y,   +x, +y), which overrides any other face selection.\nmode::String: Boundary behavior, accepted values are \"inactive\" and   \"periodic\".  You cannot specify more than one mode at a time, so if   several modes are desired as boundary conditions for the grid, several calls   to this function should be made.\nverbose::Bool: Confirm boundary conditions by reporting values to console.\n\nExamples\n\nSet all boundaries for the ocean grid to be periodic:\n\nsetGridBoundaryConditions!(ocean, \"periodic\", \"all\")\n\nSet the south-north boundaries to be inactive, but the west-east boundaries to be periodic:\n\nsetGridBoundaryConditions!(ocean, \"inactive\", \"south north\")\nsetGridBoundaryConditions!(ocean, \"periodic\", \"west east\")\n\n\n\n"
 },
 
 {
