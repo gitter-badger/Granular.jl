@@ -18,7 +18,7 @@ function createEmptyOcean()
                  zeros(1,1,1,1),
                  zeros(1,1,1,1),
                  Array{Array{Int, 1}}(1, 1),
-                 0, 0, 0, 0)
+                 1, 1, 1, 1)
 end
 
 export readOceanNetCDF
@@ -61,7 +61,7 @@ function readOceanNetCDF(velocity_file::String, grid_file::String)
                   h,
                   e,
                   Array{Array{Int, 1}}(size(xh, 1), size(xh, 2)),
-                  0, 0, 0, 0
+                  1, 1, 1, 1
                  )
     return ocean
 end
@@ -242,7 +242,7 @@ function createRegularOceanGrid(n::Array{Int, 1},
                  zl, zi,
                  u, v, h, e,
                  Array{Array{Int, 1}}(size(xh, 1), size(xh, 2)),
-                 0, 0, 0, 0)
+                 1, 1, 1, 1)
 end
 
 export addOceanDrag!

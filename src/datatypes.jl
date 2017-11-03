@@ -166,17 +166,17 @@ h-points.  During read, the velocities are interpolated to the cell corners
 * `grain_list::Array{Float64, Int}`: indexes of grains contained in the 
     ocean grid cells.
 * `bc_west::Integer`: Boundary condition type for the west edge of the grid.
-        0: inactive,
-        1: periodic
+        1: inactive,
+        2: periodic
 * `bc_south::Integer`: Boundary condition type for the south edge of the grid.
-        0: inactive,
-        1: periodic
+        1: inactive,
+        2: periodic
 * `bc_east::Integer`: Boundary condition type for the east edge of the grid.
-        0: inactive,
-        1: periodic
+        1: inactive,
+        2: periodic
 * `bc_north::Integer`: Boundary condition type for the north edge of the grid.
-        0: inactive,
-        1: periodic
+        1: inactive,
+        2: periodic
 =#
 mutable struct Ocean
     input_file::Any
@@ -243,17 +243,17 @@ cell corners (q-points).
 * `grain_list::Array{Float64, Int}`: interface height relative to mean sea 
     level [m],  dimensions correspond to placement in `[xh, yh, zi, time]`.
 * `bc_west::Integer`: Boundary condition type for the west edge of the grid.
-        0: inactive,
-        1: periodic
+        1: inactive,
+        2: periodic
 * `bc_south::Integer`: Boundary condition type for the south edge of the grid.
-        0: inactive,
-        1: periodic
+        1: inactive,
+        2: periodic
 * `bc_east::Integer`: Boundary condition type for the east edge of the grid.
-        0: inactive,
-        1: periodic
+        1: inactive,
+        2: periodic
 * `bc_north::Integer`: Boundary condition type for the north edge of the grid.
-        0: inactive,
-        1: periodic
+        1: inactive,
+        2: periodic
 =#
 mutable struct Atmosphere
     input_file::Any
@@ -306,3 +306,7 @@ mutable struct Simulation
 
     Nc_max::Int
 end
+
+# Mappings between boundary condition keys (Integers) and strings
+const grid_bc_strings = ["inactive", "periodic"]
+const grid_bc_flags = Dict(zip(grid_bc_strings, 1:length(grid_bc_strings)))

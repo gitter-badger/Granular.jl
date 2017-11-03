@@ -17,7 +17,7 @@ function createEmptyAtmosphere()
 
                       Array{Vector{Int}}(1, 1),
 
-                      0, 0, 0, 0,
+                      1, 1, 1, 1,
 
                       false)
 end
@@ -129,7 +129,7 @@ function createRegularAtmosphereGrid(n::Vector{Int},
                  zl,
                  u, v,
                  Array{Array{Int, 1}}(size(xh, 1), size(xh, 2)),
-                 0, 0, 0, 0,
+                 1, 1, 1, 1,
                  false)
 end
 

@@ -617,3 +617,118 @@ function copyGridSortingInfo!(ocean::Ocean, atmosphere::Atmosphere,
     atmosphere.grain_list = deepcopy(ocean.grain_list)
     nothing
 end
+
+export setGridBoundaryConditions!
+"""
+    setGridBoundaryConditions!(grid, grid_face, mode)
+
+Set boundary conditions for the granular phase at the edges of `Ocean` or
+`Atmosphere` grids.  The target boundary can be selected through the `grid_face`
+argument, or the same boundary condition can be applied to all grid boundaries
+at once.
+
+When the center coordinate of grains crosses an inactive boundary (`mode =
+"inactive"`), the grain is disabled (`GrainCylindrical.enabled = false`).  This
+keeps the grain in memory, but stops it from moving or interacting with other
+grains.  *By default, all boundaries are inactive*.
+
+If the center coordinate of a grain crosses a periodic boundary (`mode =
+periodic`), the grain is repositioned to the opposite side of the model domain.
+Grains can interact mechanically across the periodic boundary.
+
+# Arguments
+* `grid::Any`: `Ocean` or `Atmosphere` grid to apply the boundary condition to.
+* `grid_face::String`: Grid face to apply the boundary condition to.  Valid
+    values are any combination and sequence of `"west"` (-x), `"south"` (-y),
+    `"east"` (+x), `"north"` (+y).  The values may be delimited in any way.
+    Also, and by default, all boundaries can be selected with `"all"` (-x, -y,
+    +x, +y), which overrides any other face selection.
+* `mode::String`: Boundary behavior, accepted values are `"inactive"` and
+    `"periodic"`.  You cannot specify more than one mode at a time, so if
+    several modes are desired as boundary conditions for the grid, several calls
+    to this function should be made.
+* `verbose::Bool`: Confirm boundary conditions by reporting values to console.
+
+# Examples
+Set all boundaries for the ocean grid to be periodic:
+
+    setGridBoundaryConditions!(ocean, "periodic", "all")
+
+Set the south-north boundaries to be inactive, but the west-east boundaries to
+be periodic:
+
+    setGridBoundaryConditions!(ocean, "inactive", "south north")
+    setGridBoundaryConditions!(ocean, "periodic", "west east")
+
+"""
+function setGridBoundaryConditions!(grid::Any,
+                                    mode::String,
+                                    grid_face::String = "all";
+                                    verbose::Bool=true)
+
+    something_changed = false
+
+    if length(mode) <= 1
+        error("The mode string is required ('$mode')")
+    end
+
+    if !(mode in grid_bc_strings)
+        error("Mode '$mode' not recognized as a valid boundary condition type")
+    end
+
+    if contains(grid_face, "west")
+        grid.bc_west = grid_bc_flags[mode]
+        something_changed = true
+    end
+
+    if contains(grid_face, "south")
+        grid.bc_south = grid_bc_flags[mode]
+        something_changed = true
+    end
+
+    if contains(grid_face, "east")
+        grid.bc_east = grid_bc_flags[mode]
+        something_changed = true
+    end
+
+    if contains(grid_face, "north")
+        grid.bc_north = grid_bc_flags[mode]
+        something_changed = true
+    end
+
+    if grid_face == "all"
+        grid.bc_west  = grid_bc_flags[mode]
+        grid.bc_south = grid_bc_flags[mode]
+        grid.bc_east  = grid_bc_flags[mode]
+        grid.bc_north = grid_bc_flags[mode]
+        something_changed = true
+    end
+
+    if !something_changed
+        error("grid_face string '$grid_face' not understood, must be east, " *
+              "west, north, and/or south.")
+    end
+
+    if verbose
+        reportGridBoundaryConditions(grid)
+    end
+    nothing
+end
+
+export reportGridBoundaryConditions
+"""
+    reportGridBoundaryConditions(grid)
+
+Report the boundary conditions for the grid to the console.
+"""
+function reportGridBoundaryConditions(grid::Any)
+    println("West  (-x): " * grid_bc_strings[grid.bc_west] * 
+            "\t($(grid.bc_west))")
+    println("East  (+x): " * grid_bc_strings[grid.bc_east] * 
+            "\t($(grid.bc_east))")
+    println("South (-y): " * grid_bc_strings[grid.bc_south] * 
+            "\t($(grid.bc_south))")
+    println("North (+y): " * grid_bc_strings[grid.bc_north] * 
+            "\t($(grid.bc_north))")
+    nothing
+end
