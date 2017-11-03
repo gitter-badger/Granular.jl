@@ -102,3 +102,23 @@ Test.@test_throws ErrorException Granular.setGridBoundaryConditions!(ocean,
 
 Test.@test_throws ErrorException Granular.setGridBoundaryConditions!(ocean,
                                                                      "asdf")
+
+
+info("Testing granular interaction across periodic boundaries")
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "periodic")
+Granular.addGrainCylindrical!(sim, [0.1, 0.5], 0.11, 0.1, verbose=false)
+Granular.addGrainCylindrical!(sim, [0.9, 0.5], 0.11, 0.1, verbose=false)
+
+# there should be an error if all-to-all contact search is used
+Test.@test_throws ErrorException Granular.findContacts!(sim)
+Test.@test_throws ErrorException Granular.findContacts!(sim, method="all to all")
+Test.@test_throws ErrorException Granular.findContactsAllToAll!(sim)
+
+Granular.sortGrainsInGrid!(sim, sim.ocean, verbose=false)
+Granular.findContacts!(sim, method="ocean grid")
+Test.@test 2 == sim.grains[1].contacts[1]
+Test.@test 1 == sim.grains[1].n_contacts
+Test.@test 1 == sim.grains[2].n_contacts
+

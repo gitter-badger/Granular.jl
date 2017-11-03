@@ -72,6 +72,21 @@ Perform an O(n^2) all-to-all contact search between all grains in the
 """
 function findContactsAllToAll!(simulation::Simulation)
 
+    if simulation.ocean.bc_west > 1 ||
+        simulation.ocean.bc_east > 1 ||
+        simulation.ocean.bc_north > 1 ||
+        simulation.ocean.bc_south > 1
+        error("Ocean boundary conditions to not work with all-to-all contact " *
+              "search")
+    end
+    if simulation.atmosphere.bc_west > 1 ||
+        simulation.atmosphere.bc_east > 1 ||
+        simulation.atmosphere.bc_north > 1 ||
+        simulation.atmosphere.bc_south > 1
+        error("Atmopshere boundary conditions to not work with all-to-all " *
+              "contact search")
+    end
+
     @inbounds for i = 1:length(simulation.grains)
 
         # Check contacts with other grains
@@ -121,18 +136,18 @@ function findContactsInGrid!(simulation::Simulation, grid::Any)
                 # around if they are periodic
                 if i < 1 || i > nx || j < 1 || j > ny
 
-                    if i < 1 && grid.bc_west == 1  # periodic -x
+                    if i < 1 && grid.bc_west == 2  # periodic -x
                         distance_modifier[1] = grid.xq[end] - grid.xq[1]
                         i_corrected = nx
-                    elseif i > nx && grid.bc_east == 1  # periodic +x
+                    elseif i > nx && grid.bc_east == 2  # periodic +x
                         distance_modifier[1] = -(grid.xq[end] - grid.xq[1])
                         i_corrected = 1
                     end
 
-                    if j < 1 && grid.bc_south == 1  # periodic -y
+                    if j < 1 && grid.bc_south == 2  # periodic -y
                         distance_modifier[2] = grid.yq[end] - grid.yq[1]
                         j_corrected = ny
-                    elseif j > ny && grid.bc_north == 1  # periodic +y
+                    elseif j > ny && grid.bc_north == 2  # periodic +y
                         distance_modifier[2] = -(grid.yq[end] - grid.yq[1])
                         j_corrected = 1
                     end
