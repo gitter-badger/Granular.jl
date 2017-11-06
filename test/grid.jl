@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 # Check the grid interpolation and sorting functions
-verbose = true
+verbose = false
 
 info("#### $(basename(@__FILE__)) ####")
 
@@ -324,7 +324,7 @@ Granular.addGrainCylindrical!(sim, [2.6, 2.5], .1, 1., verbose=verbose)
 Granular.sortGrainsInGrid!(sim, sim.ocean, verbose=verbose)
 Granular.setTimeStep!(sim)
 Granular.setTotalTime!(sim, 1.0)
-Granular.run!(sim, single_step=true, verbose=verbose)
+Granular.run!(sim, single_step=true, verbose=false)
 Test.@test sim.atmosphere.collocated_with_ocean_grid == true
 Test.@test sim.grains[1].ocean_grid_pos == [1, 1]
 Test.@test sim.grains[2].ocean_grid_pos == [1, 1]
@@ -339,8 +339,63 @@ Test.@test sim.atmosphere.grain_list[1, 1] == [1, 2]
 Test.@test sim.atmosphere.grain_list[2, 2] == []
 Test.@test sim.atmosphere.grain_list[3, 3] == [3]
 
-info("Testing ocean drag")
+info("Testing automatic grid-size adjustment")
+# ocean grid
 sim = Granular.createSimulation()
-sim.ocean.u[:,:,1,1] = 5.
-Granular.addGrainCylindrical!(sim, [2.5, 3.5], 1., 1., verbose=verbose)
-Granular.addGrainCylindrical!(sim, [2.6, 2.5], 1., 1., verbose=verbose)
+Test.@test_throws ErrorException Granular.fitGridToGrains!(sim, sim.ocean)
+sim = Granular.createSimulation()
+Granular.addGrainCylindrical!(sim, [0.0, 1.5], .5, 1., verbose=verbose)
+Granular.addGrainCylindrical!(sim, [2.5, 5.5], 1., 1., verbose=verbose)
+Granular.fitGridToGrains!(sim, sim.ocean, verbose=true)
+Test.@test sim.ocean.xq[1,1] ≈ -.5
+Test.@test sim.ocean.yq[1,1] ≈ 1.0
+Test.@test sim.ocean.xq[end,end] ≈ 3.5
+Test.@test sim.ocean.yq[end,end] ≈ 6.5
+
+sim = Granular.createSimulation()
+Granular.addGrainCylindrical!(sim, [0.5, 1.5], .5, 1., verbose=verbose)
+Granular.addGrainCylindrical!(sim, [2.5, 4.5], .5, 1., verbose=verbose)
+Granular.fitGridToGrains!(sim, sim.ocean, verbose=true)
+Test.@test sim.ocean.xq[1,1] ≈ 0.
+Test.@test sim.ocean.yq[1,1] ≈ 1.
+Test.@test sim.ocean.xq[end,end] ≈ 3.
+Test.@test sim.ocean.yq[end,end] ≈ 5.
+
+sim = Granular.createSimulation()
+Granular.addGrainCylindrical!(sim, [0.5, 0.0], .5, 1., verbose=verbose)
+Granular.addGrainCylindrical!(sim, [2.0, 4.0], 1., 1., verbose=verbose)
+Granular.fitGridToGrains!(sim, sim.ocean, padding=.5, verbose=true)
+Test.@test sim.ocean.xq[1,1] ≈ -.5
+Test.@test sim.ocean.yq[1,1] ≈ -1.
+Test.@test sim.ocean.xq[end,end] ≈ 3.5
+Test.@test sim.ocean.yq[end,end] ≈ 5.5
+
+# atmosphere grid
+sim = Granular.createSimulation()
+Test.@test_throws ErrorException Granular.fitGridToGrains!(sim, sim.atmosphere)
+sim = Granular.createSimulation()
+Granular.addGrainCylindrical!(sim, [0.0, 1.5], .5, 1., verbose=verbose)
+Granular.addGrainCylindrical!(sim, [2.5, 5.5], 1., 1., verbose=verbose)
+Granular.fitGridToGrains!(sim, sim.atmosphere, verbose=true)
+Test.@test sim.atmosphere.xq[1,1] ≈ -.5
+Test.@test sim.atmosphere.yq[1,1] ≈ 1.0
+Test.@test sim.atmosphere.xq[end,end] ≈ 3.5
+Test.@test sim.atmosphere.yq[end,end] ≈ 6.5
+
+sim = Granular.createSimulation()
+Granular.addGrainCylindrical!(sim, [0.5, 1.5], .5, 1., verbose=verbose)
+Granular.addGrainCylindrical!(sim, [2.5, 4.5], .5, 1., verbose=verbose)
+Granular.fitGridToGrains!(sim, sim.atmosphere, verbose=true)
+Test.@test sim.atmosphere.xq[1,1] ≈ 0.
+Test.@test sim.atmosphere.yq[1,1] ≈ 1.
+Test.@test sim.atmosphere.xq[end,end] ≈ 3.
+Test.@test sim.atmosphere.yq[end,end] ≈ 5.
+
+sim = Granular.createSimulation()
+Granular.addGrainCylindrical!(sim, [0.5, 0.0], .5, 1., verbose=verbose)
+Granular.addGrainCylindrical!(sim, [2.0, 4.0], 1., 1., verbose=verbose)
+Granular.fitGridToGrains!(sim, sim.atmosphere, padding=.5, verbose=true)
+Test.@test sim.atmosphere.xq[1,1] ≈ -.5
+Test.@test sim.atmosphere.yq[1,1] ≈ -1.
+Test.@test sim.atmosphere.xq[end,end] ≈ 3.5
+Test.@test sim.atmosphere.yq[end,end] ≈ 5.5

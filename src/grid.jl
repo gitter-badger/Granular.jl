@@ -792,3 +792,84 @@ function moveGrainsAcrossPeriodicBoundaries!(sim::Simulation)
     end
     nothing
 end
+
+export fitGridToGrains!
+"""
+    fitGridToGrains!(simulation, grid[, padding])
+
+Fit the ocean or atmosphere grid for a simulation to the current grains and
+their positions.
+"""
+function fitGridToGrains!(simulation::Simulation, grid::Any;
+                          padding::Float64 = 0., verbose::Bool = true)
+
+    if typeof(grid) != Ocean && typeof(grid) != Atmosphere
+        error("grid must be of Ocean or Atmosphere type")
+    end
+
+    min_x = Inf
+    min_y = Inf
+    max_x = -Inf
+    max_y = -Inf
+    max_radius = 0.
+
+    if length(simulation.grains) < 1
+        error("Grains need to be initialized before calling fitGridToGrains")
+    end
+
+    for grain in simulation.grains
+
+        if grain.lin_pos[1] - grain.contact_radius < min_x
+            min_x = grain.lin_pos[1] - grain.contact_radius
+        end
+
+        if grain.lin_pos[1] + grain.contact_radius > max_x
+            max_x = grain.lin_pos[1] + grain.contact_radius
+        end
+
+        if grain.lin_pos[2] - grain.contact_radius < min_y
+            min_y = grain.lin_pos[2] - grain.contact_radius
+        end
+
+        if grain.lin_pos[2] + grain.contact_radius > max_y
+            max_y = grain.lin_pos[2] + grain.contact_radius
+        end
+
+        if grain.contact_radius > max_radius
+            max_radius = grain.contact_radius
+        end
+    end
+    min_x -= padding
+    min_y -= padding
+    max_x += padding
+    max_y += padding
+
+    const L::Vector{Float64} = [max_x - min_x, max_y - min_y]
+    const dx::Float64 = 2.*max_radius
+    const n = convert(Vector{Int}, floor.(L./dx))
+    if 1 in n
+        error("Grid is too small compared to grain size (n = $n). " *
+              "Use all-to-all contact search instead.")
+    end
+
+    if typeof(grid) == Ocean
+        simulation.ocean = createRegularOceanGrid(vcat(n, 1), vcat(L, 1.),
+                                                  origo=[min_x, min_y],
+                                                  time=[0.], name="fitted")
+    elseif typeof(grid) == Atmosphere
+        simulation.atmosphere = createRegularAtmosphereGrid(vcat(n, 1),
+                                                            vcat(L, 1.),
+                                                            origo=[min_x,
+                                                                   min_y],
+                                                            time=[0.],
+                                                            name="fitted")
+    end
+
+    if verbose
+        info("Created regular $(typeof(grid)) grid from " *
+             "[$min_x, $min_y] to [$max_x, $max_y] " *
+             "with a cell size of $dx ($n).")
+    end
+
+    nothing
+end

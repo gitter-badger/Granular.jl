@@ -81,7 +81,7 @@ are optional, and come with default values.  The only required arguments are
 * `atmosphere_drag_coeff_horiz::Float64 = 2.5e-4`: horizontal drag coefficient
     for atmosphere against grain bottom [-].
 * `pressure::Float64 = 0.`: current compressive stress on grain [Pa].
-* `fixed::Bool = false`: grain is fixed in space.
+* `fixed::Bool = false`: grain is fixed to a constant velocity (e.g. zero).
 * `rotating::Bool = true`: grain is allowed to rotate.
 * `enabled::Bool = true`: grain interacts with other grains.
 * `verbose::Bool = true`: display diagnostic information during the function

@@ -110,12 +110,14 @@ function createRegularAtmosphereGrid(n::Vector{Int},
                                      time::Array{Float64, 1} = zeros(1),
                                      name::String = "unnamed")
 
-    xq = repmat(linspace(origo[1], L[1], n[1] + 1), 1, n[2] + 1)
-    yq = repmat(linspace(origo[2], L[2], n[2] + 1)', n[1] + 1, 1)
+    xq = repmat(linspace(origo[1], origo[1] + L[1], n[1] + 1), 1, n[2] + 1)
+    yq = repmat(linspace(origo[2], origo[2] + L[2], n[2] + 1)', n[1] + 1, 1)
 
     dx = L./n
-    xh = repmat(linspace(origo[1] + .5*dx[1], L[1] - .5*dx[1], n[1]), 1, n[2])
-    yh = repmat(linspace(origo[2] + .5*dx[2], L[2] - .5*dx[2], n[2])', n[1], 1)
+    xh = repmat(linspace(origo[1] + .5*dx[1], origo[1] + L[1] - .5*dx[1],
+                         n[1]), 1, n[2])
+    yh = repmat(linspace(origo[2] + .5*dx[2], origo[1] + L[2] - .5*dx[2],
+                         n[2])', n[1], 1)
 
     zl = -linspace(.5*dx[3], L[3] - .5*dx[3], n[3])
 

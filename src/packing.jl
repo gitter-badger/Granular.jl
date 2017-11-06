@@ -1,4 +1,13 @@
 ## Functions for creating grain packings
+
+export regularPacking!
+"""
+"""
+function regularPacking!(simulation::Simulation,
+                        )
+
+end
+
 """
 Return random point in spherical annulus between `(r_i + r_j)` and `2.*(r_i +
 r_j)` around `x_i`.  Note: there is slightly higher point density towards (r_i +
