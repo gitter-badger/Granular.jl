@@ -5,6 +5,8 @@ info("#### $(basename(@__FILE__)) ####")
 verbose=false
 i = 0
 
+info("## Inactive/Periodic BCs")
+
 info("Testing assignment and reporting of grid boundary conditions")
 ocean = Granular.createEmptyOcean()
 
@@ -188,3 +190,14 @@ Granular.setGridBoundaryConditions!(sim.ocean, "periodic", verbose=false)
 Granular.addGrainCylindrical!(sim, [0.3, 1.1], 0.11, 0.1, verbose=false)
 Test.@test_throws ErrorException Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
 
+
+info("## Impermeable BCs")
+
+info("Test grain velocity adjustment across impermeable boundaries")
+# do not readjust inside grid, inactive boundaries
+sim = Granular.createSimulation()
+sim.ocean = Granular.createRegularOceanGrid([5, 5, 2], [1., 1., 1.])
+Granular.setGridBoundaryConditions!(sim.ocean, "inactive", verbose=false)
+Granular.addGrainCylindrical!(sim, [0.1, 0.5], 0.11, 0.1, verbose=false)
+Granular.moveGrainsAcrossPeriodicBoundaries!(sim)
+Test.@test [0.1, 0.5] ≈ sim.grains[1].lin_pos

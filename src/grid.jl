@@ -643,10 +643,10 @@ Grains can interact mechanically across the periodic boundary.
     `"east"` (+x), `"north"` (+y).  The values may be delimited in any way.
     Also, and by default, all boundaries can be selected with `"all"` (-x, -y,
     +x, +y), which overrides any other face selection.
-* `mode::String`: Boundary behavior, accepted values are `"inactive"` and
-    `"periodic"`.  You cannot specify more than one mode at a time, so if
-    several modes are desired as boundary conditions for the grid, several calls
-    to this function should be made.
+* `mode::String`: Boundary behavior, accepted values are `"inactive"`,
+    `"periodic"`, and `"impermeable"`.  You cannot specify more than one mode at
+    a time, so if several modes are desired as boundary conditions for the grid,
+    several calls to this function should be made.
 * `verbose::Bool`: Confirm boundary conditions by reporting values to console.
 
 # Examples
@@ -742,7 +742,6 @@ called after temporal integration of the grain positions.
 """
 function moveGrainsAcrossPeriodicBoundaries!(sim::Simulation)
 
-
     # return if grids are not enabled
     if typeof(sim.ocean.input_file) == Bool && 
         typeof(sim.atmosphere.input_file) == Bool
@@ -788,6 +787,73 @@ function moveGrainsAcrossPeriodicBoundaries!(sim::Simulation)
         # +y -> -y
         if sim.ocean.bc_east == 2 && grain.lin_pos[2] > sim.ocean.yq[end]
             grain.lin_pos[2] -= sim.ocean.yq[end] - sim.ocean.yq[1]
+        end
+    end
+    nothing
+end
+
+"""
+    reflectGrainsFromImpermeableBoundaries!(simulation::Simulation)
+
+If the ocean or atmosphere grids are impermeable, reflect grain trajectories by
+reversing the velocity vectors normal to the boundary.  This function is to be
+called after temporal integration of the grain positions.
+"""
+function reflectGrainsFromImpermeableBoundaries!(sim::Simulation)
+
+    # return if grids are not enabled
+    if typeof(sim.ocean.input_file) == Bool && 
+        typeof(sim.atmosphere.input_file) == Bool
+        return nothing
+    end
+
+    # return immediately if no boundaries are periodic
+    if sim.ocean.bc_west != 3 && 
+        sim.ocean.bc_south != 3 && 
+        sim.ocean.bc_east != 3 && 
+        sim.ocean.bc_north != 3
+        return nothing
+    end
+
+    # throw error if ocean and atmosphere grid BCs are different and both are
+    # enabled
+    if (typeof(sim.ocean.input_file) != Bool &&
+        typeof(sim.atmosphere.input_file) != Bool) &&
+        (sim.ocean.bc_west != sim.atmosphere.bc_west &&
+         sim.ocean.bc_south != sim.atmosphere.bc_south &&
+         sim.ocean.bc_east != sim.atmosphere.bc_east &&
+         sim.ocean.bc_north != sim.atmosphere.bc_north)
+        error("Ocean and Atmosphere grid boundary conditions differ")
+    end
+
+    for grain in sim.grains
+
+        # -x
+        if sim.ocean.bc_west == 3 && 
+            grain.lin_pos[1] - grain.contact_radius < sim.ocean.xq[1]
+
+            grain.lin_vel[1] *= -1.
+        end
+
+        # -y
+        if sim.ocean.bc_south == 3 && 
+            grain.lin_pos[2] - grain.contact_radius < sim.ocean.yq[1]
+
+            grain.lin_vel[2] *= -1.
+        end
+
+        # +x
+        if sim.ocean.bc_east == 3 &&
+            grain.lin_pos[1] + grain.contact_radius > sim.ocean.xq[end]
+
+            grain.lin_vel[1] *= -1.
+        end
+
+        # +y
+        if sim.ocean.bc_east == 3 && 
+            grain.lin_pos[2] + grain.contact_radius > sim.ocean.yq[end]
+
+            grain.lin_vel[2] *= -1.
         end
     end
     nothing

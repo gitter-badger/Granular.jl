@@ -34,8 +34,10 @@ function regularPacking!(simulation::Simulation,
                          seed::Integer=1)
 
     r_rand = 0.
+    pos = zeros(2)
     h = .5   # disc tickness
     dx = r_max*2.*(1. + padding_factor)  # cell size
+    dx_padding = r_max*2.*padding_factor
     srand(seed)
 
     for iy in 1:n[2]
@@ -48,8 +50,12 @@ function regularPacking!(simulation::Simulation,
                 r_rand = rand()*(r_max - r_min) + r_min
             end
 
-            addGrainCylindrical!(simulation, [ix*dx - .5*dx, iy*dx - .5*dx],
-                                 r_rand, h, verbose=false)
+            # Determine position from grid index and sample randomly from within
+            # padding
+            pos .= [ix*dx - .5*dx, iy*dx - .5*dx] .+
+                rand(2) .* dx_padding .- .5*dx_padding
+
+            addGrainCylindrical!(simulation, pos, r_rand, h, verbose=false)
         end
     end
 

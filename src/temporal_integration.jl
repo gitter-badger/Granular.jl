@@ -39,6 +39,7 @@ function updateGrainKinematics!(simulation::Simulation;
         error("Unknown integration method '$method'")
     end
     moveGrainsAcrossPeriodicBoundaries!(simulation)
+    reflectGrainsFromImpermeableBoundaries!(simulation)
     nothing
 end
 

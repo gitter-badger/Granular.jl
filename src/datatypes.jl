@@ -308,5 +308,5 @@ mutable struct Simulation
 end
 
 # Mappings between boundary condition keys (Integers) and strings
-const grid_bc_strings = ["inactive", "periodic"]
+const grid_bc_strings = ["inactive", "periodic", "impermeable"]
 const grid_bc_flags = Dict(zip(grid_bc_strings, 1:length(grid_bc_strings)))
