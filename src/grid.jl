@@ -919,7 +919,10 @@ function fitGridToGrains!(simulation::Simulation, grid::Any;
     const L::Vector{Float64} = [max_x - min_x, max_y - min_y]
     const dx::Float64 = 2.*max_radius
     const n = convert(Vector{Int}, floor.(L./dx))
-    if 1 in n
+    if 0 in n || 1 in n
+        println("L = $L")
+        println("dx = $dx")
+        println("n = $n")
         error("Grid is too small compared to grain size (n = $n). " *
               "Use all-to-all contact search instead.")
     end

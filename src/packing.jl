@@ -52,7 +52,7 @@ function regularPacking!(simulation::Simulation,
 
             # Determine position from grid index and sample randomly from within
             # padding
-            pos .= [ix*dx - .5*dx, iy*dx - .5*dx] .+
+            pos = [ix*dx - .5*dx, iy*dx - .5*dx] .+
                 rand(2) .* dx_padding .- .5*dx_padding
 
             addGrainCylindrical!(simulation, pos, r_rand, h, verbose=false)
