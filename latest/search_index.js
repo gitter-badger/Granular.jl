@@ -373,7 +373,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.fitGridToGrains!",
     "category": "Method",
-    "text": "fitGridToGrains!(simulation, grid[, padding])\n\nFit the ocean or atmosphere grid for a simulation to the current grains and their positions.\n\n\n\n"
+    "text": "fitGridToGrains!(simulation, grid[, padding])\n\nFit the ocean or atmosphere grid for a simulation to the current grains and their positions.\n\nArguments\n\nsimulation::Simulation: simulation object to manipulate.\ngrid::Any: Ocean or Atmosphere grid to manipulate.\npadding::Real: optional padding around edges [m].\nverbose::Bool: show grid information when function completes.\n\n\n\n"
 },
 
 {
@@ -641,11 +641,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "lib/public.html#Granular.regularPacking!-Tuple{Granular.Simulation}",
+    "location": "lib/public.html#Granular.regularPacking!-Tuple{Granular.Simulation,Array{Int64,1},Real,Real}",
     "page": "Public API",
     "title": "Granular.regularPacking!",
     "category": "Method",
-    "text": "\n\n"
+    "text": "regularPacking!(simulation, n, r_min, r_max[, padding_factor,\n                size_distribution, size_distribution_parameter])\n\nCreate a grid-based regular packing with grain numbers along each axis specified by the n vector.\n\nArguments\n\nsimulation::Simulation: simulation object where the grains are inserted,   preferably not containing prior grains.\nn::Vector{Integer}: 2-element vector determining number of grains along the   x and y axes.\nr_min::Real: minimum desired grain radius.\nr_max::Real: maximum desired grain radius.\npadding_factor::Real: percentage-wise padding around each grain to allow for   random perturbations to grain position.\nsize_distribution::String: grain-size distribution to sample. Valid values   are \"powerlaw\" and \"uniform\".\nsize_distribution_parameter::Real: parameter to pass to the grain-size   distribution generating function.\nseed::Integer: seed value to the pseudo-random number generator.\n\n\n\n"
 },
 
 {
