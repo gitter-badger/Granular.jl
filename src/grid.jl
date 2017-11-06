@@ -799,9 +799,15 @@ export fitGridToGrains!
 
 Fit the ocean or atmosphere grid for a simulation to the current grains and
 their positions.
+
+# Arguments
+* `simulation::Simulation`: simulation object to manipulate.
+* `grid::Any`: Ocean or Atmosphere grid to manipulate.
+* `padding::Real`: optional padding around edges [m].
+* `verbose::Bool`: show grid information when function completes.
 """
 function fitGridToGrains!(simulation::Simulation, grid::Any;
-                          padding::Float64 = 0., verbose::Bool = true)
+                          padding::Real=0., verbose::Bool=true)
 
     if typeof(grid) != Ocean && typeof(grid) != Atmosphere
         error("grid must be of Ocean or Atmosphere type")
