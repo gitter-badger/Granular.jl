@@ -9,7 +9,7 @@ sim = Granular.createSimulation(id="test")
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
 Granular.printGrainInfo(sim.grains[1])
 
-
+info("Testing grain value checks ")
 Test.@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1, .1],
                                                           10., 1.)
 Test.@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
@@ -24,12 +24,14 @@ Test.@test_throws ErrorException Granular.addGrainCylindrical!(sim, [.1, .1],
                                                           10., 1., density=-2.)
 Test.@test_throws ErrorException Granular.disableGrain!(sim, 0)
 
+info("Testing grain comparison ")
 sim = Granular.createSimulation(id="test")
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
 Granular.compareGrains(sim.grains[1], sim.grains[2])
 
 if typeof(Pkg.installed("PyPlot")) == VersionNumber
+    info("Testing GSD plotting ")
     Granular.plotGrainSizeDistribution(sim)
     rm("test-grain-size-distribution.png")
     Granular.plotGrainSizeDistribution(sim, skip_fixed=false)
@@ -43,6 +45,7 @@ else
     Test.@test_throws ErrorException Granular.plotGrainSizeDistribution(sim)
 end
 
+info("Testing external body force routines")
 sim = Granular.createSimulation(id="test")
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
 Granular.setBodyForce!(sim.grains[1], [1., 2.])

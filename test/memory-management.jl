@@ -11,14 +11,17 @@ empty_sim_size_recursive = 544
 Test.@test sizeof(sim) == empty_sim_size
 Test.@test Base.summarysize(sim) == empty_sim_size_recursive
 
-size_per_grain = 360
-size_per_grain_recursive = 1528
+size_per_grain = 368
+size_per_grain_recursive = 1552
 
 info("Testing memory usage when adding grains")
 for i=1:100
     Granular.addGrainCylindrical!(sim, [1., 1.], 1., 1., verbose=false)
 
     Test.@test sizeof(sim) == empty_sim_size
+
+    Test.@test sizeof(sim.grains[i]) == size_per_grain
+    Test.@test Base.summarysize(sim.grains[i]) == size_per_grain_recursive
 
     Test.@test sizeof(sim.grains) == sizeof(Int)*i
     Test.@test sizeof(sim.grains[:]) == sizeof(Int)*i
@@ -29,12 +32,6 @@ for i=1:100
         size_per_grain_recursive*i
 
     Test.@test Base.summarysize(sim.grains[i]) == size_per_grain_recursive
-
-    for j=1:i
-        Test.@test sizeof(sim.grains[j]) == size_per_grain
-        Test.@test Base.summarysize(sim.grains[j]) == size_per_grain_recursive
-    end
-
 end
 
 info("Checking memory footprint when overwriting simulation object")

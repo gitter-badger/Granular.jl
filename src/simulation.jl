@@ -229,7 +229,7 @@ export zeroForcesAndTorques!
 "Sets the `force` and `torque` values of all grains to zero."
 function zeroForcesAndTorques!(simulation::Simulation)
     for grain in simulation.grains
-        grain.force = grain.external_body_force
+        grain.force .= grain.external_body_force
         grain.torque = 0.
         grain.pressure = 0.
     end
