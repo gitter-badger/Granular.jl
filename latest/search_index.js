@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Granular.jl",
     "category": "section",
-    "text": "A Julia package for particle-based simulation of sea-ice dynamics.Granular.jl is a flexible and computationally efficient 2d implementation of  the discrete element method, made for simulating sea ice in a Lagrangian  manner.  Sea-ice floes are represented as particles, which can be forced by  ocean and atmospheric velocity fields.  The grains interact through  elasto-viscous-frictional contact rheologies and obtain time-dependent tensile  strength.The source code for Granular.jl is hosted on Github.See the Public API Index for the complete list of documented functions and types."
+    "text": "A Julia package for particle-based simulation of  granular dynamics.Granular.jl is a flexible and computationally efficient 2d implementation of  the discrete element method.  Grains are represented as particles, which can be  forced by drag in fluid grids.  The grains interact through  elasto-viscous-frictional contact rheologies and can obtain time-dependent  tensile strength.The source code for Granular.jl is hosted on Github.See the Public API Index for the complete list of documented functions and types."
 },
 
 {
@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Manual Outline",
     "category": "section",
-    "text": "Pages = [\n    \"man/installation.md\",\n    \"man/simple_example.md\",\n]\nDepth = 1"
+    "text": "Pages = [\n    \"man/installation.md\",\n    \"man/package_contents.md\",\n    \"man/methods.md\",\n    \"man/getting_started.md\",\n]\nDepth = 1"
 },
 
 {
@@ -61,21 +61,109 @@ var documenterSearchIndex = {"docs": [
     "page": "Installation",
     "title": "Installation",
     "category": "section",
-    "text": "Granular.jl can be installed directly from the Julia shell by:julia> Pkg.add(\"Granular\")This will install the contents of this repository in the folder  ~/.julia/v$(JULIA_VERSION)/Granular and install its requirements.  The  package JLD is used for model restarts and  is recommended but not required, and is thus not automatically installed.You can run the package tests, which are contained in the test/ directory, with the following command:julia> Pkg.test(\"Granular\")"
+    "text": "Julia includes a very useful package manager which makes it easy to install  packages and their requirements, as well as convenient updating features."
 },
 
 {
-    "location": "man/simple_example.html#",
-    "page": "A simple example",
-    "title": "A simple example",
+    "location": "man/installation.html#Stable-installation-(recommended)-1",
+    "page": "Installation",
+    "title": "Stable installation (recommended)",
+    "category": "section",
+    "text": "The latest stable release of Granular.jl can be installed directly from the  Julia shell by:julia> Pkg.add(\"Granular\")This will install the contents of this repository in the folder  ~/.julia/v$(JULIA_VERSION)/Granular and install its requirements.  The  package JLD is used for model restarts and  is recommended but not required, and is thus not automatically installed."
+},
+
+{
+    "location": "man/installation.html#Development-installation-1",
+    "page": "Installation",
+    "title": "Development installation",
+    "category": "section",
+    "text": "If desired, the current developmental version of the Granular.jl Github  repository can be installed with the  command:julia> Pkg.clone(\"git://github.com/anders-dc/Granular.jl\")Please note: The developmental version is considered unstable and should only  be used over the stable version if there is a compelling reason to do so."
+},
+
+{
+    "location": "man/installation.html#Keeping-the-package-up-to-date-1",
+    "page": "Installation",
+    "title": "Keeping the package up to date",
+    "category": "section",
+    "text": "With the Pkg.update() command, Julia checks and updates all installed  packages to their newest versions."
+},
+
+{
+    "location": "man/installation.html#Package-tests-1",
+    "page": "Installation",
+    "title": "Package tests",
+    "category": "section",
+    "text": "The Granular.jl package contains many tests that verify that the functionality  works as intended.  The extent of test coverage of the source code is monitored  and published with CodeCov.The package tests are during development continuously run with  Travis-CI for Mac (latest stable  release) and Linux (Ubuntu stable (trusty)), and  AppVeyor for Windows.The test scripts are contained in the test/ directory, can be run locally  with the following command:julia> Pkg.test(\"Granular\")In case any of these tests fail, please open a Github  Issue describing the problems  so further investigation and diagnosis can follow."
+},
+
+{
+    "location": "man/package_contents.html#",
+    "page": "Package contents",
+    "title": "Package contents",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "man/simple_example.html#A-simple-example-1",
-    "page": "A simple example",
-    "title": "A simple example",
+    "location": "man/package_contents.html#Package-contents-1",
+    "page": "Package contents",
+    "title": "Package contents",
+    "category": "section",
+    "text": "This package follows the official  guidelines  for Julia package layout and contents. "
+},
+
+{
+    "location": "man/package_contents.html#File-locations-after-installation-1",
+    "page": "Package contents",
+    "title": "File locations after installation",
+    "category": "section",
+    "text": "After installation, the package contents will be installed inside the hidden  ~/.julia/ folder in the home directory.  The path can be printed from inside  the julia shell by the command:julia> Pkg.dir(\"Granular\")\n\"/Users/ad/.julia/v0.7/Granular\"The above output will be different for different platforms and Julia versions.  In order to open this directory on macOS, run the following command:julia> run(`open $(Pkg.dir(\"Granular\"))`)On Linux, use the following command:julia> run(`xdg-open $(Pkg.dir(\"Granular\"))`)The above commands will open the directory containing all of the Granular.jl  components. The main component of Granular.jl is the source code contained in  the src/ directory.  The docs/  directory contains the documentation source via Markdown files.  The online  documentation is generated from these files via  Documenter.jl by the  docs/make.jl  script.  The documentation consists of manual pages, as well as auto-generated  API reference that is parsed from the documentation of the Granular.jl source  code (src/  directory)."
+},
+
+{
+    "location": "man/package_contents.html#Example-scripts-1",
+    "page": "Package contents",
+    "title": "Example scripts",
+    "category": "section",
+    "text": "The examples  directory contains several annotated examples, which are useful for getting  started with the Granular.jl package and for demonstrating some of its  features.  The examples are generally heavily annotated with comments to  illustrate the purpose of the included commands.The examples can be run by either navigating to the examples directory from the  command line, and launching them with a command like julia -e logo.jl, or  directly from the julia shell with:julia> include(\"$(Pkg.dir(\"Granular\"))/examples/logo.jl\")It is recommended that the source code of the examples is inspected beforehand."
+},
+
+{
+    "location": "man/methods.html#",
+    "page": "Computational methods",
+    "title": "Computational methods",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "man/methods.html#Computational-methods-1",
+    "page": "Computational methods",
+    "title": "Computational methods",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "man/getting_started.html#",
+    "page": "Getting started",
+    "title": "Getting started",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "man/getting_started.html#Getting-started-1",
+    "page": "Getting started",
+    "title": "Getting started",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "man/getting_started.html#Collision-between-two-particles-1",
+    "page": "Getting started",
+    "title": "Collision between two particles",
     "category": "section",
     "text": ""
 },
@@ -678,6 +766,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Granular.readSimulationStatus",
     "category": "Method",
     "text": "readSimulationStatus(filename::String;\n                     folder::String=\".\",\n                     verbose::Bool=false)\n\nWrite current simulation status to disk in a minimal txt file.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.reflectGrainsFromImpermeableBoundaries!-Tuple{Granular.Simulation}",
+    "page": "Public API",
+    "title": "Granular.reflectGrainsFromImpermeableBoundaries!",
+    "category": "Method",
+    "text": "reflectGrainsFromImpermeableBoundaries!(simulation::Simulation)\n\nIf the ocean or atmosphere grids are impermeable, reflect grain trajectories by reversing the velocity vectors normal to the boundary.  This function is to be called after temporal integration of the grain positions.\n\n\n\n"
 },
 
 {
