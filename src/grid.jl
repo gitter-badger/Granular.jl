@@ -792,6 +792,7 @@ function moveGrainsAcrossPeriodicBoundaries!(sim::Simulation)
     nothing
 end
 
+export reflectGrainsFromImpermeableBoundaries!
 """
     reflectGrainsFromImpermeableBoundaries!(simulation::Simulation)
 
