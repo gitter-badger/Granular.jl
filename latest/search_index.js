@@ -121,6 +121,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/public.html#Granular.addBodyForce!-Tuple{Granular.GrainCylindrical,Array{Float64,1}}",
+    "page": "Public API",
+    "title": "Granular.addBodyForce!",
+    "category": "Method",
+    "text": "setBodyForce!(grain, force)\n\nAdd to the value of the external body force on a grain.\n\nArguments\n\ngrain::GrainCylindrical: the grain to set the body force for.\nforce::Vector{Float64}: a vector of force [N]\n\n\n\n"
+},
+
+{
     "location": "lib/public.html#Granular.addGrain!",
     "page": "Public API",
     "title": "Granular.addGrain!",
@@ -661,7 +669,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.render",
     "category": "Method",
-    "text": "render(simulation[, pvpython, images, animation])\n\nWrapper function which calls writeParaviewPythonScript(...) and executes it from the shell using the supplied pvpython argument.\n\nArguments\n\nsimulation::Simulation: simulation object containing the grain data.\npvpython::String: path to the pvpython executable to use.  By default, the   script uses the pvpython in the system PATH.\nimages::Bool: render images to disk (default: true)\nanimation::Bool: render animation to disk (default: false)\nreverse::Bool: if images=true additionally render reverse-animated gif   (default: false)\n\n\n\n"
+    "text": "render(simulation[, pvpython, images, animation])\n\nWrapper function which calls writeParaviewPythonScript(...) and executes it from the shell using the supplied pvpython argument.\n\nArguments\n\nsimulation::Simulation: simulation object containing the grain data.\npvpython::String: path to the pvpython executable to use.  By default, the   script uses the pvpython in the system PATH.\nimages::Bool: render images to disk (default: true)\nanimation::Bool: render animation to disk (default: false)\ntrim::Bool: trim images in animated sequence (default: true)\nreverse::Bool: if images=true additionally render reverse-animated gif   (default: false)\n\n\n\n"
 },
 
 {
@@ -686,6 +694,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Granular.run!",
     "category": "Method",
     "text": "run!(simulation[,\n     verbose::Bool = true,\n     status_interval = 100.,\n     show_file_output = true,\n     single_step = false,\n     temporal_integration_method = \"Three-term Taylor\"],\n     write_jld = false)\n\nRun the simulation through time until simulation.time equals or exceeds  simulatim.time_total.  This function requires that all grains are added to  the simulation and that the length of the computational time step is adjusted  accordingly.\n\nThe function will search for contacts, determine the force balance on each ice  floe, and integrate all kinematic degrees of freedom accordingly.  The temporal  integration is explicit and of length simulation.time_step.  This function  will write VTK files to disk in the intervals simulation.file_time_step by the  function writeVTK.  If this value is negative, no output files will be written  to disk.\n\nArguments\n\nsimulation::Simulation: the simulation to run (object is modified)\nverbose::Bool=true: show verbose information during the time loop\nstatus_interval::Bool=true: show verbose information during the time loop\nshow_file_output::Bool=true: report to stdout when output file is written\nsingle_step::Bool=false: run simulation for a single time step only.  If    this causes simulation.time to exceed simulation.time_total, the latter    is increased accordingly.\ntemporal_integration_method::String=\"Three-term Taylor\": type of integration    method to use.  See updateGrainKinematics for details.\nwrite_jld::Bool=false: write simulation state to disk as JLD files (see    Granular.writeSimulation(...) whenever saving VTK output.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.setBodyForce!-Tuple{Granular.GrainCylindrical,Array{Float64,1}}",
+    "page": "Public API",
+    "title": "Granular.setBodyForce!",
+    "category": "Method",
+    "text": "setBodyForce!(grain, force)\n\nSet the value of the external body force on a grain.\n\nArguments\n\ngrain::GrainCylindrical: the grain to set the body force for.\nforce::Vector{Float64}: a vector of force [N]\n\n\n\n"
 },
 
 {
