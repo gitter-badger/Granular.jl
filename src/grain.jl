@@ -818,12 +818,12 @@ Set all grain forces, torques, accelerations, and velocities (linear and
 rotational) to zero in order to get rid of all kinetic energy.
 """
 function zeroKinematics!(sim::Simulation)
-    for grian in sim.grains
+    for grain in sim.grains
         grain.lin_vel .= zeros(2)
         grain.lin_acc .= zeros(2)
         grain.force .= zeros(2)
-        grain.ang_vel .= zeros(2)
-        grain.ang_acc .= zeros(2)
-        grain.torque .= zeros(2)
+        grain.ang_vel = 0.
+        grain.ang_acc = 0.
+        grain.torque = 0.
     end
 end

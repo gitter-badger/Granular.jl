@@ -53,13 +53,13 @@ Test.@test sim.grains[1].external_body_force ≈ [1., 2.]
 Granular.addBodyForce!(sim.grains[1], [1., 2.])
 Test.@test sim.grains[1].external_body_force ≈ [2., 4.]
 
-info("Testing zeroKinematics!")
+info("Testing zeroKinematics!()")
 sim.grains[1].force .= ones(2)
 sim.grains[1].lin_acc .= ones(2)
 sim.grains[1].lin_vel .= ones(2)
-sim.grains[1].torque .= ones(2)
-sim.grains[1].ang_acc .= ones(2)
-sim.grains[1].ang_vel .= ones(2)
+sim.grains[1].torque = 1.
+sim.grains[1].ang_acc = 1.
+sim.grains[1].ang_vel = 1.
 Granular.zeroKinematics!(sim)
-Test.@test Grain.totalGrainKineticTranslationalEnergy(sim) ≈ 0.
-Test.@test Grain.totalGrainKineticRotationalEnergy(sim) ≈ 0.
+Test.@test Granular.totalGrainKineticTranslationalEnergy(sim) ≈ 0.
+Test.@test Granular.totalGrainKineticRotationalEnergy(sim) ≈ 0.
