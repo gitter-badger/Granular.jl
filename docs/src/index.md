@@ -4,10 +4,10 @@
 
 `Granular.jl` is a flexible and computationally efficient 2d implementation of 
 the discrete element method, made for simulating sea ice in a Lagrangian 
-manner.  Sea-ice floes are represented as particles, which can be forced by 
-ocean and atmospheric velocity fields.  The grains interact through 
-elasto-viscous-frictional contact rheologies and obtain time-dependent tensile 
-strength.
+manner.  Grains are represented as particles, which can be forced by drag in 
+grids, such as ocean and atmospheric velocity fields.  The grains interact 
+through elasto-viscous-frictional contact rheologies and can obtain 
+time-dependent tensile strength.
 
 The source code for Granular.jl is hosted on [Github](https://github.com/anders-dc/Granular.jl).
 
@@ -26,7 +26,8 @@ Granular.jl is licensed under the GPLv3; see [LICENSE](https://github.com/anders
 ```@contents
 Pages = [
     "man/installation.md",
-    "man/simple_example.md",
+    "man/package_contents.md",
+    "man/getting_started.md",
 ]
 Depth = 1
 ```

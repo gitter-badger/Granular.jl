@@ -13,18 +13,16 @@ Granular.regularPacking!(sim, [10, 50], 0.2, 1.0)
 # Create a grid for contact searching spanning the extent of the grains
 Granular.fitGridToGrains!(sim, sim.ocean)
 
-# Make the ocean grid drag grains uniformly towards -y
-sim.ocean.v[:, :, 1, 1] = -5.0
-
 # Make the top and bottom boundaries impermeable, and the side boundaries
 # periodic, which will come in handy during shear
 Granular.setGridBoundaryConditions!(sim.ocean, "impermeable", "north south")
 Granular.setGridBoundaryConditions!(sim.ocean, "periodic", "east west")
 
-# Add gravitational acceleration to all grains
+# Add gravitational acceleration to all grains and disable ocean-grid drag
 g = [0., -9.8]
 for grain in sim.grains
     Granular.addBodyForce!(grain, grain.mass*g)
+    Granular.disableOceanDrag!(grain)
 end
 
 # Automatically set the computational time step based on grain sizes and
@@ -52,6 +50,8 @@ Granular.render(sim, trim=false)
 #### Step 2: Consolidate the previous output under a constant normal stress    #
 ################################################################################
 
+# Set all linear and rotational velocities to zero
+Granular.zeroKinematics!(sim)
 
 
 

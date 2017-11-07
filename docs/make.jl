@@ -10,7 +10,8 @@ makedocs(
         "Home" => "index.md",
         "Manual" => Any[
             "man/installation.md",
-            "man/simple_example.md",
+            "man/package_contents.md",
+            "man/getting_started.md",
         ],
         "Library" => Any[
             "Public API" => "lib/public.md",
