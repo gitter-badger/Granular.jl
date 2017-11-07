@@ -61,7 +61,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Installation",
     "title": "Installation",
     "category": "section",
-    "text": "Julia includes a very useful package manager which makes it easy to install  packages and their requirements, as well as convenient updating features."
+    "text": ""
+},
+
+{
+    "location": "man/installation.html#Prerequisites-1",
+    "page": "Installation",
+    "title": "Prerequisites",
+    "category": "section",
+    "text": "Granular.jl is written as a package for the Julia programming  language, which is a computationally efficient, yet  high-level language. Julia also includes a very useful package manager which  makes it easy to install packages and their requirements, as well as convenient  updating features."
+},
+
+{
+    "location": "man/installation.html#Installing-Julia-1",
+    "page": "Installation",
+    "title": "Installing Julia",
+    "category": "section",
+    "text": "If you do not have Julia installed, download the current release from the  official Julia download page, or using your  system package manager (e.g. brew cask install julia on macOS with the  Homebrew package manager).  Afterwards, the program julia  can be launched from the terminal."
+},
+
+{
+    "location": "man/installation.html#Installing-Paraview-1",
+    "page": "Installation",
+    "title": "Installing Paraview",
+    "category": "section",
+    "text": "The core visualization functionality of Granular.jl is based on VTK and  ParaView.  The most recent stable release can be downloaded from the ParaView  downloads page.  Alternatively, on macOS  with Homebrew, Paraview can be installed from the terminal with brew cask  install paraview."
 },
 
 {
