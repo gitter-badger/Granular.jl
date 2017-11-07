@@ -23,6 +23,10 @@ matrix:
 before_script:
   - julia -e 'info("Preparing Python"); ENV["PYTHON"]=""; Pkg.add("PyCall"); Pkg.build("PyCall")'
 
+script:
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia -e 'Pkg.clone(pwd()); Pkg.build("Granular"); Pkg.test("Granular"; coverage=true)';
+
 deploy:
   - provider: script
     script: julia -e 'cd(Pkg.dir("Granular")); Pkg.add("Coverage"); Pkg.add("Documenter"); using Coverage; Codecov.submit(Codecov.process_folder()); cd(Pkg.dir("Granular")); include(joinpath("docs", "make.jl"))'
