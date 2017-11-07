@@ -21,7 +21,7 @@ elseif is_apple()
 
 elseif is_windows()
     using WinRPM
-    provides(WinRPM.RPM, "imagemagick", imagemagick, os = :Windows)
+    provides(WinRPM.RPM, "ImageMagick", imagemagick, os = :Windows)
 end
 
 @BinDeps.install Dict(:imagemagick => :imagemagick)
