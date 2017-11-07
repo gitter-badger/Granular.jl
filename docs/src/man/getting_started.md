@@ -1,2 +1,5 @@
-# A simple example
+# Getting started
+
+
+## Collision between two particles
 

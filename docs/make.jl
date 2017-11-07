@@ -11,6 +11,7 @@ makedocs(
         "Manual" => Any[
             "man/installation.md",
             "man/package_contents.md",
+            "man/methods.md",
             "man/getting_started.md",
         ],
         "Library" => Any[

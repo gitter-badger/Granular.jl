@@ -1,4 +1,6 @@
 # Installation
+Julia includes a very useful package manager which makes it easy to install 
+packages and their requirements, as well as convenient updating features.
 
 ## Stable installation (recommended)
 The latest stable release of Granular.jl can be installed directly from the 
@@ -13,6 +15,7 @@ This will install the contents of this repository in the folder
 package [JLD](https://github.com/JuliaIO/JLD.jl) is used for model restarts and 
 is recommended but not required, and is thus not automatically installed.
 
+## Development installation
 If desired, the current developmental version of the [Granular.jl Github 
 repository](https://github.com/anders-dc/Granular.jl) can be installed with the 
 command:
@@ -23,6 +26,10 @@ julia> Pkg.clone("git://github.com/anders-dc/Granular.jl")
 
 *Please note:* The developmental version is considered unstable and should only 
 be used over the stable version if there is a compelling reason to do so.
+
+## Keeping the package up to date
+With the `Pkg.update()` command, Julia checks and updates all installed 
+packages to their newest versions.
 
 ## Package tests
 The Granular.jl package contains many tests that verify that the functionality 
@@ -42,5 +49,5 @@ julia> Pkg.test("Granular")
 ```
 
 In case any of these tests fail, please open a [Github 
-Issue](https://github.com/anders-dc/Granular.jl/issues) so it can be 
-investigated and diagnosed further.
+Issue](https://github.com/anders-dc/Granular.jl/issues) describing the problems 
+so further investigation and diagnosis can follow.
