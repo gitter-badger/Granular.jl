@@ -568,6 +568,8 @@ end
 
 export totalGrainKineticTranslationalEnergy
 """
+    totalGrainKineticTranslationalEnergy(simulation)
+
 Returns the sum of translational kinetic energies of all grains in a 
 simulation
 """
@@ -587,6 +589,8 @@ end
 
 export totalGrainKineticRotationalEnergy
 """
+    totalGrainKineticRotationalEnergy(simulation)
+
 Returns the sum of rotational kinetic energies of all grains in a simulation
 """
 function totalGrainKineticRotationalEnergy(simulation::Simulation)
@@ -759,5 +763,67 @@ function plotGrainSizeDistribution(simulation::Simulation;
     PyPlot.savefig(filename)
     if verbose
         info(filename)
+    end
+end
+
+export enableOceanDrag!
+"""
+    enableOceanDrag!(grain)
+
+Enable ocean-caused drag on the grain, with values by Hunke and Comeau (2011).
+"""
+function enableOceanDrag!(grain::GrainCylindrical)
+    grain.ocean_drag_coeff_vert = 0.85
+    grain.ocean_drag_coeff_horiz = 5e-4
+end
+
+export enableAtmosphereDrag!
+"""
+    enableAtmosphereDrag!(grain)
+
+Enable atmosphere-caused drag on the grain, with values by Hunke and Comeau
+(2011).
+"""
+function enableAtmosphereDrag!(grain::GrainCylindrical)
+    grain.atmosphere_drag_coeff_vert = 0.4
+    grain.atmosphere_drag_coeff_horiz = 2.5e-4
+end
+export disableOceanDrag!
+"""
+    disableOceanDrag!(grain)
+
+Disable ocean-caused drag on the grain.
+"""
+function disableOceanDrag!(grain::GrainCylindrical)
+    grain.ocean_drag_coeff_vert = 0.
+    grain.ocean_drag_coeff_horiz = 0.
+end
+
+export disableAtmosphereDrag!
+"""
+    disableAtmosphereDrag!(grain)
+
+Disable atmosphere-caused drag on the grain.
+"""
+function disableAtmosphereDrag!(grain::GrainCylindrical)
+    grain.atmosphere_drag_coeff_vert = 0.
+    grain.atmosphere_drag_coeff_horiz = 0.
+end
+
+export zeroKinematics!
+"""
+    zeroKinematics!(simulation)
+
+Set all grain forces, torques, accelerations, and velocities (linear and
+rotational) to zero in order to get rid of all kinetic energy.
+"""
+function zeroKinematics!(sim::Simulation)
+    for grian in sim.grains
+        grain.lin_vel .= zeros(2)
+        grain.lin_acc .= zeros(2)
+        grain.force .= zeros(2)
+        grain.ang_vel .= zeros(2)
+        grain.ang_acc .= zeros(2)
+        grain.torque .= zeros(2)
     end
 end
