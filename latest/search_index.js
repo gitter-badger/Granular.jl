@@ -305,6 +305,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/public.html#Granular.disableAtmosphereDrag!-Tuple{Granular.GrainCylindrical}",
+    "page": "Public API",
+    "title": "Granular.disableAtmosphereDrag!",
+    "category": "Method",
+    "text": "disableAtmosphereDrag!(grain)\n\nDisable atmosphere-caused drag on the grain.\n\n\n\n"
+},
+
+{
     "location": "lib/public.html#Granular.disableGrain!-Tuple{Granular.Simulation,Int64}",
     "page": "Public API",
     "title": "Granular.disableGrain!",
@@ -313,11 +321,35 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/public.html#Granular.disableOceanDrag!-Tuple{Granular.GrainCylindrical}",
+    "page": "Public API",
+    "title": "Granular.disableOceanDrag!",
+    "category": "Method",
+    "text": "disableOceanDrag!(grain)\n\nDisable ocean-caused drag on the grain.\n\n\n\n"
+},
+
+{
     "location": "lib/public.html#Granular.disableOutputFiles!-Tuple{Granular.Simulation}",
     "page": "Public API",
     "title": "Granular.disableOutputFiles!",
     "category": "Method",
     "text": "Disables the write of output files to disk during a simulation.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.enableAtmosphereDrag!-Tuple{Granular.GrainCylindrical}",
+    "page": "Public API",
+    "title": "Granular.enableAtmosphereDrag!",
+    "category": "Method",
+    "text": "enableAtmosphereDrag!(grain)\n\nEnable atmosphere-caused drag on the grain, with values by Hunke and Comeau (2011).\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.enableOceanDrag!-Tuple{Granular.GrainCylindrical}",
+    "page": "Public API",
+    "title": "Granular.enableOceanDrag!",
+    "category": "Method",
+    "text": "enableOceanDrag!(grain)\n\nEnable ocean-caused drag on the grain, with values by Hunke and Comeau (2011).\n\n\n\n"
 },
 
 {
@@ -765,7 +797,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.totalGrainKineticRotationalEnergy",
     "category": "Method",
-    "text": "Returns the sum of rotational kinetic energies of all grains in a simulation\n\n\n\n"
+    "text": "totalGrainKineticRotationalEnergy(simulation)\n\nReturns the sum of rotational kinetic energies of all grains in a simulation\n\n\n\n"
 },
 
 {
@@ -773,7 +805,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.totalGrainKineticTranslationalEnergy",
     "category": "Method",
-    "text": "Returns the sum of translational kinetic energies of all grains in a  simulation\n\n\n\n"
+    "text": "totalGrainKineticTranslationalEnergy(simulation)\n\nReturns the sum of translational kinetic energies of all grains in a  simulation\n\n\n\n"
 },
 
 {
@@ -854,6 +886,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Granular.zeroForcesAndTorques!",
     "category": "Method",
     "text": "Sets the force and torque values of all grains to zero.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.zeroKinematics!-Tuple{Granular.Simulation}",
+    "page": "Public API",
+    "title": "Granular.zeroKinematics!",
+    "category": "Method",
+    "text": "zeroKinematics!(simulation)\n\nSet all grain forces, torques, accelerations, and velocities (linear and rotational) to zero in order to get rid of all kinetic energy.\n\n\n\n"
 },
 
 {
