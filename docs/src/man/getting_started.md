@@ -43,6 +43,7 @@ As the first command, we import all the Granular.jl functionality:
 julia> import Granular
 ```
 
+### Simulation setup
 Next, we create our simulation object which holds all information on the 
 simulated grains.  This object can be called whatever is appropriate.  In this 
 documentation, we will use the name `sim`:
@@ -64,6 +65,7 @@ During the above `createSimulation` call, the `id` argument is optional, but is
 used to name simulation output files that are written to the disk.  It is good 
 practice to use the same name as used for the simulation script file.
 
+### Adding grains one by one
 We have now created a simulation object, which will be used during all of the 
 following.  Next, we add grains to this object.  The first grain is cylinder 
 shaped, placed at the x-y position (0,0) m, has a radius of 0.1 m, and a 
@@ -111,6 +113,7 @@ julia> sim.grains[1].lin_vel = [1.0, 0.0]
 The first grain (index 1 in `sim.grains`) now has a positive velocity along `x` 
 with the value of 1.0 meter per second.
 
+### Setting temporal parameters for the simulation
 Before we can start the simulation, we need to tell the code vital information, 
 like what time step to use, how often to write output files to the disk, and 
 for how long to run the simulation.  To set the computational time step, we 
@@ -137,11 +140,24 @@ julia> Granular.setOutputFileInterval!(sim, 0.05)
 julia> Granular.setTotalTime!(sim, 1.0)
 ```
 
-We are now ready to run the simulation.  We have two choices; we can either 
-run the entire simulation length with a single call, which steps time until the 
-total time is reached and generates output files along the way.  Alternatively, 
-we can run the simulation for a single time step a time, and inspect the 
-progress or do other modifications along the way.
+### Running the simulation
+We are now ready to run the simulation.  For illustrative purposes, let us 
+compare the kinetic energy in the granular system before and after the 
+collision.  For now, we save the initial value using the following call:
+
+```julia-repl
+julia> Granular.totalGrainKineticTranslationalEnergy(sim)
+0.7335618846132168
+```
+
+The above value is the total translational (not angular) kinetic energy in 
+Joules before the simulation is started.
+
+For running the simulation, we have two choices; we can either run the entire 
+simulation length with a single call, which steps time until the total time is 
+reached and generates output files along the way.  Alternatively, we can run 
+the simulation for a single time step a time, and inspect the progress or do 
+other modifications along the way.
 
 Here, we will run the entire simulation in one go, and afterwards visualize the 
 grains from their output files using ParaView.
@@ -170,6 +186,69 @@ files are generated (this can be disabled by passing `verbose=false` to the
 `run!()` command).  Finally, it tells us that it has generated a ParaView 
 python file for visualization.
 
+Before going further, we are interested in getting an immediate idea of how the 
+collision went.  We print the new velocities with the following commands:
 
+```julia-repl
+julia> sim.grains[1].lin_vel
+2-element Array{Float64, 1}:
+ 7.58343e-5
+ 0.0
 
+julia> sim.grains[2].lin_vel
+2-element Array{Float64, 1}:
+ 0.999924
+ 0.0
+```
+
+The first grain has transferred effectively all of its kinetic energy to the 
+second grain during the cause of the simulation.  The total kinetic energy now 
+is the following:
+
+```julia-repl
+julia> Granular.totalGrainKineticTranslationalEnergy(sim)
+0.7334506347624973
+```
+
+The before and after values are reasonably close (to less than 0.1 percent), 
+which is what can be expected given the computation accuracy in the algorithm.
+
+### Visualizing the output
+To visualize the output we open [ParaView](https://www.paraview.org).  The 
+output files of the simulation are written using the VTK (visualization 
+toolkit) format, which is natively supported by ParaView.
+
+While the `.vtu` files produced during the simulation can be opened with 
+ParaView and visualized manually using *Glyph* filters, the simplest and 
+fastest way to visualize the data is to use the Python script generated for the 
+simulation by Granular.jl.
+
+Open ParaView and open the *Python Shell*, found under the menu *Tools > Python 
+Shell*.  In the pop-up dialog we select *Run Script*, which opens yet another 
+dialog prompting us to locate the visualization script (`two-grains.py`, in our 
+example).  We locate this file, which is placed under the directory from where 
+we launched the `julia` session with the commands above.
+
+After selecting the `two-grains/two-grains.py` script, we can close the *Python 
+Shell* window to inspect our simulation.  Press the *Play* symbol in the top 
+toolbar, and see what happens!
+
+Alternatively, you can color the grains using different parameters, such as 
+velocity, number of contacts, etc.  These can be selected by changing the 
+chosen parameter under the *Glyph1* object in the *Pipeline Browser* on the 
+left, and selecting a different field for *Coloring*.  Press the *Apply* button 
+to see the changes in effect.
+
+### Exercises
+To gain more familiarity with the simulation procedure, I suggest experimenting 
+with the following:
+
+- What effect does the grain size have on the time step?
+- Try to make an oblique collision by placing one of the grains at a different 
+    `y` position.
+- What happens if the second grains is set to be fixed in space 
+    (`sim.grains[2].fixed = true`)?
+- How is the relationship between total kinetic energy before and after 
+    affected by the choice of time step length?  Try setting different time 
+    step values, e.g. with `sim.time_step = 0.1234` and rerun the simulation.
 

@@ -14,10 +14,13 @@ export createSimulation
                       atmosphere::Atmosphere)
 
 Create a simulation object containing all relevant variables such as temporal 
-parameters, and lists of grains and contacts.
+parameters, and lists of grains and contacts. The parameter `id` is used to
+uniquely identify the simulation when it is written to disk.
 
-The parameter `id` is used to uniquely identify the simulation when it is 
-written to disk.
+# Arguments
+* `id::String="unnamed"`:
+
+
 """
 function createSimulation(;id::String="unnamed",
                           time_iteration::Int=0,
