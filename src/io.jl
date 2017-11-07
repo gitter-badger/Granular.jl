@@ -943,19 +943,28 @@ function render(simulation::Simulation; pvpython::String="pvpython",
                 if trim
                     trim_string = "-trim"
                 end
-                run(`convert $trim_string +repage -delay 10 
+
+                # use ImageMagick installed with Homebrew.jl if available,
+                # otherwise search for convert in $PATH
+                convert = "convert"
+                if is_apple()
+                    import Homebrew
+                    convert = Homebrew.prefix() * "/bin/convert"
+                end
+
+                run(`$convert $trim_string +repage -delay 10 
                     -transparent-color white 
                     -loop 0 $(simulation.id)/$(simulation.id).'*'.png 
                     $(simulation.id)/$(simulation.id).gif`)
                 if reverse
-                    run(`convert -trim +repage -delay 10 -transparent-color white 
+                    run(`$convert -trim +repage -delay 10 -transparent-color white 
                         -loop 0 -reverse
                         $(simulation.id)/$(simulation.id).'*'.png 
                         $(simulation.id)/$(simulation.id)-reverse.gif`)
                 end
             catch return_signal
                 if isa(return_signal, Base.UVError)
-                    info("Skipping gif merge since `convert` was not found.")
+                    info("Skipping gif merge since `$convert` was not found.")
                 end
             end
         end
