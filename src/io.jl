@@ -921,12 +921,14 @@ from the shell using the supplied `pvpython` argument.
     script uses the pvpython in the system PATH.
 * `images::Bool`: render images to disk (default: true)
 * `animation::Bool`: render animation to disk (default: false)
+* `trim::Bool`: trim images in animated sequence (default: true)
 * `reverse::Bool`: if `images=true` additionally render reverse-animated gif
     (default: false)
 """
 function render(simulation::Simulation; pvpython::String="pvpython",
                 images::Bool=true,
                 animation::Bool=false,
+                trim::Bool=true,
                 reverse::Bool=false)
 
     writeParaviewPythonScript(simulation, save_animation=animation,
@@ -937,7 +939,12 @@ function render(simulation::Simulation; pvpython::String="pvpython",
         # if available, use imagemagick to create gif from images
         if images
             try
-                run(`convert -trim +repage -delay 10 -transparent-color white 
+                trim_string = ""
+                if trim
+                    trim_string = "-trim"
+                end
+                run(`convert $trim_string +repage -delay 10 
+                    -transparent-color white 
                     -loop 0 $(simulation.id)/$(simulation.id).'*'.png 
                     $(simulation.id)/$(simulation.id).gif`)
                 if reverse

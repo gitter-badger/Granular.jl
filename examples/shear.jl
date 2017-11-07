@@ -6,9 +6,9 @@ import Granular
 ################################################################################
 sim = Granular.createSimulation(id="shear-init")
 
-# Generate 10 grains along x and 100 grains along y, with radii between 0.2 and
+# Generate 10 grains along x and 50 grains along y, with radii between 0.2 and
 # 1.0 m.
-Granular.regularPacking!(sim, [10, 100], 0.2, 1.0)
+Granular.regularPacking!(sim, [10, 50], 0.2, 1.0)
 
 # Create a grid for contact searching spanning the extent of the grains
 Granular.fitGridToGrains!(sim, sim.ocean)
@@ -38,14 +38,7 @@ Granular.plotGrainSizeDistribution(sim)
 Granular.run!(sim)
 
 # Try to render the simulation if `pvpython` is installed on the system
-Granular.render(sim)
-
-
-
-
-
-
-
+Granular.render(sim, trim=false)
 
 
 
