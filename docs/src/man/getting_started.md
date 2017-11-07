@@ -1,4 +1,8 @@
 # Getting started
+If you are new to the [Julia](https://julialang.org) programming language, the 
+official manual has a useful guide to [getting started with 
+Julia](https://docs.julialang.org/en/latest/manual/getting-started/).
+
 In the following, two simple examples are presented using some of the core 
 commands of Granular.jl.  For more examples, see the scripts in the `examples/` 
 directory.
