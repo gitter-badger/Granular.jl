@@ -220,6 +220,7 @@ function addGrainCylindrical!(simulation::Simulation,
                                  lin_vel,
                                  lin_acc,
                                  force,
+                                 [0., 0.], # external_body_force
 
                                  ang_pos,
                                  ang_vel,
@@ -596,6 +597,34 @@ function totalGrainKineticRotationalEnergy(simulation::Simulation)
     return E_sum
 end
 
+export addBodyForce!
+"""
+    setBodyForce!(grain, force)
+
+Add to the value of the external body force on a grain.
+
+# Arguments
+* `grain::GrainCylindrical`: the grain to set the body force for.
+* `force::Vector{Float64}`: a vector of force [N]
+"""
+function addBodyForce!(grain::GrainCylindrical, force::Vector{Float64})
+    grain.external_body_force += force
+end
+
+export setBodyForce!
+"""
+    setBodyForce!(grain, force)
+
+Set the value of the external body force on a grain.
+
+# Arguments
+* `grain::GrainCylindrical`: the grain to set the body force for.
+* `force::Vector{Float64}`: a vector of force [N]
+"""
+function setBodyForce!(grain::GrainCylindrical, force::Vector{Float64})
+    grain.external_body_force = force
+end
+
 export compareGrains
 """
     compareGrains(if1::GrainCylindrical, if2::GrainCylindrical)
@@ -621,6 +650,7 @@ function compareGrains(if1::GrainCylindrical, if2::GrainCylindrical)
     Test.@test if1.lin_vel ≈ if2.lin_vel
     Test.@test if1.lin_acc ≈ if2.lin_acc
     Test.@test if1.force ≈ if2.force
+    Test.@test if1.external_body_force ≈ if2.external_body_force
 
     Test.@test if1.ang_pos ≈ if2.ang_pos
     Test.@test if1.ang_vel ≈ if2.ang_vel

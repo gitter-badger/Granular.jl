@@ -21,6 +21,12 @@ sim.ocean.v[:, :, 1, 1] = -5.0
 Granular.setGridBoundaryConditions!(sim.ocean, "impermeable", "north south")
 Granular.setGridBoundaryConditions!(sim.ocean, "periodic", "east west")
 
+# Add gravitational acceleration to all grains
+g = [0., -9.8]
+for grain in sim.grains
+    Granular.addBodyForce!(grain, grain.mass*g)
+end
+
 # Automatically set the computational time step based on grain sizes and
 # properties
 Granular.setTimeStep!(sim)

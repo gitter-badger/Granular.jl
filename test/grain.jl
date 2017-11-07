@@ -42,3 +42,10 @@ if typeof(Pkg.installed("PyPlot")) == VersionNumber
 else
     Test.@test_throws ErrorException Granular.plotGrainSizeDistribution(sim)
 end
+
+sim = Granular.createSimulation(id="test")
+Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 1., verbose=false)
+Granular.setBodyForce!(sim.grains[1], [1., 2.])
+Test.@test sim.grains[1].external_body_force ≈ [1., 2.]
+Granular.addBodyForce!(sim.grains[1], [1., 2.])
+Test.@test sim.grains[1].external_body_force ≈ [2., 4.]
