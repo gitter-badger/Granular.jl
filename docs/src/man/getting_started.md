@@ -358,7 +358,7 @@ We also again set the total simulation time as well as the output file
 interval:
 
 ```julia-repl
-julia> Granular.setTotalTime!(sim, 5.0)
+julia> Granular.setTotalTime!(sim, 10.0)
 julia> Granular.setOutputFileInterval!(sim, 0.2)
 ```
 
@@ -370,21 +370,21 @@ julia> Granular.run!(sim)
 INFO: Output file: ./sedimentation/sedimentation.grains.1.vtu
 INFO: Output file: ./sedimentation/sedimentation.ocean.1.vts
 INFO: wrote status to ./sedimentation/sedimentation.status.txt
-  t = 0.19884968859273294/5.0 s
+  t = 0.19884968859273294/10.0 s
 INFO: Output file: ./sedimentation/sedimentation.grains.2.vtu
 INFO: Output file: ./sedimentation/sedimentation.ocean.2.vts
 INFO: wrote status to ./sedimentation/sedimentation.status.txt
-  t = 0.3993989471735396/5.0 s
+  t = 0.3993989471735396/10.0 s
 
 ...
 
-INFO: Output file: ./sedimentation/sedimentation.grains.25.vtu
-INFO: Output file: ./sedimentation/sedimentation.ocean.25.vts
+INFO: Output file: ./sedimentation/sedimentation.grains.50.vtu
+INFO: Output file: ./sedimentation/sedimentation.ocean.50.vts
 INFO: wrote status to ./sedimentation/sedimentation.status.txt
-  t = 4.998435334626701/5.0 s
+  t = 9.998435334626701/10.0 s
 INFO: ./sedimentation/sedimentation.py written, execute with 'pvpython /Users/ad/code/Granular-ext/examples/sedimentation/sedimentation.py'
 INFO: wrote status to ./sedimentation/sedimentation.status.txt
-  t = 5.00001593471549/5.0 s
+  t = 10.00001593471549/10.0 s
 ```
 
 The output can be plotted in ParaView as discribed in the `two-grain` example 

@@ -29,7 +29,7 @@ end
 Granular.setTimeStep!(sim)
 
 # Set the total simulation time for this step [s]
-Granular.setTotalTime!(sim, 5.0)
+Granular.setTotalTime!(sim, 10.0)
 
 # Set the interval in model time between simulation files [s]
 Granular.setOutputFileInterval!(sim, 0.2)
