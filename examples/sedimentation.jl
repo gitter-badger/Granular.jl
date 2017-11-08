@@ -9,7 +9,7 @@ sim = Granular.createSimulation(id="sedimentation")
 Granular.regularPacking!(sim, [7, 25], 0.02, 0.2)
 
 # Visualize the grain-size distribution
-Granular.plotGrainSizeDistribution(sim)
+#Granular.plotGrainSizeDistribution(sim)
 
 # Create a grid for contact searching spanning the extent of the grains in the
 # simulation

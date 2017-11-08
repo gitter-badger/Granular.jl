@@ -245,8 +245,11 @@ to see the changes in effect.
 
 **Tip:** If you have the command `pvpython` (ParaView Python) available from 
 the command line, you can visualize the simulation directly from the command 
-line without entering ParaView by the command `sim.render()`.  Furthermore, if 
-you have the `convert` command from ImageMagick installed (`brew install 
+line without entering ParaView by the command `sim.render()`.  The program 
+`pvpython` is included in the ParaView download, and is in the macOS 
+application bundle located in 
+`/Applications/Paraview-5.4.0.app/Contents/bin/pvpython`.  Furthermore, if you 
+have the `convert` command from ImageMagick installed (`brew install 
 imagemagick` on macOS), the output images will be merged into an animated GIF.
 
 ### Exercises
