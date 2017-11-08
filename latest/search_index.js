@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Computational methods",
     "title": "Computational methods",
     "category": "section",
-    "text": ""
+    "text": "To be written"
 },
 
 {
@@ -181,7 +181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Getting started",
     "category": "section",
-    "text": "In the following, two simple examples are presented using some of the core  commands of Granular.jl.  For more examples, see the scripts in the examples/  directory.The relevant functions are all contained in the Granular module, which can be  imported with import Granular at the top of your script.  Note: As per  Julia conventions, functions that contain an exclamation mark (!) modify the  values of the arguments.Any of the functions called below are documented in the source code, and this  documentation can be found in the Public API Index in the  online documentation, or simply from the Julia shell by typing ?<function  name>.  An example:julia> ?Granular.fitGridToGrains!\n\n  fitGridToGrains!(simulation, grid[, padding])\n\n  Fit the ocean or atmosphere grid for a simulation to the current grains and their positions.\n\n     Arguments\n    ≡≡≡≡≡≡≡≡≡≡≡\n\n    •    simulation::Simulation: simulation object to manipulate.\n\n    •    grid::Any: Ocean or Atmosphere grid to manipulate.\n\n    •    padding::Real: optional padding around edges [m].\n\n    •    verbose::Bool: show grid information when function completes.\n"
+    "text": "If you are new to the Julia programming language, the  official manual has a useful guide to getting started with  Julia.In the following, two simple examples are presented using some of the core  commands of Granular.jl.  For more examples, see the scripts in the examples/  directory.The relevant functions are all contained in the Granular module, which can be  imported with import Granular at the top of your script.  Note: As per  Julia conventions, functions that contain an exclamation mark (!) modify the  values of the arguments.Any of the functions called below are documented in the source code, and this  documentation can be found in the Public API Index in the  online documentation, or simply from the Julia shell by typing ?<function  name>.  An example:julia> ?Granular.fitGridToGrains!\n\n  fitGridToGrains!(simulation, grid[, padding, verbose])\n\n  Fit the ocean or atmosphere grid for a simulation to the current grains and their positions.\n\n     Arguments\n    ≡≡≡≡≡≡≡≡≡≡≡\n\n    •    simulation::Simulation: simulation object to manipulate.\n\n    •    grid::Any: Ocean or Atmosphere grid to manipulate.\n\n    •    padding::Real: optional padding around edges [m].\n\n    •    verbose::Bool: show grid information when function completes.\n"
 },
 
 {
@@ -189,7 +189,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Collision between two particles",
     "category": "section",
-    "text": "For this simple example (example/two-grains.jl), we will create two grains,  where one of the grains is bumping in to the other.As the first command, we import all the Granular.jl functionality:julia> import Granular"
+    "text": "For this simple example (examples/two-grains.jl), we will create two grains,  where one of the grains is bumping in to the other.As the first command, we import all the Granular.jl functionality:julia> import Granular"
 },
 
 {
@@ -229,7 +229,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Visualizing the output",
     "category": "section",
-    "text": "To visualize the output we open ParaView.  The  output files of the simulation are written using the VTK (visualization  toolkit) format, which is natively supported by ParaView.While the .vtu files produced during the simulation can be opened with  ParaView and visualized manually using Glyph filters, the simplest and  fastest way to visualize the data is to use the Python script generated for the  simulation by Granular.jl.Open ParaView and open the Python Shell, found under the menu Tools > Python  Shell.  In the pop-up dialog we select Run Script, which opens yet another  dialog prompting us to locate the visualization script (two-grains.py, in our  example).  We locate this file, which is placed under the directory from where  we launched the julia session with the commands above.After selecting the two-grains/two-grains.py script, we can close the Python  Shell window to inspect our simulation.  Press the Play symbol in the top  toolbar, and see what happens!Alternatively, you can color the grains using different parameters, such as  velocity, number of contacts, etc.  These can be selected by changing the  chosen parameter under the Glyph1 object in the Pipeline Browser on the  left, and selecting a different field for Coloring.  Press the Apply button  to see the changes in effect."
+    "text": "To visualize the output we open ParaView.  The  output files of the simulation are written using the VTK (visualization  toolkit) format, which is natively supported by ParaView.While the .vtu files produced during the simulation can be opened with  ParaView and visualized manually using Glyph filters, the simplest and  fastest way to visualize the data is to use the Python script generated for the  simulation by Granular.jl.Open ParaView and open the Python Shell, found under the menu Tools > Python  Shell.  In the pop-up dialog we select Run Script, which opens yet another  dialog prompting us to locate the visualization script (two-grains.py, in our  example).  We locate this file, which is placed under the directory from where  we launched the julia session with the commands above.After selecting the two-grains/two-grains.py script, we can close the Python  Shell window to inspect our simulation.  Press the Play symbol in the top  toolbar, and see what happens!Alternatively, you can color the grains using different parameters, such as  velocity, number of contacts, etc.  These can be selected by changing the  chosen parameter under the Glyph1 object in the Pipeline Browser on the  left, and selecting a different field for Coloring.  Press the Apply button  to see the changes in effect.Tip: If you have the command pvpython (ParaView Python) available from  the command line, you can visualize the simulation directly from the command  line without entering ParaView by the command sim.render().  The program  pvpython is included in the ParaView download, and is in the macOS  application bundle located in  /Applications/Paraview-5.4.0.app/Contents/bin/pvpython.  Furthermore, if you  have the convert command from ImageMagick installed (brew install  imagemagick on macOS), the output images will be merged into an animated GIF."
 },
 
 {
@@ -238,6 +238,62 @@ var documenterSearchIndex = {"docs": [
     "title": "Exercises",
     "category": "section",
     "text": "To gain more familiarity with the simulation procedure, I suggest experimenting  with the following:What effect does the grain size have on the time step?\nTry to make an oblique collision by placing one of the grains at a different    y position.\nWhat happens if the second grains is set to be fixed in space    (sim.grains[2].fixed = true)?\nHow is the relationship between total kinetic energy before and after    affected by the choice of time step length?  Try setting different time    step values, e.g. with sim.time_step = 0.1234 and rerun the simulation."
+},
+
+{
+    "location": "man/getting_started.html#Sedimentation-of-grains-1",
+    "page": "Getting started",
+    "title": "Sedimentation of grains",
+    "category": "section",
+    "text": "Grains are known to settle under gravitation in water according to Stoke's  law, where resistive drag acts opposite of gravity and with a magnitude  according to the squareroot of velocity difference between water and grain.Granular.jl offers simple fluid grids with prescribed velocity fields, and the  grains are met with drag in this grid.In this example (examples/sedimentation.jl) we will initialize a range of  grain sizes in a loose configuration, add gravity and a surrounding fluid grid,  and let the grains settle towards the bottom.As in the previous example, we start by creating a fluid grid:julia> import Granular\njulia> sim = Granular.createSimulation(id=\"sedimentation.jl\")"
+},
+
+{
+    "location": "man/getting_started.html#Creating-a-pseudo-random-grain-packing-1",
+    "page": "Getting started",
+    "title": "Creating a pseudo-random grain packing",
+    "category": "section",
+    "text": "Instead of manually adding grains one by one, we can use the  regularPacking!() function to add a regular grid of random-sized grains to  the simulation.  Below, we specify that we want the grid of grains to be 7  grains wide along x, and 25 grains tall along y.  We also specify the grain  radii to fall between 0.02 and 0.2 m.  The sizes will be drawn from a power-law  distribution, by default.julia> Granular.regularPacking!(sim, [7, 25], 0.02, 0.2)Since we haven't explicitly set the grain sizes for this example, we can  inspect the values by plotting a histogram of sizes:julia> Granular.plotGrainSizeDistribution(sim)\nINFO: sedimentation-grain-size-distribution.pngThe output informs us that we have the plot saved as an image with the file  name sedimentation-grain-size-distribution.png."
+},
+
+{
+    "location": "man/getting_started.html#Creating-a-fluid-grid-1",
+    "page": "Getting started",
+    "title": "Creating a fluid grid",
+    "category": "section",
+    "text": "We can now create a fluid (ocean) grid spanning the extent of the grains  created above:julia> Granular.fitGridToGrains!(sim, sim.ocean)\nINFO: Created regular Granular.Ocean grid from [0.06382302477946442, \n0.03387419706945263] to [3.0386621000253293, 10.87955941983313] with a cell \nsize of 0.3862075959573571 ([7, 28]).The code informs us of the number of grid cells in each dimension (7 by 28  cells), and the edge positions (x = 0.0638 to 3.04 m, y = 0.0339 to 10.9 m).We want the boundaries of the above grid to be impermeable for the grains, so  they stack up at the bottom.  Granular.jl acknowledges the boundary types with  a confirmation message:julia> Granular.setGridBoundaryConditions!(sim.ocean, \"impermeable\")\nWest  (-x): impermeable (3)\nEast  (+x): impermeable (3)\nSouth (-y): impermeable (3)\nNorth (+y): impermeable (3)"
+},
+
+{
+    "location": "man/getting_started.html#Adding-gravitational-acceleration-1",
+    "page": "Getting started",
+    "title": "Adding gravitational acceleration",
+    "category": "section",
+    "text": "If we started the simulation now, nothing would happen as gravity is disabled  by default.  We can enable gravitational acceleration as a constant body force  for each grain (Force = mass * acceleration):julia> g = [0.0, -9.8];\njulia> for grain in sim.grains\n       Granular.addBodyForce!(grain, grain.mass*g)\n       end"
+},
+
+{
+    "location": "man/getting_started.html#Setting-temporal-parameters-1",
+    "page": "Getting started",
+    "title": "Setting temporal parameters",
+    "category": "section",
+    "text": "As before, we ask the code to select a suitable computational time step based  on grain sizes and properties:julia> Granular.setTimeStep!(sim)\nINFO: Time step length t=1.6995699879716792e-5 sWe also again set the total simulation time as well as the output file  interval:julia> Granular.setTotalTime!(sim, 10.0)\njulia> Granular.setOutputFileInterval!(sim, 0.2)"
+},
+
+{
+    "location": "man/getting_started.html#Running-the-simulation-2",
+    "page": "Getting started",
+    "title": "Running the simulation",
+    "category": "section",
+    "text": "We are now ready to run the simulation:julia> Granular.run!(sim)\nINFO: Output file: ./sedimentation/sedimentation.grains.1.vtu\nINFO: Output file: ./sedimentation/sedimentation.ocean.1.vts\nINFO: wrote status to ./sedimentation/sedimentation.status.txt\n  t = 0.19884968859273294/10.0 s\nINFO: Output file: ./sedimentation/sedimentation.grains.2.vtu\nINFO: Output file: ./sedimentation/sedimentation.ocean.2.vts\nINFO: wrote status to ./sedimentation/sedimentation.status.txt\n  t = 0.3993989471735396/10.0 s\n\n...\n\nINFO: Output file: ./sedimentation/sedimentation.grains.50.vtu\nINFO: Output file: ./sedimentation/sedimentation.ocean.50.vts\nINFO: wrote status to ./sedimentation/sedimentation.status.txt\n  t = 9.998435334626701/10.0 s\nINFO: ./sedimentation/sedimentation.py written, execute with 'pvpython /Users/ad/code/Granular-ext/examples/sedimentation/sedimentation.py'\nINFO: wrote status to ./sedimentation/sedimentation.status.txt\n  t = 10.00001593471549/10.0 sThe output can be plotted in ParaView as discribed in the two-grain example  above, or, if pvpython is available from the command line, directly from  Julia with the following command:julia> Granular.render(sim, trim=false)"
+},
+
+{
+    "location": "man/getting_started.html#Exercises-2",
+    "page": "Getting started",
+    "title": "Exercises",
+    "category": "section",
+    "text": "How are the granular contact pressures distributed in the final result?  You    can visualize this by selecting \"Contact Pressure [Pa]\" in the Coloring    field inside ParaView.\nTry running the above example, but without fluid drag.  Disable the drag by    including the call Granlar.disableOceanDrag!(grain) in the for loop    where gravitational acceleration is set for each grain.\nHow does the range of grain sizes affect the result?  Try making all grains    bigger or smaller.\nHow is the model performance effected if the grain-size distribution is    wide or narrow?\nCreate a landslide by turning the gravitational acceleration vector (set the    y component to a non-zero value, and setting the side boundaries to be    periodic with Granular.setGridBoundaryConditions!(sim.ocean, \"periodic\",    \"east west\")."
 },
 
 {
