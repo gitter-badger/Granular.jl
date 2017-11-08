@@ -406,3 +406,7 @@ julia> Granular.render(sim, trim=false)
     bigger or smaller.
 - How is the model performance effected if the grain-size distribution is 
     wide or narrow?
+- Create a landslide by turning the gravitational acceleration vector (set the 
+    `y` component to a non-zero value, and setting the side boundaries to be 
+    periodic with `Granular.setGridBoundaryConditions!(sim.ocean, "periodic", 
+    "east west")`.
