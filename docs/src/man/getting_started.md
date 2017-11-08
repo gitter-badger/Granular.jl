@@ -313,7 +313,13 @@ created above:
 
 ```julia-repl
 julia> Granular.fitGridToGrains!(sim, sim.ocean)
+INFO: Created regular Granular.Ocean grid from [0.06382302477946442, 
+0.03387419706945263] to [3.0386621000253293, 10.87955941983313] with a cell 
+size of 0.3862075959573571 ([7, 28]).
 ```
+
+The code informs us of the number of grid cells in each dimension (7 by 28 
+cells), and the edge positions (x = 0.0638 to 3.04 m, y = 0.0339 to 10.9 m).
 
 We want the boundaries of the above grid to be impermeable for the grains, so 
 they stack up at the bottom.  Granular.jl acknowledges the boundary types with 
