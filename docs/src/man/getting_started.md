@@ -284,13 +284,13 @@ julia> sim = Granular.createSimulation(id="sedimentation.jl")
 ### Creating a pseudo-random grain packing
 Instead of manually adding grains one by one, we can use the 
 `regularPacking!()` function to add a regular grid of random-sized grains to 
-the simulation.  Below, we specify that we want the grid of grains to be 10 
-grains wide along x, and 50 grains tall along y.  We also specify the grain 
+the simulation.  Below, we specify that we want the grid of grains to be 7 
+grains wide along x, and 25 grains tall along y.  We also specify the grain 
 radii to fall between 0.02 and 0.2 m.  The sizes will be drawn from a power-law 
 distribution, by default.
 
 ```julia-repl
-julia> Granular.regularPacking!(sim, [10, 50], 0.02, 0.2)
+julia> Granular.regularPacking!(sim, [7, 25], 0.02, 0.2)
 ```
 
 Since we haven't explicitly set the grain sizes for this example, we can 

@@ -4,9 +4,9 @@ import Granular
 #### Create a loose granular assemblage and let it settle at towards -y
 sim = Granular.createSimulation(id="sedimentation")
 
-# Generate 10 grains along x and 50 grains along y, with radii between 0.2 and
+# Generate 10 grains along x and 25 grains along y, with radii between 0.2 and
 # 1.0 m.
-Granular.regularPacking!(sim, [10, 50], 0.02, 0.2)
+Granular.regularPacking!(sim, [7, 25], 0.02, 0.2)
 
 # Visualize the grain-size distribution
 Granular.plotGrainSizeDistribution(sim)
