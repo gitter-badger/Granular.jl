@@ -396,7 +396,9 @@ julia> Granular.render(sim, trim=false)
 ```
 
 ### Exercises
-- How are the granular contact pressures distributed in the final result?
+- How are the granular contact pressures distributed in the final result?  You 
+    can visualize this by selecting "Contact Pressure [Pa]" in the *Coloring* 
+    field inside ParaView.
 - Try running the above example, but without fluid drag.  Disable the drag by 
     including the call `Granlar.disableOceanDrag!(grain)` in the `for` loop 
     where gravitational acceleration is set for each grain.
