@@ -947,10 +947,6 @@ function render(simulation::Simulation; pvpython::String="pvpython",
                 # use ImageMagick installed with Homebrew.jl if available,
                 # otherwise search for convert in $PATH
                 convert = "convert"
-                if is_apple()
-                    import Homebrew
-                    convert = Homebrew.prefix() * "/bin/convert"
-                end
 
                 run(`$convert $trim_string +repage -delay 10 
                     -transparent-color white 
