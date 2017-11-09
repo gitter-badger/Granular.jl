@@ -36,7 +36,7 @@ Granular.setTotalTime!(sim, 30.)
 Granular.setOutputFileInterval!(sim, .2)
 
 # Visualize the grain-size distribution
-Granular.plotGrainSizeDistribution(sim)
+#Granular.plotGrainSizeDistribution(sim)
 
 # Start the simulation
 Granular.run!(sim)
