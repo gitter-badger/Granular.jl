@@ -220,11 +220,11 @@ function applyAtmosphereVorticityToGrain!(grain::GrainCylindrical,
     rho_a = 1.2754   # atmosphere density
 
     grain.torque +=
-        pi*grain.areal_radius^4.*rho_a*
-        (grain.areal_radius/5.*grain.atmosphere_drag_coeff_horiz + 
-        .1*grain.thickness*grain.atmosphere_drag_coeff_vert)*
-        abs(.5*atmosphere_curl - grain.ang_vel)*
-        (.5*atmosphere_curl - grain.ang_vel)
+        pi * grain.areal_radius^4. * rho_a * 
+        (grain.areal_radius / 5. * grain.atmosphere_drag_coeff_horiz + 
+        .1 * grain.thickness * grain.atmosphere_drag_coeff_vert) * 
+        abs(.5 * atmosphere_curl - grain.ang_vel) * 
+        (.5 * atmosphere_curl - grain.ang_vel)
     nothing
 end
 

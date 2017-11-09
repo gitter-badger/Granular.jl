@@ -105,11 +105,11 @@ function updateGrainKinematicsThreeTermTaylor!(grain::GrainCylindrical,
     grain.lin_pos +=
         grain.lin_vel * simulation.time_step +
         0.5 * grain.lin_acc * simulation.time_step^2. +
-        1./6. * d_lin_acc_dt * simulation.time_step^3.
+        1. / 6. * d_lin_acc_dt * simulation.time_step^3.
     grain.ang_pos +=
         grain.ang_vel * simulation.time_step +
         0.5 * grain.ang_acc * simulation.time_step^2. +
-        1./6. * d_ang_acc_dt * simulation.time_step^3.
+        1. / 6. * d_ang_acc_dt * simulation.time_step^3.
 
     grain.lin_vel += grain.lin_acc * simulation.time_step +
         0.5 * d_lin_acc_dt * simulation.time_step^2.

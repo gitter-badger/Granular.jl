@@ -5,6 +5,7 @@ if typeof(Pkg.installed("JLD")) == VersionNumber
     import JLD
     hasJLD = true
 end
+using Compat.DelimitedFiles
 
 ## IO functions
 
@@ -173,7 +174,7 @@ function status(folder::String=".";
                 id = replace(id, "./", "")
                 id = replace(id, r".*/", "")
                 time_s = @sprintf "%6.2fs" data[1]
-                time_h = @sprintf "%5.1fh" data[1]/(60.*60.)
+                time_h = @sprintf "%5.1fh" data[1]/(60. * 60.)
                 percentage = @sprintf "%3.0f%%" data[2]
                 lastfile = @sprintf "%5d" data[3]
                 if data[2] < 99.

@@ -102,7 +102,7 @@ function readOceanStateNetCDF(filename::String)
     u, v = interpolateOceanVelocitiesToCorners(u_staggered, v_staggered)
 
     time = convert(Vector{Float64},
-                   NetCDF.ncread(filename, "time")*24.*60.*60.)
+                   NetCDF.ncread(filename, "time") .* 24. * 60. * 60.)
     h = convert(Array{Float64, 4}, NetCDF.ncread(filename, "h"))
     e = convert(Array{Float64, 4}, NetCDF.ncread(filename, "e"))
 
@@ -334,10 +334,10 @@ function applyOceanVorticityToGrain!(grain::GrainCylindrical,
     draft = grain.thickness - freeboard  # height of submerged thickness
 
     grain.torque +=
-        pi*grain.areal_radius^4.*rho_o*
-        (grain.areal_radius/5.*grain.ocean_drag_coeff_horiz + 
-        draft*grain.ocean_drag_coeff_vert)*
-        abs(.5*ocean_curl - grain.ang_vel)*(.5*ocean_curl - grain.ang_vel)
+        pi * grain.areal_radius^4. * rho_o * 
+        (grain.areal_radius/5. * grain.ocean_drag_coeff_horiz + 
+        draft * grain.ocean_drag_coeff_vert) * 
+        abs(.5 * ocean_curl - grain.ang_vel) * (.5 * ocean_curl - grain.ang_vel)
     nothing
 end
 

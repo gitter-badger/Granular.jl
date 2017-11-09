@@ -472,10 +472,10 @@ function conformalQuadrilateralCoordinates(A::Vector{Float64},
     b = (delta*beta - alpha*epsilon) - (kappa*dx - gamma*dy)
     c = alpha*dy - delta*dx
     if abs(a) > 0.
-        d = b^2./4. - a*c
+        d = b^2. / 4. - a*c
         if d >= 0.
-            yy1 = -(b/2. + sqrt(d))/a
-            yy2 = -(b/2. - sqrt(d))/a
+            yy1 = -(b / 2. + sqrt(d)) / a
+            yy2 = -(b / 2. - sqrt(d)) / a
             if abs(yy1 - .5) < abs(yy2 - .5)
                 y_tilde = yy1
             else
@@ -534,6 +534,7 @@ function findEmptyPositionInGridCell(simulation::Simulation,
 
     nx, ny = size(grid.xh)
 
+    i_iter=0
     for i_iter=1:n_iter
 
         overlap_found = false
@@ -917,9 +918,9 @@ function fitGridToGrains!(simulation::Simulation, grid::Any;
     max_x += padding
     max_y += padding
 
-    const L::Vector{Float64} = [max_x - min_x, max_y - min_y]
-    const dx::Float64 = 2.*max_radius
-    const n = convert(Vector{Int}, floor.(L./dx))
+    L::Vector{Float64} = [max_x - min_x, max_y - min_y]
+    dx::Float64 = 2. * max_radius
+    n = convert(Vector{Int}, floor.(L./dx))
     if 0 in n || 1 in n
         println("L = $L")
         println("dx = $dx")

@@ -92,9 +92,9 @@ function interactGrains!(simulation::Simulation, i::Int, j::Int, ic::Int)
                          simulation.grains[j].poissons_ratio)
 
         # Effective normal and tangential stiffness
-        k_n = E*A_ij/R_ij
+        k_n = E * A_ij/R_ij
         #k_t = k_n*ν   # Kneib et al 2016
-        k_t = k_n*2.*(1. - ν^2.)/((2. - ν)*(1. + ν))  # Obermayr et al 2011
+        k_t = k_n * 2. * (1. - ν^2.) / ((2. - ν) * (1. + ν))  # Obermayr 2011
 
     else  # Micromechanical parameterization: k_n and k_t set explicitly
         k_n = harmonicMean(simulation.grains[i].contact_stiffness_normal,

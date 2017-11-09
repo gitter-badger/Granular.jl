@@ -112,8 +112,8 @@ function findLargestGrainStiffness(simulation::Simulation)
 
         if grain.youngs_modulus > 0.
             k_n = grain.youngs_modulus*grain.thickness  # A = h*r
-            k_t = k_n*2.*(1. - grain.poissons_ratio^2.)/
-                ((2. - grain.poissons_ratio)*(1. + grain.poissons_ratio))
+            k_t = k_n * 2. * (1. - grain.poissons_ratio^2.)/
+                ((2. - grain.poissons_ratio) * (1. + grain.poissons_ratio))
         else
             k_n = grain.contact_stiffness_normal
             k_t = grain.contact_stiffness_tangential
