@@ -1,5 +1,6 @@
 #!/usr/bin/env julia
 using BinDeps
+import Compat
 import Compat.Sys
 
 @BinDeps.setup
