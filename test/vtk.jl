@@ -41,10 +41,10 @@ oceanchecksum =
 "d56ffb109841a803f2b2b94c74c87f7a497237204841d557d2b1043694d51f0d  " *
 oceanpath * "\n"
 
-Test.@test readstring(`$(cmd) $(grainpath)$(cmd_post)`) == grainchecksum
-Test.@test readstring(`$(cmd) $(graininteractionpath)$(cmd_post)`) == 
+@test readstring(`$(cmd) $(grainpath)$(cmd_post)`) == grainchecksum
+@test readstring(`$(cmd) $(graininteractionpath)$(cmd_post)`) == 
     graininteractionchecksum
-Test.@test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
+@test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
 Granular.removeSimulationFiles(sim)
 
@@ -54,7 +54,7 @@ Granular.setTotalTime!(sim, 1.5)
 Granular.setTimeStep!(sim)
 sim.file_number = 0
 Granular.run!(sim, single_step=true)
-Test.@test Granular.readSimulationStatus(sim.id) == 1
+@test Granular.readSimulationStatus(sim.id) == 1
 Granular.setOutputFileInterval!(sim, 0.1)
 Granular.run!(sim)
 
@@ -64,14 +64,14 @@ info("Testing generation of Paraview Python script")
 Granular.writeParaviewPythonScript(sim,
                                  save_animation=true,
                                  save_images=false)
-Test.@test isfile("$(sim.id)/$(sim.id).py") && filesize("$(sim.id)/$(sim.id).py") > 0
+@test isfile("$(sim.id)/$(sim.id).py") && filesize("$(sim.id)/$(sim.id).py") > 0
 
 info("Testing Paraview rendering if `pvpython` is present")
 try
     run(`pvpython $(sim.id)/$(sim.id).py`)
 catch return_signal
     if !isa(return_signal, Base.UVError)
-        Test.@test isfile("$(sim.id)/$(sim.id).avi")
+        @test isfile("$(sim.id)/$(sim.id).avi")
     end
 end
 
@@ -82,16 +82,16 @@ try
     run(`pvpython $(sim.id)/$(sim.id).py`)
 catch return_signal
     if !isa(return_signal, Base.UVError)
-        Test.@test isfile("$(sim.id)/$(sim.id).0000.png")
-        Test.@test isfile("$(sim.id)/$(sim.id).0014.png")
+        @test isfile("$(sim.id)/$(sim.id).0000.png")
+        @test isfile("$(sim.id)/$(sim.id).0014.png")
         Granular.render(sim)
-        Test.@test isfile("$(sim.id)/$(sim.id).0001.png")
+        @test isfile("$(sim.id)/$(sim.id).0001.png")
     end
 end
 
-Test.@test readstring(`$(cmd) $(grainpath)$(cmd_post)`) == grainchecksum
-Test.@test readstring(`$(cmd) $(graininteractionpath)$(cmd_post)`) == 
+@test readstring(`$(cmd) $(grainpath)$(cmd_post)`) == grainchecksum
+@test readstring(`$(cmd) $(graininteractionpath)$(cmd_post)`) == 
     graininteractionchecksum
-Test.@test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
+@test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
 
 Granular.removeSimulationFiles(sim)

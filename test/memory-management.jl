@@ -8,8 +8,8 @@ sim = Granular.createSimulation()
 empty_sim_size = 96
 empty_sim_size_recursive = 544
 
-Test.@test sizeof(sim) == empty_sim_size
-Test.@test Base.summarysize(sim) == empty_sim_size_recursive
+@test sizeof(sim) == empty_sim_size
+@test Base.summarysize(sim) == empty_sim_size_recursive
 
 size_per_grain = 368
 size_per_grain_recursive = 1552
@@ -18,34 +18,34 @@ info("Testing memory usage when adding grains")
 for i=1:100
     Granular.addGrainCylindrical!(sim, [1., 1.], 1., 1., verbose=false)
 
-    Test.@test sizeof(sim) == empty_sim_size
+    @test sizeof(sim) == empty_sim_size
 
-    Test.@test sizeof(sim.grains[i]) == size_per_grain
-    Test.@test Base.summarysize(sim.grains[i]) == size_per_grain_recursive
+    @test sizeof(sim.grains[i]) == size_per_grain
+    @test Base.summarysize(sim.grains[i]) == size_per_grain_recursive
 
-    Test.@test sizeof(sim.grains) == sizeof(Int)*i
-    Test.@test sizeof(sim.grains[:]) == sizeof(Int)*i
-    Test.@test Base.summarysize(sim.grains) == size_per_grain_recursive*i + 
+    @test sizeof(sim.grains) == sizeof(Int)*i
+    @test sizeof(sim.grains[:]) == sizeof(Int)*i
+    @test Base.summarysize(sim.grains) == size_per_grain_recursive*i + 
         sizeof(Int)*i
 
-    Test.@test Base.summarysize(sim) == empty_sim_size_recursive + sizeof(Int)*i + 
+    @test Base.summarysize(sim) == empty_sim_size_recursive + sizeof(Int)*i + 
         size_per_grain_recursive*i
 
-    Test.@test Base.summarysize(sim.grains[i]) == size_per_grain_recursive
+    @test Base.summarysize(sim.grains[i]) == size_per_grain_recursive
 end
 
 info("Checking memory footprint when overwriting simulation object")
 sim = Granular.createSimulation()
-Test.@test sizeof(sim) == empty_sim_size
-Test.@test Base.summarysize(sim) == empty_sim_size_recursive
+@test sizeof(sim) == empty_sim_size
+@test Base.summarysize(sim) == empty_sim_size_recursive
 
 info("Check memory usage when stepping time for empty simulation object")
 sim = Granular.createSimulation()
 sim.time_step = 1.0
 for i=1:10
     Granular.run!(sim, single_step=true, verbose=false)
-    Test.@test sizeof(sim) == empty_sim_size
-    Test.@test Base.summarysize(sim) == empty_sim_size_recursive
+    @test sizeof(sim) == empty_sim_size
+    @test Base.summarysize(sim) == empty_sim_size_recursive
 end
 
 info("Check memory when stepping time with single ice floe")
@@ -54,8 +54,8 @@ Granular.addGrainCylindrical!(sim, [1., 1.], 1., 1., verbose=false)
 sim.time_step = 1.0
 for i=1:10
     Granular.run!(sim, single_step=true, verbose=false)
-    Test.@test sizeof(sim) == empty_sim_size
-    Test.@test Base.summarysize(sim) == empty_sim_size_recursive + 
+    @test sizeof(sim) == empty_sim_size
+    @test Base.summarysize(sim) == empty_sim_size_recursive + 
         sizeof(Int)*length(sim.grains) + 
         size_per_grain_recursive*length(sim.grains)
 end
@@ -67,8 +67,8 @@ Granular.addGrainCylindrical!(sim, [1., 1.], 3., 1., verbose=false)
 sim.time_step = 1.0
 for i=1:10
     Granular.run!(sim, single_step=true, verbose=false)
-    Test.@test sizeof(sim) == empty_sim_size
-    Test.@test Base.summarysize(sim) == empty_sim_size_recursive + 
+    @test sizeof(sim) == empty_sim_size
+    @test Base.summarysize(sim) == empty_sim_size_recursive + 
         sizeof(Int)*length(sim.grains) + 
         size_per_grain_recursive*length(sim.grains)
 end
@@ -80,8 +80,8 @@ Granular.addGrainCylindrical!(sim, [1., 1.], 1.9, 1., verbose=false)
 sim.time_step = 1.0
 for i=1:10
     Granular.run!(sim, single_step=true, verbose=false)
-    Test.@test sizeof(sim) == empty_sim_size
-    Test.@test Base.summarysize(sim) == empty_sim_size_recursive + 
+    @test sizeof(sim) == empty_sim_size
+    @test Base.summarysize(sim) == empty_sim_size_recursive + 
         sizeof(Int)*length(sim.grains) + 
         size_per_grain_recursive*length(sim.grains)
 end
@@ -97,7 +97,7 @@ Granular.run!(sim, single_step=true, verbose=false)
 original_size_recursive = Base.summarysize(sim)
 for i=1:10
     Granular.run!(sim, single_step=true, verbose=false)
-    Test.@test Base.summarysize(sim) == original_size_recursive
+    @test Base.summarysize(sim) == original_size_recursive
 end
 
 info("Checking if memory is freed after ended collision (all to all)")
@@ -109,7 +109,7 @@ Granular.setTotalTime!(sim, 10.0)
 Granular.setTimeStep!(sim, epsilon=0.07, verbose=false)
 original_size_recursive = Base.summarysize(sim)
 Granular.run!(sim, verbose=false)
-Test.@test Base.summarysize(sim) == original_size_recursive
+@test Base.summarysize(sim) == original_size_recursive
 
 info("Checking if memory is freed after ended collision (cell sorting)")
 sim = Granular.createSimulation(id="test")
@@ -125,10 +125,10 @@ original_grains_size_recursive = Base.summarysize(sim.grains)
 original_ocean_size_recursive = Base.summarysize(sim.ocean)
 original_atmosphere_size_recursive = Base.summarysize(sim.atmosphere)
 Granular.run!(sim, verbose=false)
-Test.@test Base.summarysize(sim.grains) == original_grains_size_recursive
-Test.@test Base.summarysize(sim.ocean) == original_ocean_size_recursive
-Test.@test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
-Test.@test Base.summarysize(sim) == original_sim_size_recursive
+@test Base.summarysize(sim.grains) == original_grains_size_recursive
+@test Base.summarysize(sim.ocean) == original_ocean_size_recursive
+@test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
+@test Base.summarysize(sim) == original_sim_size_recursive
 
 sim = Granular.createSimulation(id="test")
 Granular.addGrainCylindrical!(sim, [0., 0.], 10., 1., verbose=false)
@@ -143,10 +143,10 @@ original_grains_size_recursive = Base.summarysize(sim.grains)
 original_ocean_size_recursive = Base.summarysize(sim.ocean)
 original_atmosphere_size_recursive = Base.summarysize(sim.atmosphere)
 Granular.run!(sim, verbose=false)
-Test.@test Base.summarysize(sim.grains) == original_grains_size_recursive
-Test.@test Base.summarysize(sim.ocean) == original_ocean_size_recursive
-Test.@test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
-Test.@test Base.summarysize(sim) == original_sim_size_recursive
+@test Base.summarysize(sim.grains) == original_grains_size_recursive
+@test Base.summarysize(sim.ocean) == original_ocean_size_recursive
+@test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
+@test Base.summarysize(sim) == original_sim_size_recursive
 
 sim = Granular.createSimulation(id="test")
 Granular.addGrainCylindrical!(sim, [0., 0.], 10., 1., verbose=false)
@@ -162,9 +162,9 @@ original_grains_size_recursive = Base.summarysize(sim.grains)
 original_ocean_size_recursive = Base.summarysize(sim.ocean)
 original_atmosphere_size_recursive = Base.summarysize(sim.atmosphere)
 Granular.run!(sim, verbose=false)
-Test.@test Base.summarysize(sim.grains) == original_grains_size_recursive
-Test.@test Base.summarysize(sim.ocean) == original_ocean_size_recursive
-Test.@test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
-Test.@test Base.summarysize(sim) == original_sim_size_recursive
+@test Base.summarysize(sim.grains) == original_grains_size_recursive
+@test Base.summarysize(sim.ocean) == original_ocean_size_recursive
+@test Base.summarysize(sim.atmosphere) == original_atmosphere_size_recursive
+@test Base.summarysize(sim) == original_sim_size_recursive
 
 Granular.printMemoryUsage(sim)

@@ -31,8 +31,8 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
@@ -44,8 +44,8 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
@@ -58,8 +58,8 @@ Granular.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("# Ice floes free to move")
@@ -86,8 +86,8 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Two-term Taylor scheme")
@@ -99,8 +99,8 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
@@ -113,8 +113,8 @@ Granular.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("# Adding contact-normal viscosity")
@@ -146,8 +146,8 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init > E_kin_lin_final
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init > E_kin_lin_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
@@ -160,8 +160,8 @@ Granular.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init > E_kin_lin_final
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init > E_kin_lin_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("# Ice floes free to move")
@@ -191,8 +191,8 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init > E_kin_lin_final
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init > E_kin_lin_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 
 
 info("Testing kinetic energy conservation with Three-term Taylor scheme")
@@ -205,5 +205,5 @@ Granular.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init > E_kin_lin_final
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init > E_kin_lin_final
+@test E_kin_rot_init ≈ E_kin_rot_final

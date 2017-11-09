@@ -37,12 +37,12 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
-Test.@test 0. < norm(sim.grains[1].lin_vel)
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
+@test 0. < norm(sim.grains[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
-    Test.@test 0. ≈ norm(sim.grains[i].lin_vel)
+    @test 0. ≈ norm(sim.grains[i].lin_vel)
 end
 
 
@@ -55,12 +55,12 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
-Test.@test 0. < norm(sim.grains[1].lin_vel)
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
+@test 0. < norm(sim.grains[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
-    Test.@test 0. ≈ norm(sim.grains[i].lin_vel)
+    @test 0. ≈ norm(sim.grains[i].lin_vel)
 end
 
 
@@ -74,12 +74,12 @@ Granular.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
-Test.@test 0. < norm(sim.grains[1].lin_vel)
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
+@test 0. < norm(sim.grains[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
-    Test.@test 0. ≈ norm(sim.grains[i].lin_vel)
+    @test 0. ≈ norm(sim.grains[i].lin_vel)
 end
 
 
@@ -110,11 +110,11 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
-    Test.@test 0. < norm(sim.grains[i].lin_vel)
+    @test 0. < norm(sim.grains[i].lin_vel)
 end
 
 
@@ -127,11 +127,11 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
-    Test.@test 0. < norm(sim.grains[i].lin_vel)
+    @test 0. < norm(sim.grains[i].lin_vel)
 end
 
 
@@ -145,11 +145,11 @@ Granular.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init ≈ E_kin_lin_final atol=E_kin_lin_init*tol
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
-    Test.@test 0. < norm(sim.grains[i].lin_vel)
+    @test 0. < norm(sim.grains[i].lin_vel)
 end
 
 
@@ -191,12 +191,12 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init > E_kin_lin_final
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
-Test.@test 0. < norm(sim.grains[1].lin_vel)
+@test E_kin_lin_init > E_kin_lin_final
+@test E_kin_rot_init ≈ E_kin_rot_final
+@test 0. < norm(sim.grains[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
-    Test.@test 0. ≈ norm(sim.grains[i].lin_vel)
+    @test 0. ≈ norm(sim.grains[i].lin_vel)
 end
 
 
@@ -210,12 +210,12 @@ Granular.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init > E_kin_lin_final
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
-Test.@test 0. < norm(sim.grains[1].lin_vel)
+@test E_kin_lin_init > E_kin_lin_final
+@test E_kin_rot_init ≈ E_kin_rot_final
+@test 0. < norm(sim.grains[1].lin_vel)
 for i=2:5
     info("testing ice floe $i")
-    Test.@test 0. ≈ norm(sim.grains[i].lin_vel)
+    @test 0. ≈ norm(sim.grains[i].lin_vel)
 end
 
 
@@ -252,11 +252,11 @@ Granular.run!(sim, temporal_integration_method="Two-term Taylor", verbose=verbos
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init > E_kin_lin_final
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init > E_kin_lin_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
-    Test.@test 0. < norm(sim.grains[i].lin_vel)
+    @test 0. < norm(sim.grains[i].lin_vel)
 end
 
 
@@ -270,9 +270,9 @@ Granular.run!(sim, temporal_integration_method="Three-term Taylor",
 
 E_kin_lin_final = Granular.totalGrainKineticTranslationalEnergy(sim)
 E_kin_rot_final = Granular.totalGrainKineticRotationalEnergy(sim)
-Test.@test E_kin_lin_init > E_kin_lin_final
-Test.@test E_kin_rot_init ≈ E_kin_rot_final
+@test E_kin_lin_init > E_kin_lin_final
+@test E_kin_rot_init ≈ E_kin_rot_final
 for i=1:5
     info("testing ice floe $i")
-    Test.@test 0. < norm(sim.grains[i].lin_vel)
+    @test 0. < norm(sim.grains[i].lin_vel)
 end

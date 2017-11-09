@@ -19,7 +19,7 @@ sim = deepcopy(sim_init)
 Granular.setTotalTime!(sim, 10.)
 sim.time_step = 1.
 Granular.run!(sim, verbose=verbose)
-Test.@test sim.grains[1].contact_age[1] ≈ sim.time
+@test sim.grains[1].contact_age[1] ≈ sim.time
 
 info("# Check if bonds add tensile strength")
 sim = Granular.createSimulation(id="cohesion")
@@ -29,9 +29,9 @@ sim.grains[1].lin_vel[1] = 0.1
 Granular.setTimeStep!(sim)
 Granular.setTotalTime!(sim, 10.)
 Granular.run!(sim, verbose=verbose)
-Test.@test sim.grains[1].lin_vel[1] > 0.
-Test.@test sim.grains[1].lin_vel[2] ≈ 0.
-Test.@test sim.grains[2].lin_vel[1] > 0.
-Test.@test sim.grains[2].lin_vel[2] ≈ 0.
-Test.@test sim.grains[1].ang_vel ≈ 0.
-Test.@test sim.grains[2].ang_vel ≈ 0.
+@test sim.grains[1].lin_vel[1] > 0.
+@test sim.grains[1].lin_vel[2] ≈ 0.
+@test sim.grains[2].lin_vel[1] > 0.
+@test sim.grains[2].lin_vel[2] ≈ 0.
+@test sim.grains[1].ang_vel ≈ 0.
+@test sim.grains[2].ang_vel ≈ 0.
