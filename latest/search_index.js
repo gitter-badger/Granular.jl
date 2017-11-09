@@ -245,7 +245,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Sedimentation of grains",
     "category": "section",
-    "text": "Grains are known to settle under gravitation in water according to Stoke's  law, where resistive drag acts opposite of gravity and with a magnitude  according to the square root of velocity difference between water and grain. Granular.jl offers simple fluid grids with prescribed velocity fields, and the  grains are met with drag in this grid.In this example (examples/sedimentation.jl) we will initialize grains with a  range of grain sizes in a loose configuration, add gravity and a surrounding  fluid grid, and let the grains settle towards the bottom.As in the previous example, we start by creating a fluid grid:julia> import Granular\njulia> sim = Granular.createSimulation(id=\"sedimentation.jl\")"
+    "text": "Grains are known to settle under gravitation in water according to Stoke's  law, where resistive drag acts opposite of gravity and with a magnitude  according to the square root of velocity difference between water and grain. Granular.jl offers simple fluid grids with prescribed velocity fields, and the  grains are met with drag in this grid.In this example (examples/sedimentation.jl) we will initialize grains with a  range of grain sizes in a loose configuration, add gravity and a surrounding  fluid grid, and let the grains settle towards the bottom.As in the previous example, we start by creating a fluid grid:julia> import Granular\njulia> sim = Granular.createSimulation(id=\"sedimentation\")"
 },
 
 {
@@ -253,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Creating a pseudo-random grain packing",
     "category": "section",
-    "text": "Instead of manually adding grains one by one, we can use the  regularPacking!() function to add a regular grid of random-sized grains to  the simulation.  Below, we specify that we want the grid of grains to be 7  grains wide along x, and 25 grains tall along y.  We also specify the grain  radii to fall between 0.02 and 0.2 m.  The sizes will be drawn from a power-law  distribution by default.julia> Granular.regularPacking!(sim, [7, 25], 0.02, 0.2)Since we haven't explicitly set the grain sizes for this example, we can  inspect the values by plotting a histogram of sizes (only works if the PyPlot  package is installed with Pkg.add(\"PyPlot\"):julia> Granular.plotGrainSizeDistribution(sim)\nINFO: sedimentation-grain-size-distribution.pngThe output informs us that we have the plot saved as an image with the file  name sedimentation-grain-size-distribution.png."
+    "text": "Instead of manually adding grains one by one, we can use the  regularPacking!() function to add a regular grid of random-sized grains to  the simulation.  Below, we specify that we want the grid of grains to be 7  grains wide along x, and 25 grains tall along y.  We also specify the grain  radii to fall between 0.02 and 0.2 m.  The sizes will be drawn from a power-law  distribution by default.julia> Granular.regularPacking!(sim, [7, 25], 0.02, 0.2)Since we haven't explicitly set the grain sizes for this example, we can  inspect the values by plotting a histogram of sizes (only works if the PyPlot  package is installed with Pkg.add(\"PyPlot\")):julia> Granular.plotGrainSizeDistribution(sim)\nINFO: sedimentation-grain-size-distribution.pngThe output informs us that we have the plot saved as an image with the file  name sedimentation-grain-size-distribution.png."
 },
 
 {
