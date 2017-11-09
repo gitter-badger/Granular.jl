@@ -1,4 +1,5 @@
 ## Manage grains in the model
+using Compat
 hasPyPlot = false
 if typeof(Pkg.installed("PyPlot")) == VersionNumber
     import PyPlot
@@ -637,69 +638,69 @@ Compare values of two grain objects using the `Base.Test` framework.
 """
 function compareGrains(if1::GrainCylindrical, if2::GrainCylindrical)
 
-    Test.@test if1.density ≈ if2.density
-    Test.@test if1.thickness ≈ if2.thickness
-    Test.@test if1.contact_radius ≈
+    @test if1.density ≈ if2.density
+    @test if1.thickness ≈ if2.thickness
+    @test if1.contact_radius ≈
         if2.contact_radius
-    Test.@test if1.areal_radius ≈ if2.areal_radius
-    Test.@test if1.circumreference ≈
+    @test if1.areal_radius ≈ if2.areal_radius
+    @test if1.circumreference ≈
         if2.circumreference
-    Test.@test if1.horizontal_surface_area ≈ if2.horizontal_surface_area
-    Test.@test if1.side_surface_area ≈ if2.side_surface_area
-    Test.@test if1.volume ≈ if2.volume
-    Test.@test if1.mass ≈ if2.mass
-    Test.@test if1.moment_of_inertia ≈ if2.moment_of_inertia
+    @test if1.horizontal_surface_area ≈ if2.horizontal_surface_area
+    @test if1.side_surface_area ≈ if2.side_surface_area
+    @test if1.volume ≈ if2.volume
+    @test if1.mass ≈ if2.mass
+    @test if1.moment_of_inertia ≈ if2.moment_of_inertia
 
-    Test.@test if1.lin_pos ≈ if2.lin_pos
-    Test.@test if1.lin_vel ≈ if2.lin_vel
-    Test.@test if1.lin_acc ≈ if2.lin_acc
-    Test.@test if1.force ≈ if2.force
-    Test.@test if1.external_body_force ≈ if2.external_body_force
+    @test if1.lin_pos ≈ if2.lin_pos
+    @test if1.lin_vel ≈ if2.lin_vel
+    @test if1.lin_acc ≈ if2.lin_acc
+    @test if1.force ≈ if2.force
+    @test if1.external_body_force ≈ if2.external_body_force
 
-    Test.@test if1.ang_pos ≈ if2.ang_pos
-    Test.@test if1.ang_vel ≈ if2.ang_vel
-    Test.@test if1.ang_acc ≈ if2.ang_acc
-    Test.@test if1.torque ≈ if2.torque
+    @test if1.ang_pos ≈ if2.ang_pos
+    @test if1.ang_vel ≈ if2.ang_vel
+    @test if1.ang_acc ≈ if2.ang_acc
+    @test if1.torque ≈ if2.torque
 
-    Test.@test if1.fixed == if2.fixed
-    Test.@test if1.rotating == if2.rotating
-    Test.@test if1.enabled == if2.enabled
+    @test if1.fixed == if2.fixed
+    @test if1.rotating == if2.rotating
+    @test if1.enabled == if2.enabled
 
-    Test.@test if1.contact_stiffness_normal ≈ if2.contact_stiffness_normal
-    Test.@test if1.contact_stiffness_tangential ≈ 
+    @test if1.contact_stiffness_normal ≈ if2.contact_stiffness_normal
+    @test if1.contact_stiffness_tangential ≈ 
         if2.contact_stiffness_tangential
-    Test.@test if1.contact_viscosity_normal ≈ if2.contact_viscosity_normal
-    Test.@test if1.contact_viscosity_tangential ≈ 
+    @test if1.contact_viscosity_normal ≈ if2.contact_viscosity_normal
+    @test if1.contact_viscosity_tangential ≈ 
         if2.contact_viscosity_tangential
-    Test.@test if1.contact_static_friction ≈ if2.contact_static_friction
-    Test.@test if1.contact_dynamic_friction ≈ if2.contact_dynamic_friction
+    @test if1.contact_static_friction ≈ if2.contact_static_friction
+    @test if1.contact_dynamic_friction ≈ if2.contact_dynamic_friction
 
-    Test.@test if1.youngs_modulus ≈ if2.youngs_modulus
-    Test.@test if1.poissons_ratio ≈ if2.poissons_ratio
-    Test.@test if1.tensile_strength ≈ if2.tensile_strength
-    Test.@test if1.tensile_heal_rate ≈ if2.tensile_heal_rate
-    Test.@test if1.compressive_strength_prefactor ≈
+    @test if1.youngs_modulus ≈ if2.youngs_modulus
+    @test if1.poissons_ratio ≈ if2.poissons_ratio
+    @test if1.tensile_strength ≈ if2.tensile_strength
+    @test if1.tensile_heal_rate ≈ if2.tensile_heal_rate
+    @test if1.compressive_strength_prefactor ≈
         if2.compressive_strength_prefactor
 
-    Test.@test if1.ocean_drag_coeff_vert ≈ if2.ocean_drag_coeff_vert
-    Test.@test if1.ocean_drag_coeff_horiz ≈ if2.ocean_drag_coeff_horiz
-    Test.@test if1.atmosphere_drag_coeff_vert ≈ 
+    @test if1.ocean_drag_coeff_vert ≈ if2.ocean_drag_coeff_vert
+    @test if1.ocean_drag_coeff_horiz ≈ if2.ocean_drag_coeff_horiz
+    @test if1.atmosphere_drag_coeff_vert ≈ 
         if2.atmosphere_drag_coeff_vert
-    Test.@test if1.atmosphere_drag_coeff_horiz ≈ 
+    @test if1.atmosphere_drag_coeff_horiz ≈ 
         if2.atmosphere_drag_coeff_horiz
 
-    Test.@test if1.pressure ≈ if2.pressure
-    Test.@test if1.n_contacts == if2.n_contacts
-    Test.@test if1.ocean_grid_pos == if2.ocean_grid_pos
-    Test.@test if1.contacts == if2.contacts
-    Test.@test if1.position_vector == if2.position_vector
-    Test.@test if1.contact_parallel_displacement == 
+    @test if1.pressure ≈ if2.pressure
+    @test if1.n_contacts == if2.n_contacts
+    @test if1.ocean_grid_pos == if2.ocean_grid_pos
+    @test if1.contacts == if2.contacts
+    @test if1.position_vector == if2.position_vector
+    @test if1.contact_parallel_displacement == 
         if2.contact_parallel_displacement
-    Test.@test if1.contact_age ≈ if2.contact_age
+    @test if1.contact_age ≈ if2.contact_age
 
-    Test.@test if1.granular_stress ≈ if2.granular_stress
-    Test.@test if1.ocean_stress ≈ if2.ocean_stress
-    Test.@test if1.atmosphere_stress ≈ if2.atmosphere_stress
+    @test if1.granular_stress ≈ if2.granular_stress
+    @test if1.ocean_stress ≈ if2.ocean_stress
+    @test if1.atmosphere_stress ≈ if2.atmosphere_stress
     nothing
 end
 
