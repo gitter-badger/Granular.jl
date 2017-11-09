@@ -3,7 +3,6 @@
 info("#### $(basename(@__FILE__)) ####")
 
 verbose=false
-i = 0
 
 info("## Inactive/Periodic BCs")
 

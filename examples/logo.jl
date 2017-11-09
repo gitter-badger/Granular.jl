@@ -24,7 +24,7 @@ const forcing = "gyres"
 #                                                            o    
 #                                                          oO'    """
 
-logo_string = readstring(`figlet -f pebbles "$text"`)
+logo_string = read(`figlet -f pebbles "$text"`, String)
 
 const dx = 1.
 const dy = dx

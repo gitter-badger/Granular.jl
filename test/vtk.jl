@@ -42,10 +42,10 @@ oceanchecksum =
 "d56ffb109841a803f2b2b94c74c87f7a497237204841d557d2b1043694d51f0d  " *
 oceanpath * "\n"
 
-@test readstring(`$(cmd) $(grainpath)$(cmd_post)`) == grainchecksum
-@test readstring(`$(cmd) $(graininteractionpath)$(cmd_post)`) == 
+@test read(`$(cmd) $(grainpath)$(cmd_post)`, String) == grainchecksum
+@test read(`$(cmd) $(graininteractionpath)$(cmd_post)`, String) == 
     graininteractionchecksum
-@test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
+@test read(`$(cmd) $(oceanpath)$(cmd_post)`, String) == oceanchecksum
 
 Granular.removeSimulationFiles(sim)
 
@@ -90,9 +90,9 @@ catch return_signal
     end
 end
 
-@test readstring(`$(cmd) $(grainpath)$(cmd_post)`) == grainchecksum
-@test readstring(`$(cmd) $(graininteractionpath)$(cmd_post)`) == 
+@test read(`$(cmd) $(grainpath)$(cmd_post)`, String) == grainchecksum
+@test read(`$(cmd) $(graininteractionpath)$(cmd_post)`, String) == 
     graininteractionchecksum
-@test readstring(`$(cmd) $(oceanpath)$(cmd_post)`) == oceanchecksum
+@test read(`$(cmd) $(oceanpath)$(cmd_post)`, String) == oceanchecksum
 
 Granular.removeSimulationFiles(sim)
