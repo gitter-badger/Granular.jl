@@ -133,8 +133,16 @@ end
 
 export setTimeStep!
 """
+    setTimeStep!(simulation[, epsilon, verbose])
+
 Find the computational time step length suitable given the grain radii, contact
 stiffnesses, and grain density. Uses the scheme by Radjaii et al. 2011.
+
+# Arguments
+* `simulation::Simulation`: the simulation object to modify.
+* `epsilon::Float64=0.07`: safety factor in the time step scheme. Larger values
+    are more likely to cause unstable behavior than smaller values.
+* `verbose::Bool=true`: display the resultant time step in the console.
 """
 function setTimeStep!(simulation::Simulation;
                       epsilon::Float64=0.07, verbose::Bool=true)
@@ -156,4 +164,22 @@ function setTimeStep!(simulation::Simulation;
         info("Time step length t=",  simulation.time_step, " s")
     end
     nothing
+end
+
+export resetTime!
+"""
+    resetTime!(simulation)
+
+Reset the current time to zero, and reset output file counters in order to
+restart a simulation.
+
+# Arguments
+* `simulation::Simulation`: the simulation object for which to reset the
+    temporal parameters.
+"""
+function resetTime!(sim::Simulation)
+    sim.time_iteration = 0
+    sim.time = 0.0
+    sim.file_number = 0
+    sim.file_time_since_output_file = 0.
 end
