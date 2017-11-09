@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 using BinDeps
-using Compat
+import Compat.Sys
 
 @BinDeps.setup
 
@@ -10,7 +10,7 @@ provides(AptGet, "imagemagick", imagemagick, os = :Linux)
 provides(Yum, "ImageMagick", imagemagick, os = :Linux)
 provides(Pacman, "imagemagick", imagemagick, os = :Linux)
 
-if is_apple()
+if Compat.Sys.isapple()
     if Pkg.installed("Homebrew") === nothing
         error("Homebrew julia package not installed, " *
               "please run Pkg.add(\"Homebrew\")")
@@ -18,7 +18,7 @@ if is_apple()
     using Homebrew
     provides(Homebrew.HB, "imagemagick", imagemagick, os = :Darwin)
 
-elseif is_windows()
+elseif Compat.Sys.iswindows()
     using WinRPM
     provides(WinRPM.RPM, "imagemagick", imagemagick, os = :Windows)
 end

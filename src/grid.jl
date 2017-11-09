@@ -534,7 +534,6 @@ function findEmptyPositionInGridCell(simulation::Simulation,
 
     nx, ny = size(grid.xh)
 
-    i_iter=0
     for i_iter=1:n_iter
 
         overlap_found = false
@@ -585,7 +584,7 @@ function findEmptyPositionInGridCell(simulation::Simulation,
         end
     end
     if verbose && overlap_found == false
-        info("Found position $pos in cell $i,$j after $i_iter iterations")
+        info("Found position $pos in cell $i,$j")
     elseif verbose && overlap_found
         info("Free position not found in cell $i,$j")
     end

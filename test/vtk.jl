@@ -1,4 +1,5 @@
 #!/usr/bin/env julia
+import Compat
 
 # Check the contact search and geometry of a two-particle interaction
 
@@ -13,11 +14,11 @@ Granular.findContacts!(sim, method="all to all")
 Granular.writeVTK(sim, verbose=false)
 
 cmd_post = ""
-if is_linux()
+if Compat.Sys.islinux()
     cmd = "sha256sum"
-elseif is_apple()
+elseif Compat.Sys.isapple()
     cmd = ["shasum", "-a", "256"]
-elseif is_windows()
+elseif Compat.Sys.iswindows()
     info("checksum verification not yet implemented on Windows")
     exit()
     cmd = ["powershell", "-Command", "\"Get-FileHash", "-Algorithm", "SHA256"]
