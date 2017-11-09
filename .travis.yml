@@ -27,7 +27,7 @@ before_script:
 
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.clone(pwd()); Pkg.build("Granular"); ENV["PYTHON"]=""; Pkg.build("PyCall"); Pkg.build("PyPlot"); Pkg.test("Granular"; coverage=true)';
+  - julia -e 'Pkg.clone(pwd()); Pkg.build("Granular"); ENV["PYTHON"]=""; Pkg.build("PyCall"); Pkg.build("PyPlot")'; julia -e 'Pkg.test("Granular"; coverage=true)';
 
 deploy:
   - provider: script
