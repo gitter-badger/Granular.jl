@@ -285,7 +285,7 @@ As in the previous example, we start by creating a fluid grid:
 
 ```julia-repl
 julia> import Granular
-julia> sim = Granular.createSimulation(id="sedimentation.jl")
+julia> sim = Granular.createSimulation(id="sedimentation")
 ```
 
 ### Creating a pseudo-random grain packing
@@ -302,7 +302,7 @@ julia> Granular.regularPacking!(sim, [7, 25], 0.02, 0.2)
 
 Since we haven't explicitly set the grain sizes for this example, we can 
 inspect the values by plotting a histogram of sizes (only works if the `PyPlot` 
-package is installed with `Pkg.add("PyPlot")`:
+package is installed with `Pkg.add("PyPlot")`):
 
 ```julia-repl
 julia> Granular.plotGrainSizeDistribution(sim)
