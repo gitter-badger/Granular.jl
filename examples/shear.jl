@@ -16,6 +16,7 @@ const nx = 10
 const ny = 50
 const r_min = 0.2
 const r_max = 1.0
+const z_thickness = 
 Granular.regularPacking!(sim, [nx, ny], r_min, r_max)
 
 # Create a grid for contact searching spanning the extent of the grains
@@ -83,6 +84,7 @@ for grain in grains
         y_top = grain.lin_pos[2] + grain.contact_radius
     end
 end
+# TODO
 Granular.addDynamicWall!(sim, normal=[0., -1.], pos=y_top,
                          boundary_condition="normal stress",
                          normal_stress=N)
@@ -100,7 +102,7 @@ end
 const fixed_thickness = 2. * r_max
 for grain in grains
     if grain.lin_pos[2] <= fixed_thickness
-        grain.fixed = true
+        grain.fixed = true  # set x and y acceleration to zero
     end
 end
 
@@ -127,10 +129,10 @@ sim_cons = deepcopy(sim)
 ################################################################################
 
 # Select a shear velocity for the consolidation [m/s]
-const v_shear = 0.1
+const vel_shear = 0.1
 
 # Rename the simulation so we don't overwrite output from the previous step
-sim.id = "$(id_prefix)-shear-N$(N)Pa-v_shear$(v_shear)m-s"
+sim.id = "$(id_prefix)-shear-N$(N)Pa-vel_shear$(vel_shear)m-s"
 
 # Set all linear and rotational velocities to zero
 Granular.zeroKinematics!(sim)
@@ -146,7 +148,7 @@ for grain in grains
         # overrides the `fixed` flag
         grain.allow_y_acc = true
 
-        grain.lin_vel[1] = v_shear
+        grain.lin_vel[1] = vel_shear
     end
 end
 
@@ -156,9 +158,54 @@ Granular.resetTime!(sim)
 # Set the simulation time to run the shear experiment for
 Granular.setTotalTime!(sim, 15.0)
 
-# Run the consolidation experiment
-Granular.run!(sim)
+# Run the shear experiment
+time = Float64[]
+shear_stress = Float64[]
+shear_strain = Float64[]
+dilation = Float64[]
+const thickness_initial = sim.walls[1].pos - y_bot
+x_min = +Inf
+x_max = -Inf
+for grain in grains
+    if x_min > grain.lin_pos[1] - grain.contact_radius
+        x_min = grain.lin_pos[1] - grain.contact_radius
+    end
+    if x_max < grain.lin_pos[1] + grain.contact_radius
+        x_max = grain.lin_pos[1] + grain.contact_radius
+    end
+end
+const surface_area = (x_max - x_min)
+while sim.time < sim.time_total
+
+    for i=1:100  # run for 100 steps before measuring shear stress and dilation
+        Granular.run!(sim, single_step=true)
+    end
+
+    append!(time, sim.time)
+
+    # Determine the current shear stress
+    for grain in sim.grains
+        if grain.fixed && grain.allow_y_acc
+            shear_force += -grain.force[1]
+        end
+    end
+    append!(shear_stress, shear_force/surface_area)
+
+    # Determine the current shear strain
+    append!(shear_strain, sim.time*vel_shear/thickness_initial)
+
+    # Determine the current dilation
+    append!(dilation, (sim.walls[1].pos - y_bot)/thickness_initial)
+
 
 # Save the simulation state to disk in case we need to reuse the sheared state
 Granular.writeSimulation(sim)
 
+# Plot time vs. shear stress and dilation
+# TODO
+
+# Plot shear strain vs. shear stress and dilation
+# TODO
+
+# Plot time vs. shear strain (boring when the shear experiment is rate controlled)
+# TODO

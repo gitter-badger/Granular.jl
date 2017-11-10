@@ -171,7 +171,10 @@ export resetTime!
     resetTime!(simulation)
 
 Reset the current time to zero, and reset output file counters in order to
-restart a simulation.
+restart a simulation.  This function does not overwrite the time step
+(`Simulation.time_step`), the output
+file interval (`Simulation.file_time_step`), or the total simulation time
+(`Simulation.time_total`).
 
 # Arguments
 * `simulation::Simulation`: the simulation object for which to reset the
@@ -183,3 +186,4 @@ function resetTime!(sim::Simulation)
     sim.file_number = 0
     sim.file_time_since_output_file = 0.
 end
+

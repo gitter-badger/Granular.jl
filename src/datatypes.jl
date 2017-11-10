@@ -30,6 +30,8 @@ mutable struct GrainCylindrical
 
     # Kinematic constraint flags
     fixed::Bool
+    allow_x_acc::Bool
+    allow_y_acc::Bool
     rotating::Bool
     enabled::Bool
 
@@ -99,6 +101,8 @@ mutable struct GrainArrays
 
     # Kinematic constraint flags
     fixed::Vector{Int}
+    allow_x_acc::Vector{Int}
+    allow_y_acc::Vector{Int}
     rotating::Vector{Int}
     enabled::Vector{Int}
 

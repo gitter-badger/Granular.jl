@@ -25,7 +25,9 @@ export addGrainCylindrical!
                                     ocean_drag_coeff_horiz,
                                     atmosphere_drag_coeff_vert,
                                     atmosphere_drag_coeff_horiz,
-                                    pressure, fixed, rotating, enabled, verbose,
+                                    pressure, fixed,
+                                    allow_x_acc, allow_y_acc,
+                                    rotating, enabled, verbose,
                                     ocean_grid_pos, atmosphere_grid_pos,
                                     n_contact, granular_stress, ocean_stress,
                                     atmosphere_stress])
@@ -84,6 +86,8 @@ are optional, and come with default values.  The only required arguments are
     for atmosphere against grain bottom [-].
 * `pressure::Float64 = 0.`: current compressive stress on grain [Pa].
 * `fixed::Bool = false`: grain is fixed to a constant velocity (e.g. zero).
+* `allow_x_acc::Bool = false`: override `fixed` along `x`.
+* `allow_y_acc::Bool = false`: override `fixed` along `y`.
 * `rotating::Bool = true`: grain is allowed to rotate.
 * `enabled::Bool = true`: grain interacts with other grains.
 * `verbose::Bool = true`: display diagnostic information during the function
@@ -162,6 +166,8 @@ function addGrainCylindrical!(simulation::Simulation,
                                     # H&C2011
                                 pressure::Float64 = 0.,
                                 fixed::Bool = false,
+                                allow_x_acc::Bool = false,
+                                allow_y_acc::Bool = false,
                                 rotating::Bool = true,
                                 enabled::Bool = true,
                                 verbose::Bool = true,
@@ -230,6 +236,8 @@ function addGrainCylindrical!(simulation::Simulation,
                                  torque,
 
                                  fixed,
+                                 allow_x_acc,
+                                 allow_y_acc,
                                  rotating,
                                  enabled,
 
@@ -347,6 +355,8 @@ function convertGrainDataToArrays(simulation::Simulation)
                           Array{Int}(length(simulation.grains)),
                           Array{Int}(length(simulation.grains)),
                           Array{Int}(length(simulation.grains)),
+                          Array{Int}(length(simulation.grains)),
+                          Array{Int}(length(simulation.grains)),
 
                           Array{Float64}(length(simulation.grains)),
                           Array{Float64}(length(simulation.grains)),
@@ -399,6 +409,8 @@ function convertGrainDataToArrays(simulation::Simulation)
         ifarr.torque[3, i] = simulation.grains[i].torque
 
         ifarr.fixed[i] = Int(simulation.grains[i].fixed)
+        ifarr.allow_x_acc[i] = Int(simulation.grains[i].allow_x_acc)
+        ifarr.allow_y_acc[i] = Int(simulation.grains[i].allow_y_acc)
         ifarr.rotating[i] = Int(simulation.grains[i].rotating)
         ifarr.enabled[i] = Int(simulation.grains[i].enabled)
 
@@ -470,6 +482,8 @@ function deleteGrainArrays!(ifarr::GrainArrays)
     ifarr.torque = f2
 
     ifarr.fixed = i1
+    ifarr.allow_x_acc = i1
+    ifarr.allow_y_acc = i1
     ifarr.rotating = i1
     ifarr.enabled = i1
 
@@ -529,9 +543,11 @@ function printGrainInfo(f::GrainCylindrical)
     println("  ang_acc: $(f.ang_acc) rad/s^2")
     println("  torque:  $(f.torque) N*m\n")
 
-    println("  fixed:    $(f.fixed)")
-    println("  rotating: $(f.rotating)")
-    println("  enabled:  $(f.enabled)\n")
+    println("  fixed:       $(f.fixed)")
+    println("  allow_x_acc: $(f.allow_x_acc)")
+    println("  allow_y_acc: $(f.allow_y_acc)")
+    println("  rotating:    $(f.rotating)")
+    println("  enabled:     $(f.enabled)\n")
 
     println("  k_n:     $(f.contact_stiffness_normal) N/m")
     println("  k_t:     $(f.contact_stiffness_tangential) N/m")
