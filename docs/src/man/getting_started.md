@@ -4,8 +4,8 @@ official manual has a useful guide to [getting started with
 Julia](https://docs.julialang.org/en/latest/manual/getting-started/).
 
 In the following, two simple examples are presented using some of the core 
-commands of Granular.jl.  For more examples, see the scripts in the `examples/` 
-directory.
+functionality of Granular.jl.  For more examples, see the scripts in the 
+`examples/` directory.
 
 The relevant functions are all contained in the `Granular` module, which can be 
 imported with `import Granular`.  *Note:* As per Julia conventions, functions 
@@ -31,8 +31,17 @@ julia> ?Granular.fitGridToGrains!
     •    grid::Any: Ocean or Atmosphere grid to manipulate.
     •    padding::Real: optional padding around edges [m].
     •    verbose::Bool: show grid information when function completes.
-
 ```
+
+You can go through the examples below by typing in the lines starting with 
+`julia>` into the Julia interactive shell, which comes up when you start the 
+Julia app or run `julia` from the command line in a terminal.  Do not include 
+the `julia> ` part, just the remaining text of that line.
+
+Alternatively, you can create a Julia script with the file name extension 
+`.jl`.  This file should contains all of the relevant commands in succession, 
+which is useful for quickly repeating runs.  Julia scripts can be evaluated 
+form the command line using `julia <scriptname>.jl`.
 
 ## Collision between two particles
 For the first example (`examples/two-grains.jl`), we will create two grains and 
@@ -259,7 +268,13 @@ imagemagick` on macOS), the output images will be merged into an animated GIF.
 
 ### Exercises
 To gain more familiarity with the simulation procedure, I suggest experimenting 
-with the following:
+with the following exercises.  *Tip:* You can rerun an experiment after 
+changing one or more parameters by calling `Granular.resetTime!(sim); 
+Granular.run!(sim)`.  Changes in grain size, grain mass, or elastic properties 
+require a recomputation of the numerical time step 
+(`Granular.setTimeStep!(sim)`) before calling `Granular.run!(sim)`.  The output 
+files will be overwritten, and changes will be immediately available in 
+ParaView.
 
 - What effect does the grain size have on the time step?
 - Try to make an oblique collision by placing one of the grains at a different 
