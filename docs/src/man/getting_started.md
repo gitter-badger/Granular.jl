@@ -1,11 +1,16 @@
 # Getting started
-If you are new to the [Julia](https://julialang.org) programming language, the 
-official manual has a useful guide to [getting started with 
+In this section, it is assumed that [Julia](https://julialang.org) and 
+[Granular.jl](https://github.com/anders-dc/Granular.jl) has been successfully 
+installed.  If not, please consult the [Installation](@ref Installation) 
+section of this manual.  If you are new to the [Julia](https://julialang.org) 
+programming language, the official manual has a useful guide to [getting 
+started with 
 Julia](https://docs.julialang.org/en/latest/manual/getting-started/).
 
 In the following, two simple examples are presented using some of the core 
 functionality of Granular.jl.  For more examples, see the scripts in the 
-`examples/` directory.
+[examples/](https://github.com/anders-dc/Granular.jl/tree/master/examples) 
+directory.
 
 The relevant functions are all contained in the `Granular` module, which can be 
 imported with `import Granular`.  *Note:* As per Julia conventions, functions 

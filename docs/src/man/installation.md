@@ -71,4 +71,3 @@ In case any of these tests fail, please open a [Github
 Issue](https://github.com/anders-dc/Granular.jl/issues) describing the problems 
 so further investigation and diagnosis can follow.
 
-
