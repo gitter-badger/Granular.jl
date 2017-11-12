@@ -1,6 +1,6 @@
 # Getting started
 In this section, it is assumed that [Julia](https://julialang.org) and 
-[Granular.jl](https://github.com/anders-dc/Granular.jl) has been successfully 
+[Granular.jl](https://github.com/anders-dc/Granular.jl) have been successfully 
 installed.  If not, please consult the [Installation](@ref Installation) 
 section of this manual.  If you are new to the [Julia](https://julialang.org) 
 programming language, the official manual has a useful guide to [getting 
