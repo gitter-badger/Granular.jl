@@ -4,13 +4,20 @@
 
 info("#### $(basename(@__FILE__)) ####")
 
+info("Testing argument value checks")
 sim = Granular.createSimulation(id="test")
-info("Testing grain value checks ")
+Granular.addGrainCylindrical!(sim, [ 0., 0.], 10., 2., verbose=false)
 @test_throws ErrorException Granular.addWallLinearFrictionless!(sim,
                                                                 [.1, .1, .1],
                                                                 1.)
 @test_throws ErrorException Granular.addWallLinearFrictionless!(sim,
                                                                 [1., 1.],
+                                                                1.)
+@test_throws ErrorException Granular.addWallLinearFrictionless!(sim,
+                                                                [.1, .1, .1],
+                                                                1.)
+sim = Granular.createSimulation(id="test")
+@test_throws ErrorException Granular.addWallLinearFrictionless!(sim, [1., 0.],
                                                                 1.)
 
 

@@ -2,39 +2,36 @@
 
 export createSimulation
 """
-    createSimulation([id::String="unnamed",
-                      time_iteration::Int=0,
-                      time::Float64=0.0,
-                      time_total::Float64=-1.,
-                      time_step::Float64=-1.,
-                      file_time_step::Float64=-1.,
-                      file_number::Int=0,
-                      grains=Array{GrainCylindrical, 1}[],
-                      ocean::Ocean,
-                      atmosphere::Atmosphere,
-                      Nc_max::Int=16])
+    createSimulation([id::String="unnamed"])
 
-Create a simulation object containing all relevant variables such as temporal 
-parameters, fluid grids, grains, and contacts.  All arguments are optional. The
-most important parameter is `id`, which is used to uniquely identify the
-simulation when it is written to disk.
+Create a simulation object to contain all relevant variables such as temporal 
+parameters, fluid grids, grains, and contacts.  The parameter `id` is used to
+uniquely identify the simulation when it is written to disk.
 
-# Optional arguments
+The function returns a `Simulation` object, which you can add grains to, e.g.
+with [`addGrainCylindrical!`](@ref).
+
+# Optional argument
 * `id::String="unnamed"`: simulation identifying string.
 
 """
-function createSimulation(;id::String="unnamed",
-                          time_iteration::Int=0,
-                          time::Float64=0.0,
-                          time_total::Float64=-1.,
-                          time_step::Float64=-1.,
-                          file_time_step::Float64=-1.,
-                          file_number::Int=0,
-                          file_time_since_output_file::Float64=0.,
-                          grains=Array{GrainCylindrical, 1}[],
-                          ocean::Ocean=createEmptyOcean(),
-                          atmosphere::Atmosphere=createEmptyAtmosphere(),
-                          Nc_max::Int=16)
+function createSimulation(;id::String="unnamed")
+
+    # default values for simulation parameters (not included as arguments as
+    # they are very rarely chagned and make the docstring much more cluttered
+    # and intimidating
+    time_iteration::Int = 0
+    time::Float64 = 0.0
+    time_total::Float64 = -1.
+    time_step::Float64 = -1.
+    file_time_step::Float64 = -1.
+    file_number::Int = 0
+    file_time_since_output_file::Float64 = 0.
+    grains = Array{GrainCylindrical, 1}[]
+    ocean::Ocean = createEmptyOcean()
+    atmosphere::Atmosphere = createEmptyAtmosphere()
+    Nc_max::Int = 16
+    walls = Array{WallLinearFrictionless, 1}[]
 
     return Simulation(id,
                       time_iteration,
@@ -47,7 +44,8 @@ function createSimulation(;id::String="unnamed",
                       grains,
                       ocean,
                       atmosphere,
-                      Nc_max)
+                      Nc_max,
+                      walls)
 end
 
 export run!

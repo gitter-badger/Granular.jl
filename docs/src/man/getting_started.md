@@ -22,20 +22,20 @@ online documentation, or simply from the Julia shell by typing `?<function
 name>`.  An example:
 
 ```julia-repl
-julia> ?Granular.fitGridToGrains!
+julia> ?Granular.createSimulation
+  createSimulation([id::String="unnamed"])
 
-  fitGridToGrains!(simulation, grid[, padding, verbose])
+  Create a simulation object to contain all relevant variables such as temporal 
+  parameters, fluid grids, grains, and contacts. The parameter id is used to 
+  uniquely identify the simulation when it is written to disk.
 
-  Fit the ocean or atmosphere grid for a simulation to the current grains and 
-  their positions.
+  The function returns a Simulation object, which you can add grains to, e.g. 
+  with addGrainCylindrical!.
 
-     Arguments
-    ≡≡≡≡≡≡≡≡≡≡≡
+     Optional argument
+    ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
 
-    •    simulation::Simulation: simulation object to manipulate.
-    •    grid::Any: Ocean or Atmosphere grid to manipulate.
-    •    padding::Real: optional padding around edges [m].
-    •    verbose::Bool: show grid information when function completes.
+    •    id::String="unnamed": simulation identifying string.
 ```
 
 You can go through the examples below by typing in the lines starting with 
@@ -85,8 +85,8 @@ the following commands.  Next, we can add grains to this object.  The first
 grain is cylinder shaped, placed at the x-y position (0,0) m.  It has a radius 
 of 0.1 m, and has a thickness of 0.05 m.  As this call modifies the `sim` 
 object, the function contains an exclamation mark (!).  For further information 
-regarding this call, see the reference in the [Public API Index](@ref 
-main-index).
+regarding this call, see the reference to [`addGrainCylindrical!`](@ref), found 
+in the [Public API documentation](@ref).
 
 ```julia-repl
 julia> Granular.addGrainCylindrical!(sim, [0.0, 0.0], 0.1, 0.05)

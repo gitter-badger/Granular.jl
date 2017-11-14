@@ -70,7 +70,7 @@ function addWallLinearFrictionless!(simulation::Simulation,
                                     normal_stress::Float64 = 0.,
                                     vel::Float64 = 0.,
                                     force::Float64 = 0.,
-                                    verbose::Boolw=true)
+                                    verbose::Bool=true)
 
     # Check input values
     if length(normal) != 2
@@ -78,17 +78,21 @@ function addWallLinearFrictionless!(simulation::Simulation,
               "$normal)")
     end
 
-    if !(normal ≈ [1., 0.]) || !(normal ≈ [0., 1.])
+    if !(normal ≈ [1., 0.]) && !(normal ≈ [0., 1.])
         error("Currently only walls with normals orthogonal to the " *
               "coordinate system are allowed, i.e. normals parallel to the " *
               "x or y axes.  Accepted values for `normal` " *
-              "are [1., 0.] and [0., 1.]")
+              "are [1., 0.] and [0., 1.].  The passed normal was $normal")
     end
 
     # if not set, set wall mass to equal the mass of all grains.
     if isnan(mass)
+        if length(simulation.grains < 1)
+            error("If wall mass is not specified, walls should be added " *
+                  "after grains have been added to the simulation.")
+        end
         mass = 0.
-        for grain in sim.grains
+        for grain in simulation.grains
             mass += grain.mass
         end
         info("Setting wall mass to total grain mass: $mass kg")
@@ -96,8 +100,12 @@ function addWallLinearFrictionless!(simulation::Simulation,
 
     # if not set, set wall thickness to equal largest grain thickness
     if isnan(thickness)
+        if length(simulation.grains < 1)
+            error("If wall thickness is not specified, walls should be added " *
+                  "after grains have been added to the simulation.")
+        end
         thickness = -Inf
-        for grain in sim.grains
+        for grain in simulation.grains
             if grain.thickess > thickness
                 thickness = grain.thickness
             end
