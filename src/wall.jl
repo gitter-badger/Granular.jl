@@ -87,7 +87,7 @@ function addWallLinearFrictionless!(simulation::Simulation,
 
     # if not set, set wall mass to equal the mass of all grains.
     if isnan(mass)
-        if length(simulation.grains < 1)
+        if length(simulation.grains) < 1
             error("If wall mass is not specified, walls should be added " *
                   "after grains have been added to the simulation.")
         end
@@ -100,13 +100,13 @@ function addWallLinearFrictionless!(simulation::Simulation,
 
     # if not set, set wall thickness to equal largest grain thickness
     if isnan(thickness)
-        if length(simulation.grains < 1)
+        if length(simulation.grains) < 1
             error("If wall thickness is not specified, walls should be added " *
                   "after grains have been added to the simulation.")
         end
         thickness = -Inf
         for grain in simulation.grains
-            if grain.thickess > thickness
+            if grain.thickness > thickness
                 thickness = grain.thickness
             end
         end
@@ -128,3 +128,58 @@ function addWallLinearFrictionless!(simulation::Simulation,
     nothing
 end
 
+export getWallSurfaceArea
+"""
+    getWallSurfaceArea(simulation, wall_index)
+
+Returns the surface area of the wall given the grid size and its index.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the wall.
+* `wall_index::Integer=1`: the wall number in the simulation object.
+"""
+function getWallSurfaceArea(sim::Simulation, wall_index::Integer)
+
+    if sim.walls[wall_index].normal ≈ [1., 0.]
+        return (sim.ocean.yq[end,end] - sim.ocean.yq[1,1]) *
+            sim.walls[wall_index].thickness
+    elseif sim.walls[wall_index].normal ≈ [0., 1.]
+        return (sim.ocean.xq[end,end] - sim.ocean.xq[1,1]) *
+            sim.walls[wall_index].thickness
+    else
+        error("Wall normal not understood")
+    end
+    nothing
+end
+
+export getWallNormalStress
+"""
+    getWallNormalStress(simulation[, wall_index, stress_type])
+
+Returns the current "effective" or "defined" normal stress on the wall with
+index `wall_index` inside the `simulation` object.  The returned value is given
+in Pascal.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the wall.
+* `wall_index::Integer=1`: the wall number in the simulation object.
+* `stress_type::String="effective"`: the normal-stress type to return.  The
+    defined value corresponds to the normal stress that the wall is asked to
+    uphold. The effective value is the actual current normal stress.  Usually,
+    the magnitude of the effective normal stress fluctuates around the defined
+    normal stress.
+"""
+function getWallNormalStress(sim::Simulation;
+                             wall_index::Integer=1,
+                             stress_type::String="effective")
+    if stress_type == "defined"
+        return sim.walls[wall_index].normal_stress
+
+    elseif stress_type == "effective"
+        return sim.walls[wall_index].force / getWallSurfaceArea(sim, wall_index,
+                                                                sim.ocean)
+    else
+        error("stress_type not understood, should be 'effective' or 'defined'" *
+              " but is '$stress_type'.")
+    end
+end

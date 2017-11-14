@@ -5,8 +5,8 @@ info("#### $(basename(@__FILE__)) ####")
 info("Testing memory footprint of Granular types")
 
 sim = Granular.createSimulation()
-empty_sim_size = 96
-empty_sim_size_recursive = 544
+empty_sim_size = 104
+empty_sim_size_recursive = 552
 
 @test sizeof(sim) == empty_sim_size
 @test Base.summarysize(sim) == empty_sim_size_recursive

@@ -16,14 +16,14 @@ The relevant functions are all contained in the `Granular` module, which can be
 imported with `import Granular`.  *Note:* As per Julia conventions, functions 
 that contain an exclamation mark (!) modify the values of the arguments.
 
-Any of the functions called below are documented in the source code, and their 
+All of the functions called below are documented in the source code, and their 
 documentation can be found in the [Public API Index](@ref main-index) in the 
 online documentation, or simply from the Julia shell by typing `?<function 
 name>`.  An example:
 
 ```julia-repl
 julia> ?Granular.createSimulation
-  createSimulation([id::String="unnamed"])
+  createSimulation([id])
 
   Create a simulation object to contain all relevant variables such as temporal 
   parameters, fluid grids, grains, and contacts. The parameter id is used to 

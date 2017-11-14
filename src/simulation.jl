@@ -2,7 +2,7 @@
 
 export createSimulation
 """
-    createSimulation([id::String="unnamed"])
+    createSimulation([id])
 
 Create a simulation object to contain all relevant variables such as temporal 
 parameters, fluid grids, grains, and contacts.  The parameter `id` is used to
@@ -227,7 +227,7 @@ Add an `wall` to the `simulation` object.  If `verbose` is true, a short
 confirmation message will be printed to stdout.
 """
 function addWall!(simulation::Simulation,
-                  grain::WallLinearFrictionless,
+                  wall::WallLinearFrictionless,
                   verbose::Bool = false)
     push!(simulation.walls, wall)
 
