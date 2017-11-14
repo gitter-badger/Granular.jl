@@ -5,6 +5,9 @@ export interact!
     interact!(simulation::Simulation)
 
 Resolve mechanical interaction between all particle pairs.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the grains.
 """
 function interact!(simulation::Simulation)
     for i=1:length(simulation.grains)
@@ -26,6 +29,45 @@ function interact!(simulation::Simulation)
             simulation.grains[i].horizontal_surface_area
     end
     nothing
+end
+
+
+"""
+    interactWalls!(sim)
+
+Find and resolve interactions between the dynamic walls (`simulation.walls`) and
+the grains.  The contact model uses linear elasticity, with stiffness based on
+the grain Young's modulus `grian.E` or elastic stiffness `grain.k_n`.  The
+interaction is frictionless in the tangential direction.
+
+# Arguments
+* `simulation::Simulation`: the simulation object containing the grains and
+    dynamic walls.
+"""
+function interactWalls!(sim::Simulation)
+
+    δ_n::Float64 = 0.0
+    k_n::Float64 = 0.0
+
+    for iw=1:length(sim.walls)
+        for i=1:length(sim.grains)
+
+            # get overlap distance by projecting grain position onto wall-normal
+            # vector
+            δ_n = dot(sim.walls[iw].normal, sim.grains[i].lin_pos) -
+                sim.walls[iw].pos - sim.grains[i].contact_radius
+
+            if sim.grains[i].youngs_modulus > 0.
+                k_n = sim.grains[i].youngs_modulus *
+                    sim.grains[i].thickness
+            else
+                k_n = sim.grains[i].contact_stiffness_normal
+            end
+
+            sim.walls[iw].force += k_n * abs(δ_n)
+            sim.grains[i].force += k_n * abs(δ_n) * sim.grains[iw].normal
+        end
+    end
 end
 
 export interactGrains!

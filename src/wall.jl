@@ -13,7 +13,9 @@ The only required arguments are
 # Arguments
 * `simulation::Simulation`: the simulation object where the wall should be
     added to.
-* `normal::Vector{Float64}`: 2d vector denoting the normal to the wall [m].
+* `normal::Vector{Float64}`: 2d vector denoting the normal to the wall [m].  The
+    wall will only interact in the opposite direction of this vector, so the
+    normal vector should point in the direction of the grains.
 * `pos::Float64`: position along axis parallel to the normal vector [m].
 * `bc::String="fixed"`: boundary condition, possible values are `"fixed"`
     (default), `"normal stress"`, or `"velocity"`.
@@ -52,11 +54,11 @@ Granular.addWallLinearFrictionless!(sim, [0., 1.], 1.5,
                                     vel=-0.5)
 ```
 
-To create a wall parallel to the *x* axis with a constant normal stress of 100
-kPa:
+To create a wall parallel to the *y* axis pushing downwards with a constant
+normal stress of 100 kPa, starting at a position of y = 3.5 m:
 
 ```julia
-Granular.addWallLinearFrictionless!(sim, [1., 0.], 3.5,
+Granular.addWallLinearFrictionless!(sim, [0., -1.], 3.5,
                                     bc="normal stress",
                                     normal_stress=100e3)
 ```
@@ -78,11 +80,12 @@ function addWallLinearFrictionless!(simulation::Simulation,
               "$normal)")
     end
 
-    if !(normal ≈ [1., 0.]) && !(normal ≈ [0., 1.])
+    if !(normal ≈ [1., 0.]) && !(normal ≈ [0., 1.]) &&
+        !(normal ≈ [-1., 0.]) && !(normal ≈ [0., -1.])
         error("Currently only walls with normals orthogonal to the " *
               "coordinate system are allowed, i.e. normals parallel to the " *
               "x or y axes.  Accepted values for `normal` " *
-              "are [1., 0.] and [0., 1.].  The passed normal was $normal")
+              "are [±1., 0.] and [0., ±1.].  The passed normal was $normal")
     end
 
     # if not set, set wall mass to equal the mass of all grains.

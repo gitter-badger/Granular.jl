@@ -248,12 +248,15 @@ function disableGrain!(simulation::Simulation, i::Int)
 end
 
 export zeroForcesAndTorques!
-"Sets the `force` and `torque` values of all grains to zero."
+"Sets the `force` and `torque` values of all grains and dynamic walls to zero."
 function zeroForcesAndTorques!(simulation::Simulation)
     for grain in simulation.grains
         grain.force .= grain.external_body_force
         grain.torque = 0.
         grain.pressure = 0.
+    end
+    for wall in simulation.walls
+        wall.force = 0.
     end
     nothing
 end
