@@ -70,6 +70,18 @@ mutable struct GrainCylindrical
     atmosphere_stress::Vector{Float64}
 end
 
+# Type for linear (flat) and frictionless dynamic walls
+mutable struct WallLinearFrictionless
+    normal::Vector{Float64}   # Wall-face normal vector
+    pos::Float64              # Position along axis parallel to normal vector
+    bc::String                # Boundary condition
+    mass::Float64             # Mass, used when bc != "fixed"
+    thickness::Float64        # Wall thickness
+    normal_stress::Float64    # Normal stress when bc == "normal stress"
+    vel::Float64              # Velocity (constant when bc == "normal stress")
+    force::Float64            # Sum of normal forces on wall
+end
+
 # Type for gathering data from grain objects into single arrays
 mutable struct GrainArrays
 
@@ -310,6 +322,8 @@ mutable struct Simulation
     atmosphere::Atmosphere
 
     Nc_max::Int
+
+    walls::Vector{WallLinearFrictionless}
 end
 
 # Mappings between boundary condition keys (Integers) and strings

@@ -11,15 +11,16 @@ export createSimulation
                       file_number::Int=0,
                       grains=Array{GrainCylindrical, 1}[],
                       ocean::Ocean,
-                      atmosphere::Atmosphere)
+                      atmosphere::Atmosphere,
+                      Nc_max::Int=16])
 
 Create a simulation object containing all relevant variables such as temporal 
-parameters, and lists of grains and contacts. The parameter `id` is used to
-uniquely identify the simulation when it is written to disk.
+parameters, fluid grids, grains, and contacts.  All arguments are optional. The
+most important parameter is `id`, which is used to uniquely identify the
+simulation when it is written to disk.
 
-# Arguments
-* `id::String="unnamed"`:
-
+# Optional arguments
+* `id::String="unnamed"`: simulation identifying string.
 
 """
 function createSimulation(;id::String="unnamed",
@@ -201,19 +202,39 @@ end
 export addGrain!
 """
     addGrain!(simulation::Simulation,
-                grain::GrainCylindrical,
-                verbose::Bool = False)
+              grain::GrainCylindrical,
+              verbose::Bool = false)
 
 Add an `grain` to the `simulation` object.  If `verbose` is true, a short 
 confirmation message will be printed to stdout.
 """
 function addGrain!(simulation::Simulation,
-                     grain::GrainCylindrical,
-                     verbose::Bool = False)
+                   grain::GrainCylindrical,
+                   verbose::Bool = false)
     push!(simulation.grains, grain)
 
     if verbose
-        info("Added Grain $(length(simulation.grains))")
+        info("Added grain $(length(simulation.grains))")
+    end
+    nothing
+end
+
+export addWall!
+"""
+    addWall!(simulation::Simulation,
+             wall::WallLinearFrictionless,
+             verbose::Bool = false)
+
+Add an `wall` to the `simulation` object.  If `verbose` is true, a short 
+confirmation message will be printed to stdout.
+"""
+function addWall!(simulation::Simulation,
+                  grain::WallLinearFrictionless,
+                  verbose::Bool = false)
+    push!(simulation.walls, wall)
+
+    if verbose
+        info("Added wall $(length(simulation.walls))")
     end
     nothing
 end
