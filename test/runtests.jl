@@ -1,8 +1,8 @@
 using Compat.Test
 import Granular
 
-include("grain.jl")
 include("wall.jl")
+include("grain.jl")
 include("packing.jl")
 include("util.jl")
 include("temporal.jl")

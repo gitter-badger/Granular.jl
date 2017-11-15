@@ -57,7 +57,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1.01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 @test sim.walls[1].force ≈ 0.
 @test sim.grains[1].force[1] ≈ 0.
@@ -68,7 +68,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], +2.01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 @test sim.walls[1].force ≈ 0.
 @test sim.grains[1].force[1] ≈ 0.
@@ -79,10 +79,10 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1. + .01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
-@test sim.walls[1].force > 0.
-@test sim.grains[1].force[1] < 0.
+@test sim.walls[1].force < 0.
+@test sim.grains[1].force[1] > 0.
 @test sim.grains[1].force[2] ≈ 0.
 
 info("Wall at +x")
@@ -90,7 +90,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], +1. - .01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 @test sim.walls[1].force > 0.
 @test sim.grains[1].force[1] < 0.
@@ -101,7 +101,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [0., 1.], -1. + .01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 @test sim.walls[1].force < 0.
 @test sim.grains[1].force[1] ≈ 0.
@@ -112,7 +112,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [0., 1.], +1. - .01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 @test sim.walls[1].force > 0.
 @test sim.grains[1].force[1] ≈ 0.
@@ -126,7 +126,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1.01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim)
 @test sim.walls[1].force ≈ 0.
@@ -141,7 +141,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1.01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim, method="Two-term Taylor")
 @test sim.walls[1].force ≈ 0.
@@ -156,7 +156,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1.01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 @test_throws ErrorException Granular.updateWallKinematics!(sim, method="asdf")
 Granular.updateWallKinematics!(sim, method="Three-term Taylor")
@@ -172,7 +172,7 @@ sim = Granular.createSimulation()
 sim.ocean = Granular.createRegularOceanGrid([1, 1, 1], [10., 20., 1.0])
 Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1.01, verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim)
 @test sim.walls[1].acc ≈ 0.
@@ -186,7 +186,7 @@ Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1.01,
                                     bc="velocity", vel=1.0,
                                     verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim)
 @test sim.walls[1].force ≈ 0.
@@ -203,7 +203,7 @@ Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1.01,
                                     bc="velocity", vel=1.0,
                                     verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim, method="Two-term Taylor")
 @test sim.walls[1].force ≈ 0.
@@ -220,7 +220,7 @@ Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -1.01,
                                     bc="velocity", vel=1.0,
                                     verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 @test_throws ErrorException Granular.updateWallKinematics!(sim, method="asdf")
 Granular.updateWallKinematics!(sim, method="Three-term Taylor")
@@ -238,7 +238,7 @@ Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -0.9,
                                     bc="velocity", vel=1.0,
                                     verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim, method="Two-term Taylor")
 @test sim.walls[1].bc == "velocity"
@@ -253,7 +253,7 @@ Granular.addGrainCylindrical!(sim, [ 0., 0.], 1., 2., verbose=false)
 Granular.addWallLinearFrictionless!(sim, [1., 0.], -0.9,
                                     bc="velocity", vel=1.0,
                                     verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim, method="Two-term Taylor")
 @test sim.walls[1].acc ≈ 0.
@@ -268,7 +268,7 @@ Granular.addWallLinearFrictionless!(sim, [1., 0.], 2.,
                                     bc="normal stress",
                                     normal_stress=0.,
                                     verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim)
 @test sim.walls[1].force ≈ 0.
@@ -284,9 +284,9 @@ Granular.addGrainCylindrical!(sim, [ 1., 1.], 1., 1., verbose=false)
 sim.grains[1].fixed = true
 Granular.addWallLinearFrictionless!(sim, [1., 0.], 2.,
                                     bc="normal stress",
-                                    normal_stress=1e4,
+                                    normal_stress=-1e4,
                                     verbose=false)
-Granular.setTimeStep!(sim)
+Granular.setTimeStep!(sim, verbose=false)
 Granular.interactWalls!(sim)
 Granular.updateWallKinematics!(sim)
 @test sim.walls[1].force ≈ 0.
@@ -298,11 +298,10 @@ for i=1:5
     Granular.interactWalls!(sim)
     Granular.updateWallKinematics!(sim)
     println(sim.walls[1].pos)
+    @test sim.walls[1].force > 0.
+    @test sim.walls[1].acc < 0.
+    @test sim.walls[1].vel < 0.
+    @test sim.walls[1].pos < 2.
+    @test sim.grains[1].force[1] < 0.
+    @test sim.grains[1].force[2] ≈ 0.
 end
-@test sim.walls[1].force < 0.
-@test sim.walls[1].acc < 0.
-@test sim.walls[1].vel < 0.
-@test sim.walls[1].pos < 1.
-@test sim.grains[1].force[1] > 0.
-@test sim.grains[1].force[2] ≈ 0.
-

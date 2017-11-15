@@ -220,8 +220,7 @@ function updateWallKinematicsThreeTermTaylor!(wall::WallLinearFrictionless,
     if wall.bc == "velocity"
         wall.acc = 0.0
     else
-        f_n::Float64 = -wall.normal_stress*wall.surface_area
-        wall.acc = (wall.force + f_n)/wall.mass
+        wall.acc = (wall.force + wall.normal_stress*wall.surface_area)/wall.mass
     end
 
     # Temporal gradient in acceleration using backwards differences

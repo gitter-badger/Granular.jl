@@ -46,11 +46,15 @@ interaction is frictionless in the tangential direction.
 """
 function interactWalls!(sim::Simulation)
 
+    orientation::Float64 = 0.0
     δ_n::Float64 = 0.0
     k_n::Float64 = 0.0
 
     for iw=1:length(sim.walls)
         for i=1:length(sim.grains)
+
+            orientation = sign(dot(sim.walls[iw].normal,
+                                   sim.grains[i].lin_pos) - sim.walls[iw].pos)
 
             # get overlap distance by projecting grain position onto wall-normal
             # vector
@@ -64,8 +68,9 @@ function interactWalls!(sim::Simulation)
                     k_n = sim.grains[i].contact_stiffness_normal
                 end
 
-                sim.grains[i].force += k_n * abs(δ_n) * sim.walls[iw].normal
-                sim.walls[iw].force += k_n * δ_n
+                sim.grains[i].force += -k_n * δ_n .* sim.walls[iw].normal .*
+                    orientation
+                sim.walls[iw].force += k_n * δ_n * orientation
             end
         end
     end
