@@ -161,6 +161,7 @@ function run!(simulation::Simulation;
         end
 
         interact!(simulation)
+        interactWalls!(simulation)
 
         if typeof(simulation.ocean.input_file) != Bool
             addOceanDrag!(simulation)

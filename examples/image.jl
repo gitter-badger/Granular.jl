@@ -6,7 +6,7 @@ import Colors
 
 const verbose = true
 
-const img_file = "Cundall2008.png"
+const img_file = "aadcroft.png"
 
 img = FileIO.load(img_file)
 
@@ -20,10 +20,10 @@ end
 
 const img_bw = Colors.Gray.(img)
 
-#const forcing = "gyres"
+const forcing = "gyres"
 #const forcing = "down"
 #const forcing = "convergent"
-const forcing = "sandpile"
+#const forcing = "sandpile"
 
 const dx = 1.
 const dy = dx

@@ -98,7 +98,9 @@ function addWallLinearFrictionless!(simulation::Simulation,
         for grain in simulation.grains
             mass += grain.mass
         end
-        info("Setting wall mass to total grain mass: $mass kg")
+        if verbose
+            info("Setting wall mass to total grain mass: $mass kg")
+        end
     end
 
     # if not set, set wall thickness to equal largest grain thickness
@@ -113,7 +115,9 @@ function addWallLinearFrictionless!(simulation::Simulation,
                 thickness = grain.thickness
             end
         end
-        info("Setting wall thickness to largest grain thickness: $thickness m")
+        if verbose
+            info("Setting wall thickness to max grain thickness: $thickness m")
+        end
     end
 
     # Create wall object

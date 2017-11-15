@@ -39,3 +39,4 @@ info("Kinetic energy before: $E_kin_before J")
 info("Kinetic energy after:  $E_kin_after J")
 
 
+Granular.render(sim, animation=true)

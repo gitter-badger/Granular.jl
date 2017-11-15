@@ -54,18 +54,24 @@ function interactWalls!(sim::Simulation)
 
             # get overlap distance by projecting grain position onto wall-normal
             # vector
-            δ_n = dot(sim.walls[iw].normal, sim.grains[i].lin_pos) -
-                sim.walls[iw].pos - sim.grains[i].contact_radius
+            δ_n = abs(dot(sim.walls[iw].normal, sim.grains[i].lin_pos) -
+                      sim.walls[iw].pos) - sim.grains[i].contact_radius
 
-            if sim.grains[i].youngs_modulus > 0.
-                k_n = sim.grains[i].youngs_modulus *
-                    sim.grains[i].thickness
-            else
-                k_n = sim.grains[i].contact_stiffness_normal
+            #println(dot(sim.walls[iw].normal, sim.grains[i].lin_pos))
+            #println(sim.walls[iw].pos)
+            #println(sim.grains[i].contact_radius)
+            #println(δ_n)
+
+            if δ_n < 0.
+                if sim.grains[i].youngs_modulus > 0.
+                    k_n = sim.grains[i].youngs_modulus * sim.grains[i].thickness
+                else
+                    k_n = sim.grains[i].contact_stiffness_normal
+                end
+
+                sim.walls[iw].force += -k_n * δ_n
+                sim.grains[i].force += k_n * abs(δ_n) * sim.walls[iw].normal
             end
-
-            sim.walls[iw].force += k_n * abs(δ_n)
-            sim.grains[i].force += k_n * abs(δ_n) * sim.grains[iw].normal
         end
     end
 end
