@@ -181,7 +181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Getting started",
     "category": "section",
-    "text": "In this section, it is assumed that Julia and  Granular.jl has been successfully  installed.  If not, please consult the Installation  section of this manual.  If you are new to the Julia  programming language, the official manual has a useful guide to getting  started with  Julia.In the following, two simple examples are presented using some of the core  functionality of Granular.jl.  For more examples, see the scripts in the  examples/  directory.The relevant functions are all contained in the Granular module, which can be  imported with import Granular.  Note: As per Julia conventions, functions  that contain an exclamation mark (!) modify the values of the arguments.Any of the functions called below are documented in the source code, and their  documentation can be found in the Public API Index in the  online documentation, or simply from the Julia shell by typing ?<function  name>.  An example:julia> ?Granular.fitGridToGrains!\n\n  fitGridToGrains!(simulation, grid[, padding, verbose])\n\n  Fit the ocean or atmosphere grid for a simulation to the current grains and \n  their positions.\n\n     Arguments\n    ≡≡≡≡≡≡≡≡≡≡≡\n\n    •    simulation::Simulation: simulation object to manipulate.\n    •    grid::Any: Ocean or Atmosphere grid to manipulate.\n    •    padding::Real: optional padding around edges [m].\n    •    verbose::Bool: show grid information when function completes.You can go through the examples below by typing in the lines starting with  julia> into the Julia interactive shell, which comes up when you start the  Julia app or run julia from the command line in a terminal.  Do not include  the julia> part, just the remaining text of that line.Alternatively, you can create a Julia script with the file name extension  .jl.  This file should contains all of the relevant commands in succession,  which is useful for quickly repeating runs.  Julia scripts can be evaluated  form the command line using julia <scriptname>.jl."
+    "text": "In this section, it is assumed that Julia and  Granular.jl have been successfully  installed.  If not, please consult the Installation  section of this manual.  If you are new to the Julia  programming language, the official manual has a useful guide to getting  started with  Julia.In the following, two simple examples are presented using some of the core  functionality of Granular.jl.  For more examples, see the scripts in the  examples/  directory.The relevant functions are all contained in the Granular module, which can be  imported with import Granular.  Note: As per Julia conventions, functions  that contain an exclamation mark (!) modify the values of the arguments.All of the functions called below are documented in the source code, and their  documentation can be found in the Public API Index in the  online documentation, or simply from the Julia shell by typing ?<function  name>.  An example:julia> ?Granular.createSimulation\n  createSimulation([id])\n\n  Create a simulation object to contain all relevant variables such as temporal \n  parameters, fluid grids, grains, and contacts. The parameter id is used to \n  uniquely identify the simulation when it is written to disk.\n\n  The function returns a Simulation object, which you can add grains to, e.g. \n  with addGrainCylindrical!.\n\n     Optional argument\n    ≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡\n\n    •    id::String=\"unnamed\": simulation identifying string.You can go through the examples below by typing in the lines starting with  julia> into the Julia interactive shell, which comes up when you start the  Julia app or run julia from the command line in a terminal.  Do not include  the julia> part, just the remaining text of that line.Alternatively, you can create a Julia script with the file name extension  .jl.  This file should contains all of the relevant commands in succession,  which is useful for quickly repeating runs.  Julia scripts can be evaluated  form the command line using julia <scriptname>.jl."
 },
 
 {
@@ -205,7 +205,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Getting started",
     "title": "Adding grains one by one",
     "category": "section",
-    "text": "We have now created a simulation object sim, which will be used during all of  the following commands.  Next, we can add grains to this object.  The first  grain is cylinder shaped, placed at the x-y position (0,0) m.  It has a radius  of 0.1 m, and has a thickness of 0.05 m.  As this call modifies the sim  object, the function contains an exclamation mark (!).  For further information  regarding this call, see the reference in the Public API Index.julia> Granular.addGrainCylindrical!(sim, [0.0, 0.0], 0.1, 0.05)\nINFO: Added Grain 1Let's add another grain, placed at some distance from the first grain:julia> Granular.addGrainCylindrical!(sim, [0.5, 0.0], 0.1, 0.05)\nINFO: Added Grain 2We now want to prescribe a linear (not rotational or angular) velocity to the  first grain to make it bump into the second grain.The simulation object sim contains an array of all grains that are added to  it.  We can directly inspect the grains and their values from the simulation  object.  Let's take a look at the default value of the linear velocity, called  lin_vel:julia> sim.grains[1].lin_vel\n2-element Array{Float64, 1}:\n 0.0\n 0.0The default value is a (0,0) vector, which means that it is not moving in  space.  With a similar call, we can modify the properties of the first grain  directly and prescribe a velocity to it:julia> sim.grains[1].lin_vel = [1.0, 0.0]\n2-element Array{Float64, 1}:\n 1.0\n 0.0The first grain (index 1 in sim.grains) now has a positive velocity along x  with the value of 1.0 meter per second."
+    "text": "We have now created a simulation object sim, which will be used during all of  the following commands.  Next, we can add grains to this object.  The first  grain is cylinder shaped, placed at the x-y position (0,0) m.  It has a radius  of 0.1 m, and has a thickness of 0.05 m.  As this call modifies the sim  object, the function contains an exclamation mark (!).  For further information  regarding this call, see the reference to addGrainCylindrical!, found  in the Public API documentation.julia> Granular.addGrainCylindrical!(sim, [0.0, 0.0], 0.1, 0.05)\nINFO: Added Grain 1Let's add another grain, placed at some distance from the first grain:julia> Granular.addGrainCylindrical!(sim, [0.5, 0.0], 0.1, 0.05)\nINFO: Added Grain 2We now want to prescribe a linear (not rotational or angular) velocity to the  first grain to make it bump into the second grain.The simulation object sim contains an array of all grains that are added to  it.  We can directly inspect the grains and their values from the simulation  object.  Let's take a look at the default value of the linear velocity, called  lin_vel:julia> sim.grains[1].lin_vel\n2-element Array{Float64, 1}:\n 0.0\n 0.0The default value is a (0,0) vector, which means that it is not moving in  space.  With a similar call, we can modify the properties of the first grain  directly and prescribe a velocity to it:julia> sim.grains[1].lin_vel = [1.0, 0.0]\n2-element Array{Float64, 1}:\n 1.0\n 0.0The first grain (index 1 in sim.grains) now has a positive velocity along x  with the value of 1.0 meter per second."
 },
 
 {
@@ -349,7 +349,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.addGrain!",
     "category": "Function",
-    "text": "addGrain!(simulation::Simulation,\n            grain::GrainCylindrical,\n            verbose::Bool = False)\n\nAdd an grain to the simulation object.  If verbose is true, a short  confirmation message will be printed to stdout.\n\n\n\n"
+    "text": "addGrain!(simulation::Simulation,\n          grain::GrainCylindrical,\n          verbose::Bool = false)\n\nAdd an grain to the simulation object.  If verbose is true, a short  confirmation message will be printed to stdout.\n\n\n\n"
 },
 
 {
@@ -366,6 +366,22 @@ var documenterSearchIndex = {"docs": [
     "title": "Granular.addOceanDrag!",
     "category": "Method",
     "text": "Add drag from linear and angular velocity difference between ocean and all ice  floes.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.addWall!",
+    "page": "Public API",
+    "title": "Granular.addWall!",
+    "category": "Function",
+    "text": "addWall!(simulation::Simulation,\n         wall::WallLinearFrictionless,\n         verbose::Bool = false)\n\nAdd an wall to the simulation object.  If verbose is true, a short  confirmation message will be printed to stdout.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.addWallLinearFrictionless!-Tuple{Granular.Simulation,Array{Float64,1},Float64}",
+    "page": "Public API",
+    "title": "Granular.addWallLinearFrictionless!",
+    "category": "Method",
+    "text": "function addWallLinear!(simulation, normal, pos[, bc, mass, thickness, \n                        normal_stress, vel, force, verbose])\n\nCreates and adds a linear (flat) and frictionless dynamic wall to a grain to a simulation. Most of the arguments are optional, and come with default values. The only required arguments are  simulation, normal, pos, and bc.\n\nArguments\n\nsimulation::Simulation: the simulation object where the wall should be   added to.\nnormal::Vector{Float64}: 2d vector denoting the normal to the wall [m].  The   wall will only interact in the opposite direction of this vector, so the   normal vector should point in the direction of the grains.\npos::Float64: position along axis parallel to the normal vector [m].\nbc::String=\"fixed\": boundary condition, possible values are \"fixed\"   (default), \"normal stress\", or \"velocity\".\nmass::Float64=NaN: wall mass, which is used if wall boundary conditions   differs from bc=\"fixed\".  If the parameter is left to its default value,   the wall mass is set to be equal the total mass of grains in the simulation.   Units: [kg]\nthickness::Float64=NaN: wall thickness, which is used for determining wall   surface area.  If the parameter is left to its default value, the wall   thickness is set to be equal to the thickest grain in the simulation.   Units: [m].\nnormal_stress::Float64=0.: the wall normal stress when bc == \"normal   stress\" [Pa].\nvel::Float64=0.: the wall velocity along the normal vector.  If the   wall boundary condition is bc = \"velocity\" the wall will move according to   this constant value.  If bc = \"normal stress\" the velocity will be a free   parameter. Units: [m/s]\nforce::Float64=0.: sum of normal forces on the wall from interaction with   grains [N].\nverbose::Bool=true: show verbose information during function call.\n\nExamples\n\nThe most basic example adds a new fixed wall to the simulation sim, with a  wall-face normal of [1., 0.] (wall along y and normal to x), a position of 1.5 meter:\n\nGranular.addWallLinearFrictionless!(sim, [1., 0.], 1.5)\n\nThe following example creates a wall with a velocity of 0.5 m/s towards -y:\n\nGranular.addWallLinearFrictionless!(sim, [0., 1.], 1.5,\n                                    bc=\"velocity\",\n                                    vel=-0.5)\n\nTo create a wall parallel to the y axis pushing downwards with a constant normal stress of 100 kPa, starting at a position of y = 3.5 m:\n\nGranular.addWallLinearFrictionless!(sim, [0., -1.], 3.5,\n                                    bc=\"normal stress\",\n                                    normal_stress=100e3)\n\n\n\n"
 },
 
 {
@@ -517,7 +533,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.createSimulation",
     "category": "Method",
-    "text": "createSimulation([id::String=\"unnamed\",\n                  time_iteration::Int=0,\n                  time::Float64=0.0,\n                  time_total::Float64=-1.,\n                  time_step::Float64=-1.,\n                  file_time_step::Float64=-1.,\n                  file_number::Int=0,\n                  grains=Array{GrainCylindrical, 1}[],\n                  ocean::Ocean,\n                  atmosphere::Atmosphere)\n\nCreate a simulation object containing all relevant variables such as temporal  parameters, and lists of grains and contacts. The parameter id is used to uniquely identify the simulation when it is written to disk.\n\nArguments\n\nid::String=\"unnamed\":\n\n\n\n"
+    "text": "createSimulation([id])\n\nCreate a simulation object to contain all relevant variables such as temporal  parameters, fluid grids, grains, and contacts.  The parameter id is used to uniquely identify the simulation when it is written to disk.\n\nThe function returns a Simulation object, which you can add grains to, e.g. with addGrainCylindrical!.\n\nOptional argument\n\nid::String=\"unnamed\": simulation identifying string.\n\n\n\n"
 },
 
 {
@@ -665,6 +681,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "lib/public.html#Granular.getWallNormalStress-Tuple{Granular.Simulation}",
+    "page": "Public API",
+    "title": "Granular.getWallNormalStress",
+    "category": "Method",
+    "text": "getWallNormalStress(simulation[, wall_index, stress_type])\n\nReturns the current \"effective\" or \"defined\" normal stress on the wall with index wall_index inside the simulation object.  The returned value is given in Pascal.\n\nArguments\n\nsimulation::Simulation: the simulation object containing the wall.\nwall_index::Integer=1: the wall number in the simulation object.\nstress_type::String=\"effective\": the normal-stress type to return.  The   defined value corresponds to the normal stress that the wall is asked to   uphold. The effective value is the actual current normal stress.  Usually,   the magnitude of the effective normal stress fluctuates around the defined   normal stress.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.getWallSurfaceArea-Tuple{Granular.Simulation,Integer}",
+    "page": "Public API",
+    "title": "Granular.getWallSurfaceArea",
+    "category": "Method",
+    "text": "getWallSurfaceArea(simulation, wall_index)\n\nReturns the surface area of the wall given the grid size and its index.\n\nArguments\n\nsimulation::Simulation: the simulation object containing the wall.\nwall_index::Integer=1: the wall number in the simulation object.\n\n\n\n"
+},
+
+{
     "location": "lib/public.html#Granular.grainCircumreference-Tuple{Granular.GrainCylindrical}",
     "page": "Public API",
     "title": "Granular.grainCircumreference",
@@ -757,7 +789,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.interact!",
     "category": "Method",
-    "text": "interact!(simulation::Simulation)\n\nResolve mechanical interaction between all particle pairs.\n\n\n\n"
+    "text": "interact!(simulation::Simulation)\n\nResolve mechanical interaction between all particle pairs.\n\nArguments\n\nsimulation::Simulation: the simulation object containing the grains.\n\n\n\n"
 },
 
 {
@@ -1117,7 +1149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.zeroForcesAndTorques!",
     "category": "Method",
-    "text": "Sets the force and torque values of all grains to zero.\n\n\n\n"
+    "text": "Sets the force and torque values of all grains and dynamic walls to zero.\n\n\n\n"
 },
 
 {
