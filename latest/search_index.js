@@ -381,7 +381,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.addWallLinearFrictionless!",
     "category": "Method",
-    "text": "function addWallLinear!(simulation, normal, pos[, bc, mass, thickness, \n                        normal_stress, vel, force, verbose])\n\nCreates and adds a linear (flat) and frictionless dynamic wall to a grain to a simulation. Most of the arguments are optional, and come with default values. The only required arguments are  simulation, normal, pos, and bc.\n\nArguments\n\nsimulation::Simulation: the simulation object where the wall should be   added to.\nnormal::Vector{Float64}: 2d vector denoting the normal to the wall [m].  The   wall will only interact in the opposite direction of this vector, so the   normal vector should point in the direction of the grains.\npos::Float64: position along axis parallel to the normal vector [m].\nbc::String=\"fixed\": boundary condition, possible values are \"fixed\"   (default), \"normal stress\", or \"velocity\".\nmass::Float64=NaN: wall mass, which is used if wall boundary conditions   differs from bc=\"fixed\".  If the parameter is left to its default value,   the wall mass is set to be equal the total mass of grains in the simulation.   Units: [kg]\nthickness::Float64=NaN: wall thickness, which is used for determining wall   surface area.  If the parameter is left to its default value, the wall   thickness is set to be equal to the thickest grain in the simulation.   Units: [m].\nnormal_stress::Float64=0.: the wall normal stress when bc == \"normal   stress\" [Pa].\nvel::Float64=0.: the wall velocity along the normal vector.  If the   wall boundary condition is bc = \"velocity\" the wall will move according to   this constant value.  If bc = \"normal stress\" the velocity will be a free   parameter. Units: [m/s]\nforce::Float64=0.: sum of normal forces on the wall from interaction with   grains [N].\nverbose::Bool=true: show verbose information during function call.\n\nExamples\n\nThe most basic example adds a new fixed wall to the simulation sim, with a  wall-face normal of [1., 0.] (wall along y and normal to x), a position of 1.5 meter:\n\nGranular.addWallLinearFrictionless!(sim, [1., 0.], 1.5)\n\nThe following example creates a wall with a velocity of 0.5 m/s towards -y:\n\nGranular.addWallLinearFrictionless!(sim, [0., 1.], 1.5,\n                                    bc=\"velocity\",\n                                    vel=-0.5)\n\nTo create a wall parallel to the y axis pushing downwards with a constant normal stress of 100 kPa, starting at a position of y = 3.5 m:\n\nGranular.addWallLinearFrictionless!(sim, [0., -1.], 3.5,\n                                    bc=\"normal stress\",\n                                    normal_stress=100e3)\n\n\n\n"
+    "text": "function addWallLinear!(simulation, normal, pos[, bc, mass, thickness, \n                        normal_stress, vel, acc, force, verbose])\n\nCreates and adds a linear (flat) and frictionless dynamic wall to a grain to a simulation. Most of the arguments are optional, and come with default values. The only required arguments are  simulation, normal, pos, and bc.\n\nArguments\n\nsimulation::Simulation: the simulation object where the wall should be   added to.\nnormal::Vector{Float64}: 2d vector denoting the normal to the wall [m].  The   wall will only interact in the opposite direction of this vector, so the   normal vector should point in the direction of the grains.\npos::Float64: position along axis parallel to the normal vector [m].\nbc::String=\"fixed\": boundary condition, possible values are \"fixed\"   (default), \"normal stress\", or \"velocity\".\nmass::Float64=NaN: wall mass, which is used if wall boundary conditions   differs from bc=\"fixed\".  If the parameter is left to its default value,   the wall mass is set to be equal the total mass of grains in the simulation.   Units: [kg]\nthickness::Float64=NaN: wall thickness, which is used for determining wall   surface area.  If the parameter is left to its default value, the wall   thickness is set to be equal to the thickest grain in the simulation.   Units: [m].\nnormal_stress::Float64=0.: the wall normal stress when bc == \"normal   stress\" [Pa].\nvel::Float64=0.: the wall velocity along the normal vector.  If the   wall boundary condition is bc = \"velocity\" the wall will move according to   this constant value.  If bc = \"normal stress\" the velocity will be a free   parameter. Units: [m/s]\nforce::Float64=0.: sum of normal forces on the wall from interaction with   grains [N].\nverbose::Bool=true: show verbose information during function call.\n\nExamples\n\nThe most basic example adds a new fixed wall to the simulation sim, with a  wall-face normal of [1., 0.] (wall along y and normal to x), a position of 1.5 meter:\n\nGranular.addWallLinearFrictionless!(sim, [1., 0.], 1.5)\n\nThe following example creates a wall with a velocity of 0.5 m/s towards -y:\n\nGranular.addWallLinearFrictionless!(sim, [0., 1.], 1.5,\n                                    bc=\"velocity\",\n                                    vel=-0.5)\n\nTo create a wall parallel to the y axis pushing downwards with a constant normal stress of 100 kPa, starting at a position of y = 3.5 m:\n\nGranular.addWallLinearFrictionless!(sim, [0., 1.], 3.5,\n                                    bc=\"normal stress\",\n                                    normal_stress=100e3)\n\n\n\n"
 },
 
 {
@@ -1085,7 +1085,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.updateGrainKinematicsThreeTermTaylor!",
     "category": "Method",
-    "text": "Use a three-term Taylor expansion for integrating the kinematic degrees of  freedom for an grain.\n\n\n\n"
+    "text": "Use a three-term Taylor expansion for integrating the kinematic degrees of  freedom for a grain.\n\n\n\n"
 },
 
 {
@@ -1093,7 +1093,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.updateGrainKinematicsTwoTermTaylor!",
     "category": "Method",
-    "text": "Use a two-term Taylor expansion for integrating the kinematic degrees of freedom  for an grain.\n\n\n\n"
+    "text": "Use a two-term Taylor expansion for integrating the kinematic degrees of freedom  for a grain.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.updateWallKinematics!-Tuple{Granular.Simulation}",
+    "page": "Public API",
+    "title": "Granular.updateWallKinematics!",
+    "category": "Method",
+    "text": "updateWallKinematics!(simulation::Simulation[,\n                      method::String = \"Three-term Taylor\"])\n\nUpdate the wall kinematic parameters using a temporal integration scheme, the current force and torque balance, and gravitational acceleration.  If the simulation contains a grid with periodic boundaries, affected wall positions are adjusted accordingly.\n\nArguments\n\nsimulation::Simulation: update the wall positions in this object    according to temporal integration of length simulation.time_step.\nmethod::String = \"Three-term Taylor\": the integration method to use.     Available methods are \"Two-term Taylor\" and \"Three-term Taylor\".  The    three-term Taylor expansion is slightly more computationally expensive than    the two-term Taylor expansion, but offers an order-of-magnitude increase in    precision of wall positions.  The two-term expansion can obtain similar    precision if the time step is 1/10 the length.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.updateWallKinematicsThreeTermTaylor!-Tuple{Granular.WallLinearFrictionless,Granular.Simulation}",
+    "page": "Public API",
+    "title": "Granular.updateWallKinematicsThreeTermTaylor!",
+    "category": "Method",
+    "text": "updateWallKinematicsThreeTermTaylor!(wall, simulation)\n\nUse a two-term Taylor expansion for integrating the kinematic degrees of freedom  for a wall.\n\n\n\n"
+},
+
+{
+    "location": "lib/public.html#Granular.updateWallKinematicsTwoTermTaylor!-Tuple{Granular.WallLinearFrictionless,Granular.Simulation}",
+    "page": "Public API",
+    "title": "Granular.updateWallKinematicsTwoTermTaylor!",
+    "category": "Method",
+    "text": "updateWallKinematicsTwoTermTaylor!(wall, simulation)\n\nUse a two-term Taylor expansion for integrating the kinematic degrees of freedom  for a wall.\n\n\n\n"
 },
 
 {
