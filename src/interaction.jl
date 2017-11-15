@@ -57,11 +57,6 @@ function interactWalls!(sim::Simulation)
             δ_n = abs(dot(sim.walls[iw].normal, sim.grains[i].lin_pos) -
                       sim.walls[iw].pos) - sim.grains[i].contact_radius
 
-            #println(dot(sim.walls[iw].normal, sim.grains[i].lin_pos))
-            #println(sim.walls[iw].pos)
-            #println(sim.grains[i].contact_radius)
-            #println(δ_n)
-
             if δ_n < 0.
                 if sim.grains[i].youngs_modulus > 0.
                     k_n = sim.grains[i].youngs_modulus * sim.grains[i].thickness
@@ -69,8 +64,8 @@ function interactWalls!(sim::Simulation)
                     k_n = sim.grains[i].contact_stiffness_normal
                 end
 
-                sim.walls[iw].force += -k_n * δ_n
                 sim.grains[i].force += k_n * abs(δ_n) * sim.walls[iw].normal
+                sim.walls[iw].force += k_n * δ_n
             end
         end
     end

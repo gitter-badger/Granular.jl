@@ -77,8 +77,10 @@ mutable struct WallLinearFrictionless
     bc::String                # Boundary condition
     mass::Float64             # Mass, used when bc != "fixed"
     thickness::Float64        # Wall thickness
+    surface_area::Float64     # Wall surface area
     normal_stress::Float64    # Normal stress when bc == "normal stress"
     vel::Float64              # Velocity (constant when bc == "normal stress")
+    acc::Float64              # Acceleration (zero when bc == "velocity")
     force::Float64            # Sum of normal forces on wall
 end
 

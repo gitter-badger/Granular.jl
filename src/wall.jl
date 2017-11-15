@@ -3,7 +3,7 @@
 export addWallLinearFrictionless!
 """
     function addWallLinear!(simulation, normal, pos[, bc, mass, thickness, 
-                            normal_stress, vel, force, verbose])
+                            normal_stress, vel, acc, force, verbose])
 
 Creates and adds a linear (flat) and frictionless dynamic wall to a grain to a
 simulation. Most of the arguments are optional, and come with default values.
@@ -58,7 +58,7 @@ To create a wall parallel to the *y* axis pushing downwards with a constant
 normal stress of 100 kPa, starting at a position of y = 3.5 m:
 
 ```julia
-Granular.addWallLinearFrictionless!(sim, [0., -1.], 3.5,
+Granular.addWallLinearFrictionless!(sim, [0., 1.], 3.5,
                                     bc="normal stress",
                                     normal_stress=100e3)
 ```
@@ -69,8 +69,10 @@ function addWallLinearFrictionless!(simulation::Simulation,
                                     bc::String = "fixed",
                                     mass::Float64 = NaN,
                                     thickness::Float64 = NaN,
+                                    surface_area::Float64 = NaN,
                                     normal_stress::Float64 = 0.,
                                     vel::Float64 = 0.,
+                                    acc::Float64 = 0.,
                                     force::Float64 = 0.,
                                     verbose::Bool=true)
 
@@ -80,12 +82,15 @@ function addWallLinearFrictionless!(simulation::Simulation,
               "$normal)")
     end
 
-    if !(normal ≈ [1., 0.]) && !(normal ≈ [0., 1.]) &&
-        !(normal ≈ [-1., 0.]) && !(normal ≈ [0., -1.])
+    if bc != "fixed" && bc != "velocity" && bc != "normal stress"
+        error("Wall BC must be 'fixed', 'velocity', or 'normal stress'.")
+    end
+
+    if !(normal ≈ [1., 0.]) && !(normal ≈ [0., 1.])
         error("Currently only walls with normals orthogonal to the " *
               "coordinate system are allowed, i.e. normals parallel to the " *
               "x or y axes.  Accepted values for `normal` " *
-              "are [±1., 0.] and [0., ±1.].  The passed normal was $normal")
+              "are [1., 0.] and [0., 1.].  The passed normal was $normal")
     end
 
     # if not set, set wall mass to equal the mass of all grains.
@@ -120,14 +125,24 @@ function addWallLinearFrictionless!(simulation::Simulation,
         end
     end
 
+    # if not set, set wall surface area from the ocean grid
+    if isnan(surface_area) && bc != "fixed"
+        if typeof(simulation.ocean.input_file) == Bool
+            error("simulation.ocean must be set beforehand")
+        end
+        surface_area = getWallSurfaceArea(simulation, normal, thickness)
+    end
+
     # Create wall object
     wall = WallLinearFrictionless(normal,
                                    pos,
                                    bc,
                                    mass,
                                    thickness,
+                                   surface_area,
                                    normal_stress,
                                    vel,
+                                   acc,
                                    force)
 
     # Add to simulation object
@@ -153,6 +168,18 @@ function getWallSurfaceArea(sim::Simulation, wall_index::Integer)
     elseif sim.walls[wall_index].normal ≈ [0., 1.]
         return (sim.ocean.xq[end,end] - sim.ocean.xq[1,1]) *
             sim.walls[wall_index].thickness
+    else
+        error("Wall normal not understood")
+    end
+    nothing
+end
+function getWallSurfaceArea(sim::Simulation, normal::Vector{Float64},
+                            thickness::Float64)
+
+    if normal ≈ [1., 0.]
+        return (sim.ocean.yq[end,end] - sim.ocean.yq[1,1]) * thickness
+    elseif normal ≈ [0., 1.]
+        return (sim.ocean.xq[end,end] - sim.ocean.xq[1,1]) * thickness
     else
         error("Wall normal not understood")
     end

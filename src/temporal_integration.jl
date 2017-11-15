@@ -46,7 +46,7 @@ end
 export updateGrainKinematicsTwoTermTaylor!
 """
 Use a two-term Taylor expansion for integrating the kinematic degrees of freedom 
-for an `grain`.
+for a `grain`.
 """
 function updateGrainKinematicsTwoTermTaylor!(grain::GrainCylindrical,
                                                simulation::Simulation)
@@ -80,7 +80,7 @@ end
 export updateGrainKinematicsThreeTermTaylor!
 """
 Use a three-term Taylor expansion for integrating the kinematic degrees of 
-freedom for an `grain`.
+freedom for a `grain`.
 """
 function updateGrainKinematicsThreeTermTaylor!(grain::GrainCylindrical,
                                                  simulation::Simulation)
@@ -122,3 +122,119 @@ function updateGrainKinematicsThreeTermTaylor!(grain::GrainCylindrical,
         0.5 * d_ang_acc_dt * simulation.time_step^2.
     nothing
 end
+
+export updateWallKinematics!
+"""
+    updateWallKinematics!(simulation::Simulation[,
+                          method::String = "Three-term Taylor"])
+
+Update the wall kinematic parameters using a temporal integration scheme,
+the current force and torque balance, and gravitational acceleration.  If the
+simulation contains a grid with periodic boundaries, affected wall positions
+are adjusted accordingly.
+
+# Arguments
+* `simulation::Simulation`: update the wall positions in this object 
+    according to temporal integration of length `simulation.time_step`.
+* `method::String = "Three-term Taylor"`: the integration method to use.  
+    Available methods are "Two-term Taylor" and "Three-term Taylor".  The 
+    three-term Taylor expansion is slightly more computationally expensive than 
+    the two-term Taylor expansion, but offers an order-of-magnitude increase in 
+    precision of wall positions.  The two-term expansion can obtain similar 
+    precision if the time step is 1/10 the length.
+"""
+function updateWallKinematics!(simulation::Simulation;
+                                method::String = "Three-term Taylor")
+
+    if method == "Two-term Taylor"
+        for wall in simulation.walls
+            if wall.bc == "fixed"
+                continue
+            end
+            updateWallKinematicsTwoTermTaylor!(wall, simulation)
+        end
+    elseif method == "Three-term Taylor"
+        for wall in simulation.walls
+            if wall.bc == "fixed"
+                continue
+            end
+            updateWallKinematicsThreeTermTaylor!(wall, simulation)
+        end
+    else
+        error("Unknown integration method '$method'")
+    end
+    nothing
+end
+
+export updateWallKinematicsTwoTermTaylor!
+"""
+    updateWallKinematicsTwoTermTaylor!(wall, simulation)
+
+Use a two-term Taylor expansion for integrating the kinematic degrees of freedom 
+for a `wall`.
+"""
+function updateWallKinematicsTwoTermTaylor!(wall::WallLinearFrictionless,
+                                            simulation::Simulation)
+    if wall.bc == "fixed"
+        return nothing
+    end
+
+    if wall.bc == "velocity"
+        wall.acc = 0.0
+    else
+        # Normal force directed along normal
+        f_n::Float64 = -wall.normal_stress*wall.surface_area
+        wall.acc = (wall.force + f_n)/wall.mass
+    end
+
+    wall.pos +=
+        wall.vel * simulation.time_step +
+        0.5*wall.acc * simulation.time_step^2.0
+
+    wall.vel += wall.acc * simulation.time_step
+    nothing
+end
+
+
+export updateWallKinematicsThreeTermTaylor!
+"""
+    updateWallKinematicsThreeTermTaylor!(wall, simulation)
+
+Use a two-term Taylor expansion for integrating the kinematic degrees of freedom 
+for a `wall`.
+"""
+function updateWallKinematicsThreeTermTaylor!(wall::WallLinearFrictionless,
+                                              simulation::Simulation)
+    if simulation.time_iteration == 0
+        acc_0 = 0.
+    else
+        acc_0 = wall.acc
+    end
+
+    if wall.bc == "fixed"
+        return nothing
+    end
+
+    # Normal load = normal stress times wall surface area, directed along normal
+
+    if wall.bc == "velocity"
+        wall.acc = 0.0
+    else
+        f_n::Float64 = -wall.normal_stress*wall.surface_area
+        wall.acc = (wall.force + f_n)/wall.mass
+    end
+
+    # Temporal gradient in acceleration using backwards differences
+    d_acc_dt = (wall.acc - acc_0)/simulation.time_step
+
+    wall.pos +=
+        wall.vel * simulation.time_step +
+        0.5*wall.acc * simulation.time_step^2.0 +
+        1.0/6.0 * d_acc_dt * simulation.time_step^3.0
+
+    wall.vel += wall.acc * simulation.time_step +
+        0.5 * d_acc_dt * simulation.time_step^2.0
+
+    nothing
+end
+

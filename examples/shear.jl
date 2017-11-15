@@ -16,7 +16,6 @@ const nx = 10
 const ny = 50
 const r_min = 0.2
 const r_max = 1.0
-const z_thickness = 
 Granular.regularPacking!(sim, [nx, ny], r_min, r_max)
 
 # Create a grid for contact searching spanning the extent of the grains
