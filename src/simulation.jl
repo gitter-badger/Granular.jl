@@ -312,6 +312,9 @@ function printMemoryUsage(sim::Simulation)
     reportMemory(sim.grains, "    sim.grains", 
                  "(N=$(length(sim.grains)))")
 
+    reportMemory(sim.walls, "    sim.walls", 
+                 "(N=$(length(sim.walls)))")
+
     reportMemory(sim.ocean, "    sim.ocean",
                  "($(size(sim.ocean.xh, 1))x" *
                  "$(size(sim.ocean.xh, 2))x" *
