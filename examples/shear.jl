@@ -231,7 +231,7 @@ while sim.time < sim.time_total
             grain.fixed = true
             grain.allow_y_acc = true
             grain.lin_vel[1] = vel_shear
-        else
+        elseif grain.lin_pos[2] > fixed_thickness  # do not free bottom grains
             grain.fixed = false
         end
     end
