@@ -199,21 +199,6 @@ sim.id = "$(id_prefix)-shear-N$(N)Pa-vel_shear$(vel_shear)m-s"
 # Set all linear and rotational velocities to zero
 Granular.zeroKinematics!(sim)
 
-# Prescribe the shear velocity to the uppermost grains
-for grain in sim.grains
-    if grain.lin_pos[2] >= sim.walls[1].pos - fixed_thickness
-
-        # do not allow changes in velocity
-        grain.fixed = true
-        
-        # allow free up/down movement to permit dilation, which partially
-        # overrides the `fixed` flag
-        grain.allow_y_acc = true
-
-        grain.lin_vel[1] = vel_shear
-    end
-end
-
 # Set current time to zero and reset output file counter
 Granular.resetTime!(sim)
 
@@ -239,6 +224,17 @@ end
 const surface_area = (x_max - x_min)
 shear_force = 0.
 while sim.time < sim.time_total
+
+    # Prescribe the shear velocity to the uppermost grains
+    for grain in sim.grains
+        if grain.lin_pos[2] >= sim.walls[1].pos - fixed_thickness
+            grain.fixed = true
+            grain.allow_y_acc = true
+            grain.lin_vel[1] = vel_shear
+        else
+            grain.fixed = false
+        end
+    end
 
     for i=1:100  # run for 100 steps before measuring shear stress and dilation
         Granular.run!(sim, single_step=true)
