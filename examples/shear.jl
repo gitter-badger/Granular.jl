@@ -4,21 +4,58 @@ import Granular
 import JLD
 import PyPlot
 
+################################################################################
+#### SIMULATION PARAMETERS                                                     #
+################################################################################
+
 # Common simulation identifier
 const id_prefix = "test0"
+
+# Gravitational acceleration vector (cannot be zero; required for Step 1)
+const g = [0., -9.8]
+
+# Grain package geometry during initialization
+const nx = 10                         # Grains along x (horizontal)
+const ny = 50                         # Grains along y (vertical)
+
+# Grain-size parameters
+const r_min = 0.2                     # Min. grain radius [m]
+const r_max = 1.0                     # Max. grain radius [m]
+const gsd_type = "powerlaw"           # "powerlaw" or "uniform" sizes between r_min and r_max
+const gsd_powerlaw_exponent = -1.8    # GSD power-law exponent
+const gsd_seed = 1                    # Value to seed random-size generation
+
+# Grain mechanical properties
+const youngs_modulus = 2e7            # Elastic modulus [Pa]
+const poissons_ratio = 0.185          # Shear-stiffness ratio [-]
+const tensile_strength = 0.0          # Inter-grain bond strength [Pa]
+const contact_dynamic_friction = 0.4  # Coulomb-frictional coefficient [-]
+const rotating = true                 # Allow grain rotation
+
+# Normal stress for the consolidation and shear [Pa]
+const N = 10e3
+
+# Shear velocity to apply to the top grains [m/s]
+const vel_shear = 0.1
 
 ################################################################################
 #### Step 1: Create a loose granular assemblage and let it settle at -y        #
 ################################################################################
 sim = Granular.createSimulation(id="$(id_prefix)-init")
 
-# Generate 10 grains along x and 50 grains along y, with radii between 0.2 and
-# 1.0 m.
-const nx = 10
-const ny = 50
-const r_min = 0.2
-const r_max = 1.0
-Granular.regularPacking!(sim, [nx, ny], r_min, r_max)
+Granular.regularPacking!(sim, [nx, ny], r_min, r_max,
+                         size_distribution=gsd_type,
+                         size_distribution_parameter=gsd_powerlaw_exponent,
+                         seed=gsd_seed)
+
+# Set grain mechanical properties
+for grain in sim.grains
+    grain.youngs_modulus = youngs_modulus
+    grain.poissons_ratio = poissons_ratio
+    grain.tensile_strength = tensile_strength
+    grain.contact_dynamic_friction = contact_dynamic_friction
+    grain.rotating = rotating
+end
 
 # Create a grid for contact searching spanning the extent of the grains
 Granular.fitGridToGrains!(sim, sim.ocean)
@@ -30,7 +67,6 @@ Granular.setGridBoundaryConditions!(sim.ocean, "impermeable", "north south",
 Granular.setGridBoundaryConditions!(sim.ocean, "periodic", "east west")
 
 # Add gravitational acceleration to all grains and disable ocean-grid drag
-const g = [0., -9.8]
 for grain in sim.grains
     Granular.addBodyForce!(grain, grain.mass*g)
     Granular.disableOceanDrag!(grain)
@@ -67,9 +103,6 @@ sim_init = deepcopy(sim)
 ################################################################################
 #### Step 2: Consolidate the previous output under a constant normal stress    #
 ################################################################################
-
-# Select a normal stress for the consolidation [Pa]
-N = 10e3
 
 # Rename the simulation so we don't overwrite output from the previous step
 sim.id = "$(id_prefix)-cons-N$(N)Pa"
@@ -160,9 +193,6 @@ sim_cons = deepcopy(sim)
 #### Step 3: Shear the consolidated assemblage with a constant velocity        #
 ################################################################################
 
-# Select a shear velocity for the consolidation [m/s]
-const vel_shear = 0.1
-
 # Rename the simulation so we don't overwrite output from the previous step
 sim.id = "$(id_prefix)-shear-N$(N)Pa-vel_shear$(vel_shear)m-s"
 
@@ -171,7 +201,7 @@ Granular.zeroKinematics!(sim)
 
 # Prescribe the shear velocity to the uppermost grains
 for grain in sim.grains
-    if grain.lin_pos[2] <= fixed_thickness
+    if grain.lin_pos[2] >= sim.walls[1].pos - fixed_thickness
 
         # do not allow changes in velocity
         grain.fixed = true
