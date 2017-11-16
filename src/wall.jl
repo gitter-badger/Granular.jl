@@ -135,15 +135,15 @@ function addWallLinearFrictionless!(simulation::Simulation,
 
     # Create wall object
     wall = WallLinearFrictionless(normal,
-                                   pos,
-                                   bc,
-                                   mass,
-                                   thickness,
-                                   surface_area,
-                                   normal_stress,
-                                   vel,
-                                   acc,
-                                   force)
+                                  pos,
+                                  bc,
+                                  mass,
+                                  thickness,
+                                  surface_area,
+                                  normal_stress,
+                                  vel,
+                                  acc,
+                                  force)
 
     # Add to simulation object
     addWall!(simulation, wall, verbose)
