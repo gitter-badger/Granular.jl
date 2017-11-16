@@ -137,7 +137,7 @@ function createRegularAtmosphereGrid(n::Vector{Int},
                  zl,
                  u, v,
                  Array{Array{Int, 1}}(size(xh, 1), size(xh, 2)),
-                 bc_west, bc_south, bc_east, bc_north)
+                 bc_west, bc_south, bc_east, bc_north,
                  false)
 end
 
