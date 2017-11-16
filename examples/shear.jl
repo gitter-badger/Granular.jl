@@ -56,7 +56,7 @@ Granular.render(sim, trim=false)
 
 # Save the simulation state to disk in case we need to reuse the current state
 # This step requires the JLD package (Pkg.add("JLD"))
-Granular.writeSimulation(sim)
+#Granular.writeSimulation(sim)
 
 # Also copy the simulation in memory, in case we want to loop over different
 # normal stresses below:
@@ -87,6 +87,7 @@ for grain in sim.grains
 end
 Granular.addWallLinearFrictionless!(sim, [0., 1.], y_top,
                                     bc="normal stress", normal_stress=-N)
+info("Placing top wall at y=$y_top")
 
 # Resize the grid to span the current state
 Granular.fitGridToGrains!(sim, sim.ocean)
@@ -111,15 +112,33 @@ Granular.resetTime!(sim)
 # Set the simulation time to run the consolidation for
 Granular.setTotalTime!(sim, 5.0)
 
-# Run the consolidation experiment
-Granular.run!(sim)
+# Run the consolidation experiment, and monitor top wall position over time
+time = Float64[]
+compaction = Float64[]
+while sim.time < sim.time_total
+
+    for i=1:100  # run for 100 steps before measuring shear stress and dilation
+        Granular.run!(sim, single_step=true)
+    end
+
+    append!(time, sim.time)
+    append!(compaction, sim.walls[1].pos)
+
+end
+PyPlot.plot(time, compaction)
+PyPlot.subplot(212, sharex=ax1)
+PyPlot.plot(time, dilation)
+PyPlot.xlabel("Time [s]")
+PyPlot.ylabel("Top wall height [m]")
+PyPlot.savefig(sim.id * "-time_vs_compaction-stress.pdf")
+PyPlot.clf()
 
 # Try to render the simulation if `pvpython` is installed on the system
 Granular.render(sim, trim=false)
 
 # Save the simulation state to disk in case we need to reuse the consolidated
 # state (e.g. different shear velocities below)
-Granular.writeSimulation(sim)
+#Granular.writeSimulation(sim)
 
 # Also copy the simulation in memory, in case we want to loop over different
 # normal stresses below:
@@ -177,6 +196,7 @@ for grain in sim.grains
     end
 end
 const surface_area = (x_max - x_min)
+shear_force = 0.
 while sim.time < sim.time_total
 
     for i=1:100  # run for 100 steps before measuring shear stress and dilation
@@ -186,6 +206,7 @@ while sim.time < sim.time_total
     append!(time, sim.time)
 
     # Determine the current shear stress
+    shear_force = 0.
     for grain in sim.grains
         if grain.fixed && grain.allow_y_acc
             shear_force += -grain.force[1]
@@ -205,7 +226,7 @@ end
 Granular.render(sim, trim=false)
 
 # Save the simulation state to disk in case we need to reuse the sheared state
-Granular.writeSimulation(sim)
+#Granular.writeSimulation(sim)
 
 # Plot time vs. shear stress and dilation
 PyPlot.subplot(211)
