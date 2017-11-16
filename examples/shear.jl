@@ -114,6 +114,9 @@ Granular.setTotalTime!(sim, 5.0)
 # Run the consolidation experiment
 Granular.run!(sim)
 
+# Try to render the simulation if `pvpython` is installed on the system
+Granular.render(sim, trim=false)
+
 # Save the simulation state to disk in case we need to reuse the consolidated
 # state (e.g. different shear velocities below)
 Granular.writeSimulation(sim)
@@ -196,6 +199,10 @@ while sim.time < sim.time_total
     # Determine the current dilation
     append!(dilation, (sim.walls[1].pos - y_bot)/thickness_initial)
 
+end
+
+# Try to render the simulation if `pvpython` is installed on the system
+Granular.render(sim, trim=false)
 
 # Save the simulation state to disk in case we need to reuse the sheared state
 Granular.writeSimulation(sim)
@@ -212,7 +219,7 @@ PyPlot.clf()
 
 # Plot shear strain vs. shear stress and dilation
 PyPlot.subplot(211)
-PyPlot.plot(shear_strain, shear_stress)
+PyPlot.plot(time, shear_stress)
 PyPlot.subplot(212)
 PyPlot.plot(shear_strain, dilation)
 PyPlot.xlabel("Shear strain [-]")
