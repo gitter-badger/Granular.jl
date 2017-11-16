@@ -19,8 +19,8 @@ const nx = 10                         # Grains along x (horizontal)
 const ny = 50                         # Grains along y (vertical)
 
 # Grain-size parameters
-const r_min = 0.2                     # Min. grain radius [m]
-const r_max = 1.0                     # Max. grain radius [m]
+const r_min = 0.01                    # Min. grain radius [m]
+const r_max = 0.1                     # Max. grain radius [m]
 const gsd_type = "powerlaw"           # "powerlaw" or "uniform" sizes between r_min and r_max
 const gsd_powerlaw_exponent = -1.8    # GSD power-law exponent
 const gsd_seed = 1                    # Value to seed random-size generation
@@ -36,7 +36,7 @@ const rotating = true                 # Allow grain rotation
 const N = 10e3
 
 # Shear velocity to apply to the top grains [m/s]
-const vel_shear = 0.1
+const vel_shear = 0.01
 
 ################################################################################
 #### Step 1: Create a loose granular assemblage and let it settle at -y        #
@@ -66,10 +66,13 @@ Granular.setGridBoundaryConditions!(sim.ocean, "impermeable", "north south",
                                     verbose=false)
 Granular.setGridBoundaryConditions!(sim.ocean, "periodic", "east west")
 
-# Add gravitational acceleration to all grains and disable ocean-grid drag
+# Add gravitational acceleration to all grains and disable ocean-grid drag.
+# Also add viscous energy dissipation between grains, which is disabled before
+# consolidation and shear.
 for grain in sim.grains
     Granular.addBodyForce!(grain, grain.mass*g)
     Granular.disableOceanDrag!(grain)
+    grain.contact_viscosity_normal = 1e4  # N/(m/s)
 end
 
 # Automatically set the computational time step based on grain sizes and
@@ -77,13 +80,14 @@ end
 Granular.setTimeStep!(sim)
 
 # Set the total simulation time for this step [s]
-Granular.setTotalTime!(sim, 30.)
+# This value may need tweaking if grain sizes or numbers are adjusted.
+Granular.setTotalTime!(sim, 1.)
 
 # Set the interval in model time between simulation files [s]
-Granular.setOutputFileInterval!(sim, .2)
+Granular.setOutputFileInterval!(sim, .01)
 
 # Visualize the grain-size distribution
-#Granular.plotGrainSizeDistribution(sim)
+Granular.plotGrainSizeDistribution(sim)
 
 # Start the simulation
 Granular.run!(sim)
@@ -112,9 +116,10 @@ Granular.zeroKinematics!(sim)
 
 # Add a dynamic wall to the top which adds a normal stress downwards.  The
 # normal of this wall is downwards, and we place it at the top of the granular
-# assemblage
+# assemblage.  Here, the inter-grain viscosity is also removed.
 y_top = -Inf
 for grain in sim.grains
+    grain.contact_viscosity_normal = 0.
     if y_top < grain.lin_pos[2] + grain.contact_radius
         y_top = grain.lin_pos[2] + grain.contact_radius
     end
@@ -144,7 +149,7 @@ end
 Granular.resetTime!(sim)
 
 # Set the simulation time to run the consolidation for
-Granular.setTotalTime!(sim, 5.0)
+Granular.setTotalTime!(sim, 1.0)
 
 # Run the consolidation experiment, and monitor top wall position over time
 time = Float64[]
@@ -155,6 +160,8 @@ while sim.time < sim.time_total
     for i=1:100  # run for 100 steps before measuring shear stress and dilation
         Granular.run!(sim, single_step=true)
     end
+    println(sim.walls[1])
+    println(sim.walls[1].pos)
 
     append!(time, sim.time)
     append!(compaction, sim.walls[1].pos)
@@ -203,7 +210,7 @@ Granular.zeroKinematics!(sim)
 Granular.resetTime!(sim)
 
 # Set the simulation time to run the shear experiment for
-Granular.setTotalTime!(sim, 15.0)
+Granular.setTotalTime!(sim, 2.0)
 
 # Run the shear experiment
 time = Float64[]

@@ -177,14 +177,12 @@ function updateWallKinematicsTwoTermTaylor!(wall::WallLinearFrictionless,
                                             simulation::Simulation)
     if wall.bc == "fixed"
         return nothing
-    end
-
-    if wall.bc == "velocity"
+    elseif wall.bc == "velocity"
         wall.acc = 0.0
+    elseif wall.bc == "normal stress"
+        wall.acc = (wall.force + wall.normal_stress*wall.surface_area)/wall.mass
     else
-        # Normal force directed along normal
-        f_n::Float64 = -wall.normal_stress*wall.surface_area
-        wall.acc = (wall.force + f_n)/wall.mass
+        error("wall boundary condition was not understood ($(wall.bc))")
     end
 
     wall.pos +=
@@ -213,14 +211,12 @@ function updateWallKinematicsThreeTermTaylor!(wall::WallLinearFrictionless,
 
     if wall.bc == "fixed"
         return nothing
-    end
-
-    # Normal load = normal stress times wall surface area, directed along normal
-
-    if wall.bc == "velocity"
+    elseif wall.bc == "velocity"
         wall.acc = 0.0
-    else
+    elseif wall.bc == "normal stress"
         wall.acc = (wall.force + wall.normal_stress*wall.surface_area)/wall.mass
+    else
+        error("wall boundary condition was not understood ($(wall.bc))")
     end
 
     # Temporal gradient in acceleration using backwards differences

@@ -67,9 +67,9 @@ function addWallLinearFrictionless!(simulation::Simulation,
                                     normal::Vector{Float64},
                                     pos::Float64;
                                     bc::String = "fixed",
-                                    mass::Float64 = NaN,
-                                    thickness::Float64 = NaN,
-                                    surface_area::Float64 = NaN,
+                                    mass::Float64 = -1.,
+                                    thickness::Float64 = -1.,
+                                    surface_area::Float64 = -1.,
                                     normal_stress::Float64 = 0.,
                                     vel::Float64 = 0.,
                                     acc::Float64 = 0.,
@@ -94,7 +94,7 @@ function addWallLinearFrictionless!(simulation::Simulation,
     end
 
     # if not set, set wall mass to equal the mass of all grains.
-    if isnan(mass)
+    if mass < 0.
         if length(simulation.grains) < 1
             error("If wall mass is not specified, walls should be added " *
                   "after grains have been added to the simulation.")
@@ -109,7 +109,7 @@ function addWallLinearFrictionless!(simulation::Simulation,
     end
 
     # if not set, set wall thickness to equal largest grain thickness
-    if isnan(thickness)
+    if thickness < 0.
         if length(simulation.grains) < 1
             error("If wall thickness is not specified, walls should be added " *
                   "after grains have been added to the simulation.")
@@ -126,7 +126,7 @@ function addWallLinearFrictionless!(simulation::Simulation,
     end
 
     # if not set, set wall surface area from the ocean grid
-    if isnan(surface_area) && bc != "fixed"
+    if surface_area < 0. && bc != "fixed"
         if typeof(simulation.ocean.input_file) == Bool
             error("simulation.ocean must be set beforehand")
         end
