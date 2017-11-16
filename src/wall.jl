@@ -210,8 +210,7 @@ function getWallNormalStress(sim::Simulation;
         return sim.walls[wall_index].normal_stress
 
     elseif stress_type == "effective"
-        return sim.walls[wall_index].force / getWallSurfaceArea(sim, wall_index,
-                                                                sim.ocean)
+        return sim.walls[wall_index].force / getWallSurfaceArea(sim, wall_index)
     else
         error("stress_type not understood, should be 'effective' or 'defined'" *
               " but is '$stress_type'.")
