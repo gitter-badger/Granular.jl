@@ -890,26 +890,52 @@ function fitGridToGrains!(simulation::Simulation, grid::Any;
         error("Grains need to be initialized before calling fitGridToGrains")
     end
 
+    r = 0.
     for grain in simulation.grains
+        r = grain.contact_radius
 
-        if grain.lin_pos[1] - grain.contact_radius < min_x
-            min_x = grain.lin_pos[1] - grain.contact_radius
+        if grid.bc_west == grid_bc_flags["periodic"]
+            if grain.lin_pos[1] < min_x
+                min_x = grain.lin_pos[1] - r
+            end
+        else
+            if grain.lin_pos[1] - r < min_x
+                min_x = grain.lin_pos[1] - r
+            end
         end
 
-        if grain.lin_pos[1] + grain.contact_radius > max_x
-            max_x = grain.lin_pos[1] + grain.contact_radius
+        if grid.bc_east == grid_bc_flags["periodic"]
+            if grain.lin_pos[1] > max_x
+                max_x = grain.lin_pos[1] + grain.contact_radius
+            end
+        else
+            if grain.lin_pos[1] + r > max_x
+                max_x = grain.lin_pos[1] + grain.contact_radius
+            end
         end
 
-        if grain.lin_pos[2] - grain.contact_radius < min_y
-            min_y = grain.lin_pos[2] - grain.contact_radius
+        if grid.bc_south == grid_bc_flags["periodic"]
+            if grain.lin_pos[2] < min_y
+                min_y = grain.lin_pos[2] - grain.contact_radius
+            end
+        else
+            if grain.lin_pos[2] - r < min_y
+                min_y = grain.lin_pos[2] - grain.contact_radius
+            end
         end
 
-        if grain.lin_pos[2] + grain.contact_radius > max_y
-            max_y = grain.lin_pos[2] + grain.contact_radius
+        if grid.bc_north == grid_bc_flags["periodic"]
+            if grain.lin_pos[2] > max_y
+                max_y = grain.lin_pos[2] + grain.contact_radius
+            end
+        else
+            if grain.lin_pos[2] + r > max_y
+                max_y = grain.lin_pos[2] + grain.contact_radius
+            end
         end
 
-        if grain.contact_radius > max_radius
-            max_radius = grain.contact_radius
+        if r > max_radius
+            max_radius = r
         end
     end
     min_x -= padding
