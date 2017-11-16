@@ -80,12 +80,12 @@ Granular.zeroKinematics!(sim)
 # normal of this wall is downwards, and we place it at the top of the granular
 # assemblage
 y_top = -Inf
-for grain in grains
+for grain in sim.grains
     if y_top < grain.lin_pos[2] + grain.contact_radius
         y_top = grain.lin_pos[2] + grain.contact_radius
     end
 end
-Granular.addWallLinearFrictionless!(sim, normal=[0., 1.], pos=y_top,
+Granular.addWallLinearFrictionless!(sim, [0., 1.], y_top,
                                     bc="normal stress", normal_stress=-N)
 
 # Resize the grid to span the current state
@@ -93,13 +93,13 @@ Granular.fitGridToGrains!(sim, sim.ocean)
 
 # Lock the grains at the very bottom so that the lower boundary is rough
 y_bot = Inf
-for grain in grains
+for grain in sim.grains
     if y_bot > grain.lin_pos[2] - grain.contact_radius
         y_bot = grain.lin_pos[2] - grain.contact_radius
     end
 end
 const fixed_thickness = 2. * r_max
-for grain in grains
+for grain in sim.grains
     if grain.lin_pos[2] <= fixed_thickness
         grain.fixed = true  # set x and y acceleration to zero
     end
@@ -140,7 +140,7 @@ sim.id = "$(id_prefix)-shear-N$(N)Pa-vel_shear$(vel_shear)m-s"
 Granular.zeroKinematics!(sim)
 
 # Prescribe the shear velocity to the uppermost grains
-for grain in grains
+for grain in sim.grains
     if grain.lin_pos[2] <= fixed_thickness
 
         # do not allow changes in velocity
@@ -168,7 +168,7 @@ dilation = Float64[]
 const thickness_initial = sim.walls[1].pos - y_bot
 x_min = +Inf
 x_max = -Inf
-for grain in grains
+for grain in sim.grains
     if x_min > grain.lin_pos[1] - grain.contact_radius
         x_min = grain.lin_pos[1] - grain.contact_radius
     end
@@ -209,8 +209,11 @@ Granular.writeSimulation(sim)
 
 # Plot time vs. shear stress and dilation
 PyPlot.subplot(211)
+PyPlot.subplots_adjust(hspace=0.0)
+ax1 = gca()
+PyPlot.setp(ax1[:get_xticklabels](),visible=false) # Disable x tick labels
 PyPlot.plot(time, shear_stress)
-PyPlot.subplot(212)
+PyPlot.subplot(212, sharex=ax1)
 PyPlot.plot(time, dilation)
 PyPlot.xlabel("Time [s]")
 PyPlot.ylabel("Shear stress [Pa]")
@@ -219,8 +222,11 @@ PyPlot.clf()
 
 # Plot shear strain vs. shear stress and dilation
 PyPlot.subplot(211)
+PyPlot.subplots_adjust(hspace=0.0)
+ax1 = gca()
+PyPlot.setp(ax1[:get_xticklabels](),visible=false) # Disable x tick labels
 PyPlot.plot(time, shear_stress)
-PyPlot.subplot(212)
+PyPlot.subplot(212, sharex=ax1)
 PyPlot.plot(shear_strain, dilation)
 PyPlot.xlabel("Shear strain [-]")
 PyPlot.ylabel("Shear stress [Pa]")
