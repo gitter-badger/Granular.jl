@@ -25,7 +25,8 @@ Granular.fitGridToGrains!(sim, sim.ocean)
 
 # Make the top and bottom boundaries impermeable, and the side boundaries
 # periodic, which will come in handy during shear
-Granular.setGridBoundaryConditions!(sim.ocean, "impermeable", "north south")
+Granular.setGridBoundaryConditions!(sim.ocean, "impermeable", "north south",
+                                    verbose=false)
 Granular.setGridBoundaryConditions!(sim.ocean, "periodic", "east west")
 
 # Add gravitational acceleration to all grains and disable ocean-grid drag
@@ -131,10 +132,9 @@ defined_normal_stress = ones(length(effective_normal_stress)) *
     Granular.getWallNormalStress(sim, stress_type="effective")
 PyPlot.subplot(211)
 PyPlot.subplots_adjust(hspace=0.0)
-ax1 = gca()
+ax1 = PyPlot.gca()
 PyPlot.setp(ax1[:get_xticklabels](),visible=false) # Disable x tick labels
 PyPlot.plot(time, compaction)
-PyPlot.xlabel("Time [s]")
 PyPlot.ylabel("Top wall height [m]")
 PyPlot.subplot(212, sharex=ax1)
 PyPlot.plot(time, defined_normal_stress)
@@ -242,26 +242,28 @@ Granular.render(sim, trim=false)
 # Plot time vs. shear stress and dilation
 PyPlot.subplot(211)
 PyPlot.subplots_adjust(hspace=0.0)
-ax1 = gca()
+ax1 = PyPlot.gca()
 PyPlot.setp(ax1[:get_xticklabels](),visible=false) # Disable x tick labels
 PyPlot.plot(time, shear_stress)
+PyPlot.ylabel("Shear stress [Pa]")
 PyPlot.subplot(212, sharex=ax1)
 PyPlot.plot(time, dilation)
 PyPlot.xlabel("Time [s]")
-PyPlot.ylabel("Shear stress [Pa]")
+PyPlot.ylabel("Volumetric strain [-]")
 PyPlot.savefig(sim.id * "-time_vs_shear-stress.pdf")
 PyPlot.clf()
 
 # Plot shear strain vs. shear stress and dilation
 PyPlot.subplot(211)
 PyPlot.subplots_adjust(hspace=0.0)
-ax1 = gca()
+ax1 = PyPlot.gca()
 PyPlot.setp(ax1[:get_xticklabels](),visible=false) # Disable x tick labels
-PyPlot.plot(time, shear_stress)
+PyPlot.plot(shear_strain, shear_stress)
+PyPlot.ylabel("Shear stress [Pa]")
 PyPlot.subplot(212, sharex=ax1)
 PyPlot.plot(shear_strain, dilation)
 PyPlot.xlabel("Shear strain [-]")
-PyPlot.ylabel("Shear stress [Pa]")
+PyPlot.ylabel("Volumetric strain [-]")
 PyPlot.savefig(sim.id * "-shear-strain_vs_shear-stress.pdf")
 PyPlot.clf()
 

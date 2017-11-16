@@ -220,7 +220,11 @@ function createRegularOceanGrid(n::Array{Int, 1},
                                 L::Vector{Float64};
                                 origo::Vector{Float64} = zeros(2),
                                 time::Vector{Float64} = zeros(1),
-                                name::String = "unnamed")
+                                name::String = "unnamed",
+                                bc_west::Integer = 1,
+                                bc_south::Integer = 1,
+                                bc_east::Integer = 1,
+                                bc_north::Integer = 1)
 
     xq = repmat(linspace(origo[1], origo[1] + L[1], n[1] + 1), 1, n[2] + 1)
     yq = repmat(linspace(origo[2], origo[2] + L[2], n[2] + 1)', n[1] + 1, 1)
@@ -246,7 +250,7 @@ function createRegularOceanGrid(n::Array{Int, 1},
                  zl, zi,
                  u, v, h, e,
                  Array{Array{Int, 1}}(size(xh, 1), size(xh, 2)),
-                 1, 1, 1, 1)
+                 bc_west, bc_south, bc_east, bc_north)
 end
 
 export addOceanDrag!

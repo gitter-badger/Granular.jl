@@ -928,17 +928,26 @@ function fitGridToGrains!(simulation::Simulation, grid::Any;
               "Use all-to-all contact search instead.")
     end
 
+
     if typeof(grid) == Ocean
         simulation.ocean = createRegularOceanGrid(vcat(n, 1), vcat(L, 1.),
                                                   origo=[min_x, min_y],
-                                                  time=[0.], name="fitted")
+                                                  time=[0.], name="fitted",
+                                                  bc_west  = grid.bc_west,
+                                                  bc_south = grid.bc_south,
+                                                  bc_east  = grid.bc_east,
+                                                  bc_north = grid.bc_north)
     elseif typeof(grid) == Atmosphere
         simulation.atmosphere = createRegularAtmosphereGrid(vcat(n, 1),
                                                             vcat(L, 1.),
                                                             origo=[min_x,
                                                                    min_y],
                                                             time=[0.],
-                                                            name="fitted")
+                                                            name="fitted",
+                                                            bc_west  = grid.bc_west,
+                                                            bc_south = grid.bc_south,
+                                                            bc_east  = grid.bc_east,
+                                                            bc_north = grid.bc_north)
     end
 
     if verbose
