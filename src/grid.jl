@@ -785,7 +785,7 @@ function moveGrainsAcrossPeriodicBoundaries!(sim::Simulation)
         end
 
         # +y -> -y
-        if sim.ocean.bc_east == 2 && grain.lin_pos[2] > sim.ocean.yq[end]
+        if sim.ocean.bc_north == 2 && grain.lin_pos[2] > sim.ocean.yq[end]
             grain.lin_pos[2] -= sim.ocean.yq[end] - sim.ocean.yq[1]
         end
     end
