@@ -172,6 +172,7 @@ function run!(simulation::Simulation;
         end
 
         updateGrainKinematics!(simulation, method=temporal_integration_method)
+        updateWallKinematics!(simulation, method=temporal_integration_method)
 
         # Update time variables
         simulation.time_iteration += 1

@@ -297,7 +297,6 @@ Granular.updateWallKinematics!(sim)
 for i=1:5
     Granular.interactWalls!(sim)
     Granular.updateWallKinematics!(sim)
-    println(sim.walls[1].pos)
     @test sim.walls[1].force > 0.
     @test sim.walls[1].acc < 0.
     @test sim.walls[1].vel < 0.
@@ -305,3 +304,22 @@ for i=1:5
     @test sim.grains[1].force[1] < 0.
     @test sim.grains[1].force[2] ≈ 0.
 end
+
+info("Granular packing, wall present, normal stress BC")
+sim = Granular.createSimulation()
+Granular.regularPacking!(sim, [5, 5], 1.0, 2.0)
+Granular.fitGridToGrains!(sim, sim.ocean)
+Granular.setGridBoundaryConditions!(sim.ocean, "impermeable")
+y_max_init = 0.
+for grain in sim.grains
+    if y_max_init < grain.lin_pos[2] + grain.contact_radius
+        y_max_init = grain.lin_pos[2] + grain.contact_radius
+    end
+end
+Granular.addWallLinearFrictionless!(sim, [0., 1.], y_max_init,
+                                    bc="normal stress", normal_stress=-100e3)
+Granular.setTimeStep!(sim)
+Granular.setTotalTime!(sim, 1.)
+Granular.setOutputFileInterval!(sim, 10.)
+Granular.run!(sim)
+@test sim.walls[1].pos < y_max_init
