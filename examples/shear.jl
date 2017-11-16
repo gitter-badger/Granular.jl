@@ -19,7 +19,7 @@ const nx = 10                         # Grains along x (horizontal)
 const ny = 50                         # Grains along y (vertical)
 
 # Grain-size parameters
-const r_min = 0.01                    # Min. grain radius [m]
+const r_min = 0.03                    # Min. grain radius [m]
 const r_max = 0.1                     # Max. grain radius [m]
 const gsd_type = "powerlaw"           # "powerlaw" or "uniform" sizes between r_min and r_max
 const gsd_powerlaw_exponent = -1.8    # GSD power-law exponent
@@ -33,10 +33,15 @@ const contact_dynamic_friction = 0.4  # Coulomb-frictional coefficient [-]
 const rotating = true                 # Allow grain rotation
 
 # Normal stress for the consolidation and shear [Pa]
-const N = 10e3
+const N = 20e3
 
 # Shear velocity to apply to the top grains [m/s]
-const vel_shear = 0.01
+const vel_shear = 0.5
+
+# Simulation duration of individual steps [s]
+const t_init  = 2.0
+const t_cons  = 1.0
+const t_shear = 5.0
 
 ################################################################################
 #### Step 1: Create a loose granular assemblage and let it settle at -y        #
@@ -81,10 +86,10 @@ Granular.setTimeStep!(sim)
 
 # Set the total simulation time for this step [s]
 # This value may need tweaking if grain sizes or numbers are adjusted.
-Granular.setTotalTime!(sim, 1.)
+Granular.setTotalTime!(sim, t_init)
 
 # Set the interval in model time between simulation files [s]
-Granular.setOutputFileInterval!(sim, .01)
+Granular.setOutputFileInterval!(sim, .02)
 
 # Visualize the grain-size distribution
 Granular.plotGrainSizeDistribution(sim)
@@ -149,7 +154,7 @@ end
 Granular.resetTime!(sim)
 
 # Set the simulation time to run the consolidation for
-Granular.setTotalTime!(sim, 1.0)
+Granular.setTotalTime!(sim, t_cons)
 
 # Run the consolidation experiment, and monitor top wall position over time
 time = Float64[]
@@ -160,8 +165,6 @@ while sim.time < sim.time_total
     for i=1:100  # run for 100 steps before measuring shear stress and dilation
         Granular.run!(sim, single_step=true)
     end
-    println(sim.walls[1])
-    println(sim.walls[1].pos)
 
     append!(time, sim.time)
     append!(compaction, sim.walls[1].pos)
@@ -210,7 +213,7 @@ Granular.zeroKinematics!(sim)
 Granular.resetTime!(sim)
 
 # Set the simulation time to run the shear experiment for
-Granular.setTotalTime!(sim, 2.0)
+Granular.setTotalTime!(sim, t_shear)
 
 # Run the shear experiment
 time = Float64[]
