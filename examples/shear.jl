@@ -115,6 +115,7 @@ Granular.setTotalTime!(sim, 5.0)
 # Run the consolidation experiment, and monitor top wall position over time
 time = Float64[]
 compaction = Float64[]
+effective_normal_stress = Float64[]
 while sim.time < sim.time_total
 
     for i=1:100  # run for 100 steps before measuring shear stress and dilation
@@ -123,13 +124,23 @@ while sim.time < sim.time_total
 
     append!(time, sim.time)
     append!(compaction, sim.walls[1].pos)
+    append!(effective_normal_stress, Granular.getWallNormalStress(sim))
 
 end
+defined_normal_stress = ones(length(effective_normal_stress)) *
+    Granular.getWallNormalStress(sim, stress_type="effective")
+PyPlot.subplot(211)
+PyPlot.subplots_adjust(hspace=0.0)
+ax1 = gca()
+PyPlot.setp(ax1[:get_xticklabels](),visible=false) # Disable x tick labels
 PyPlot.plot(time, compaction)
-PyPlot.subplot(212, sharex=ax1)
-PyPlot.plot(time, dilation)
 PyPlot.xlabel("Time [s]")
 PyPlot.ylabel("Top wall height [m]")
+PyPlot.subplot(212, sharex=ax1)
+PyPlot.plot(time, defined_normal_stress)
+PyPlot.plot(time, effective_normal_stress)
+PyPlot.xlabel("Time [s]")
+PyPlot.ylabel("Normal stress [Pa]")
 PyPlot.savefig(sim.id * "-time_vs_compaction-stress.pdf")
 PyPlot.clf()
 
