@@ -921,13 +921,16 @@ from the shell using the supplied `pvpython` argument.
 * `pvpython::String`: path to the `pvpython` executable to use.  By default, the
     script uses the pvpython in the system PATH.
 * `images::Bool`: render images to disk (default: true)
-* `animation::Bool`: render animation to disk (default: false)
+* `gif::Bool`: merge images as GIF and save to disk (default: false, requires
+    `images=true`)
+* `animation::Bool`: render animation as AVI to disk (default: false)
 * `trim::Bool`: trim images in animated sequence (default: true)
 * `reverse::Bool`: if `images=true` additionally render reverse-animated gif
     (default: false)
 """
 function render(simulation::Simulation; pvpython::String="pvpython",
                 images::Bool=true,
+                gif::Bool=false,
                 animation::Bool=false,
                 trim::Bool=true,
                 reverse::Bool=false)
@@ -938,7 +941,7 @@ function render(simulation::Simulation; pvpython::String="pvpython",
         run(`$(pvpython) $(simulation.id)/$(simulation.id).py`)
 
         # if available, use imagemagick to create gif from images
-        if images
+        if images && gif
             try
                 trim_string = ""
                 if trim
