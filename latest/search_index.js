@@ -957,7 +957,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Public API",
     "title": "Granular.render",
     "category": "Method",
-    "text": "render(simulation[, pvpython, images, animation])\n\nWrapper function which calls writeParaviewPythonScript(...) and executes it from the shell using the supplied pvpython argument.\n\nArguments\n\nsimulation::Simulation: simulation object containing the grain data.\npvpython::String: path to the pvpython executable to use.  By default, the   script uses the pvpython in the system PATH.\nimages::Bool: render images to disk (default: true)\nanimation::Bool: render animation to disk (default: false)\ntrim::Bool: trim images in animated sequence (default: true)\nreverse::Bool: if images=true additionally render reverse-animated gif   (default: false)\n\n\n\n"
+    "text": "render(simulation[, pvpython, images, animation])\n\nWrapper function which calls writeParaviewPythonScript(...) and executes it from the shell using the supplied pvpython argument.\n\nArguments\n\nsimulation::Simulation: simulation object containing the grain data.\npvpython::String: path to the pvpython executable to use.  By default, the   script uses the pvpython in the system PATH.\nimages::Bool: render images to disk (default: true)\ngif::Bool: merge images as GIF and save to disk (default: false, requires   images=true)\nanimation::Bool: render animation as AVI to disk (default: false)\ntrim::Bool: trim images in animated sequence (default: true)\nreverse::Bool: if images=true additionally render reverse-animated gif   (default: false)\n\n\n\n"
 },
 
 {
