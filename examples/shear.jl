@@ -1,6 +1,8 @@
 #/usr/bin/env julia
 import Granular
 import JLD
+ENV["MPLBACKEND"] = "Agg"
+import PyPlot
 
 # Common simulation identifier
 const id_prefix = "test0"
@@ -83,10 +85,8 @@ for grain in grains
         y_top = grain.lin_pos[2] + grain.contact_radius
     end
 end
-# TODO
-Granular.addDynamicWall!(sim, normal=[0., -1.], pos=y_top,
-                         boundary_condition="normal stress",
-                         normal_stress=N)
+Granular.addWallLinearFrictionless!(sim, normal=[0., 1.], pos=y_top,
+                                    bc="normal stress", normal_stress=-N)
 
 # Resize the grid to span the current state
 Granular.fitGridToGrains!(sim, sim.ocean)
@@ -201,10 +201,28 @@ while sim.time < sim.time_total
 Granular.writeSimulation(sim)
 
 # Plot time vs. shear stress and dilation
-# TODO
+PyPlot.subplot(211)
+PyPlot.plot(time, shear_stress)
+PyPlot.subplot(212)
+PyPlot.plot(time, dilation)
+PyPlot.xlabel("Time [s]")
+PyPlot.ylabel("Shear stress [Pa]")
+PyPlot.savefig(sim.id * "-time_vs_shear-stress.pdf")
+PyPlot.clf()
 
 # Plot shear strain vs. shear stress and dilation
-# TODO
+PyPlot.subplot(211)
+PyPlot.plot(shear_strain, shear_stress)
+PyPlot.subplot(212)
+PyPlot.plot(shear_strain, dilation)
+PyPlot.xlabel("Shear strain [-]")
+PyPlot.ylabel("Shear stress [Pa]")
+PyPlot.savefig(sim.id * "-shear-strain_vs_shear-stress.pdf")
+PyPlot.clf()
 
 # Plot time vs. shear strain (boring when the shear experiment is rate controlled)
-# TODO
+PyPlot.plot(time, shear_strain)
+PyPlot.xlabel("Time [s]")
+PyPlot.ylabel("Shear strain [-]")
+PyPlot.savefig(sim.id * "-time_vs_shear-strain.pdf")
+PyPlot.clf()
