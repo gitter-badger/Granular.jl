@@ -1,7 +1,7 @@
 #/usr/bin/env julia
+ENV["MPLBACKEND"] = "Agg"
 import Granular
 import JLD
-ENV["MPLBACKEND"] = "Agg"
 import PyPlot
 
 # Common simulation identifier
