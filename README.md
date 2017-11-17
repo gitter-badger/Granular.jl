@@ -1,5 +1,7 @@
 # Granular
 
+[![Join the chat at https://gitter.im/anders-dc/Granular.jl](https://badges.gitter.im/anders-dc/Granular.jl.svg)](https://gitter.im/anders-dc/Granular.jl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![Granular.jl 
 logo](https://github.com/anders-dc/Granular.jl/raw/master/docs/src/assets/logo.gif)
 
